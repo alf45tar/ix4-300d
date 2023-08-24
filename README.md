@@ -18,6 +18,125 @@ https://download.lenovo.com/nasupdate/asgimage/h4c-4.1.414.34909.zip
 
 The original firmware is based on Debian 7 (wheezy) and it is stored into a flash memory. NAS can boot without any disk if the flash is ok. If the flash is corrupted the above imager must be used.
 
+```
+BootROM 1.15
+Booting from NAND flash
+DDR3 Training Sequence - Ver 2.3.4 
+DDR3 Training Sequence - Ended Successfully 
+BootROM: Image checksum verification PASSED
+
+ __   __                      _ _
+|  \/  | __ _ _ ____   _____| | |
+| |\/| |/ _` | '__\ \ / / _ \ | |
+| |  | | (_| | |   \ V /  __/ | |
+|_|  |_|\__,_|_|    \_/ \___|_|_|
+         _   _     ____              _
+        | | | |   | __ )  ___   ___ | |_ 
+        | | | |___|  _ \ / _ \ / _ \| __| 
+        | |_| |___| |_) | (_) | (_) | |_ 
+         \___/    |____/ \___/ \___/ \__| 
+ ** LOADER 2.3.2.6  **
+
+
+U-Boot 2009.08 (Mar 04 2013 - 11:13:04) Marvell version:  2.3.2 PQ
+U-Boot Addressing:
+       Code:            00600000:006BFFF0
+       BSS:             00708EC0
+       Stack:           0x5fff70
+       PageTable:       0x8e0000
+       Heap address:    0x900000:0xe00000
+Board: DB-78230-BP rev 2.0 Wistron
+SoC:   MV78230 A0
+       running 2 CPUs
+       Custom configuration
+CPU:   Marvell PJ4B (584) v7 (Rev 2) LE
+       CPU # 0
+       CPU @ 1333Mhz, L2 @ 667Mhz
+       DDR @ 667Mhz, TClock @ 250Mhz
+       DDR 32Bit Width, FastPath Memory Access
+       DDR ECC Disabled
+PEX 0.0(0): Root Complex Interface, Detected Link X4, GEN 1.1
+PEX 1.0(1): Root Complex Interface, Detected Link X1, GEN 2.0
+DRAM:  512 MB
+       CS 0: base 0x00000000 size 512 MB
+       Addresses 14M - 0M are saved for the U-Boot usage.
+NAND:  1024 MiB
+Bad block table found at page 524224, version 0x01
+Bad block table found at page 524160, version 0x01
+nand_read_bbt: Bad block at 0x000003c60000
+FPU initialized to Run Fast Mode.
+USB 0: Host Mode
+USB 1: Host Mode
+USB 2: Device Mode
+Modules Detected:
+MMC:   MRVL_MMC: 0
+Net:   egiga0 [PRIME], egiga1
+Hit any key to stop autoboot:  0 
+
+NAND read: device 0 offset 0x120000, size 0x400000
+ 4194304 bytes read: OK
+
+NAND read: device 0 offset 0x520000, size 0x400000
+ 4194304 bytes read: OK
+## Booting kernel from Legacy Image at 00040000 ...
+   Image Name:   Linux-3.2.40
+   Created:      2020-01-02  11:18:50 UTC
+   Image Type:   ARM Linux Kernel Image (uncompressed)
+   Data Size:    3656376 Bytes =  3.5 MB
+   Load Address: 00008000
+   Entry Point:  00008000
+   Verifying Checksum ... OK
+## Loading init Ramdisk from Legacy Image at 02000000 ...
+   Image Name:   
+   Created:      2020-01-14  10:40:35 UTC
+   Image Type:   ARM Linux RAMDisk Image (bzip2 compressed)
+   Data Size:    3012478 Bytes =  2.9 MB
+   Load Address: 00000000
+   Entry Point:  00000000
+   Verifying Checksum ... OK
+   Loading Kernel Image ... OK
+OK
+
+Starting kernel ...
+
+Uncompressing Linux... done, booting the kernel.
+
+
+
+Welcome to CenterPoint.
+ix4-300d login: root
+Password: 
+root@ix4-300d:/# cat /proc/version 
+Linux version 3.2.40 (soho@bsoho083.iomegacorp.com) (gcc version 4.7.2 (crosstool-NG 1.20.0) ) #1 SMP Thu Jan 2 06:18:39 EST 2020 v2.1.1.1
+root@ix4-300d:/# cat /proc/mtd        
+dev:    size   erasesize  name
+mtd0: 000e0000 00020000 "uboot"
+mtd1: 00020000 00020000 "env"
+mtd2: 00020000 00020000 "env2"
+mtd3: 00400000 00020000 "zImage"
+mtd4: 00400000 00020000 "initrd"
+mtd5: 3f200000 00020000 "boot"
+mtd6: 40000000 00020000 "flash"
+root@ix4-300d:/# cat /proc/cpuinfo 
+Processor       : Marvell PJ4Bv7 Processor rev 2 (v7l)
+processor       : 0
+BogoMIPS        : 1332.01
+
+processor       : 1
+BogoMIPS        : 1332.01
+
+Features        : swp half thumb fastmult vfp edsp vfpv3 tls 
+CPU implementer : 0x56
+CPU architecture: 7
+CPU variant     : 0x2
+CPU part        : 0x584
+CPU revision    : 2
+
+Hardware        : Marvell Armada XP Development Board
+Revision        : 0000
+Serial          : 0000000000000000
+```
+
 The bootloader is Marvell U-Boot. My NAS has the following signature:
 
 `U-Boot 2009.08 (Mar 04 2013 - 11:13:04) Marvell version:  2.3.2 PQ`.
