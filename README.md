@@ -207,6 +207,7 @@ _Skip it if you want to proceed with an USB stick._
 
 _Skip it if you prepared a TFTP server._
 
+Prepare an USB stick as indicated in [Creating a Bootable Debian USB Flashdrive](https://wiki.debian.org/DebianInstall#Creating_a_Bootable_Debian_USB_Flashdrive)
 
 ## Connecting the USB-to-TTL adapter
 
@@ -317,14 +318,14 @@ Assuming `192.168.1.10` is the macOS IP address (TFTP server) and `192.168.1.111
 
 ## Boot th NAS from USB stick
 
-_Skip it if you preapred the TFTP server._
+_Skip it if you prepared the TFTP server._
 
-1. Prepare an USB stick as indicated in [Creating a Bootable Debian USB Flashdrive](https://wiki.debian.org/DebianInstall#Creating_a_Bootable_Debian_USB_Flashdrive)
-   
-2. Insert the USB stick into the **rear top** USB port (mandatory).
+1. Insert the USB stick into the **rear top** USB port (mandatory).
 
-3. From `Marvell>>` prompt enter the following commands:
+2. From `Marvell>>` prompt enter the following commands:
    ```
+   usb start
+   usb tree
    usb info
    usb part
    usb stop
@@ -336,6 +337,23 @@ _Skip it if you preapred the TFTP server._
 
 The log of previous commands is available in the following:
 ```
+Marvell>> usb start
+(Re)start USB...
+USB:   Active port:     0
+Register 10011 NbrPorts 1
+USB EHCI 1.00
+scanning bus for devices... 2 USB Device(s) found
+Waiting for storage device(s) to settle before scanning...
+       scanning bus for storage devices... 1 Storage Device(s) found
+Marvell>> usb tree 
+
+Device Tree:
+  1  Hub (480 Mb/s, 0mA)
+  |  u-boot EHCI Host Controller 
+  |
+  +-2  Mass Storage (480 Mb/s, 200mA)
+         13111409002422
+     
 Marvell>> usb info
 1: Hub,  USB Revision 2.0
  - u-boot EHCI Host Controller 
@@ -348,29 +366,29 @@ Marvell>> usb info
      - Alternate Setting 0, Endpoints: 1
      - Class Hub
      - Endpoint 1 In Interrupt MaxPacket 8 Interval 255ms
-2: Mass Storage,  USB Revision 2.10
- - JMicron External Disk 3.0 000000778899
+
+2: Mass Storage,  USB Revision 2.0
+ -   13111409002422
  - Class: (from Interface) Mass Storage
  - PacketSize: 64  Configurations: 1
- - Vendor: 0x152d  Product 0x0576 Version 18.1
+ - Vendor: 0x0718  Product 0x07f0 Version 1.18
    Configuration: 1
-   - Interfaces: 1 Bus Powered 500mA
+   - Interfaces: 1 Bus Powered 200mA
      Interface: 0
      - Alternate Setting 0, Endpoints: 2
      - Class Mass Storage, Transp. SCSI, Bulk only
-     - Endpoint 1 In Bulk MaxPacket 512
-     - Endpoint 2 Out Bulk MaxPacket 512
      - Endpoint 1 Out Bulk MaxPacket 512
      - Endpoint 2 In Bulk MaxPacket 512
-     - Endpoint 3 In Bulk MaxPacket 512
-     - Endpoint 4 Out Bulk MaxPacket 512
+
 Marvell>> usb part
+
 Partition Map for USB device 0  --   Partition Type: DOS
+
 Partition     Start Sector     Num Sectors     Type
-    1                 2048          997376      83
-    2               999424       623161344      83
-    3            624162814          978946       5 Extd
-    5            624162816          978944      82
+    1                    0         1589248      83
+    2              1589248            2048      ef
+Marvell>> 
+
 Marvell>> usb stop
 stopping USB..
 Marvell>> ext2load usb 0 0x0040000 uImage
