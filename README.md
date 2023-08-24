@@ -16,7 +16,7 @@ https://deb.debian.org/debian/dists/bookworm/main/installer-armhf/current/images
 https://deb.debian.org/debian/dists/bookworm/main/installer-armhf/current/images/netboot/initrd.gz
 https://deb.debian.org/debian/dists/bookworm/main/installer-armhf/current/images/device-tree/armada-xp-lenovo-ix4-300d.dtb
 
-Append dtb file to the kernel: 
+On a Linux box append dtb file to the kernel: 
 
 ```cat vmlinuz armada-xp-lenovo-ix4-300d.dtb > vmlinuz_ix4_300d```
 
@@ -31,7 +31,7 @@ Create an uImage with appended init ramdisk:
 >
 >The legacy image format concatenates the individual parts (for example, kernel image, device tree blob and ramdisk image) and adds a 64 byte header containing information about the target architecture, operating system, image type, compression method, entry points, time stamp, checksums, etc.
 
-For lazy people the final file is also available [here](uImage_ix4_300d_bookworm) to download.
+For lazy people the final file is also available [here](uImage_ix4_300d_bookworm) ready to download.
 
 ## Preparing the TFTP server
 
