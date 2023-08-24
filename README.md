@@ -73,7 +73,7 @@ Pin|Function|Description
 2. On macOS Open a Terminal and execute
    ```screen /dev/cu.SLAB_USBtoUART 115200```
 3. Power on the Lenovo Iomega ix4-300d
-4. Press any key to stop the booting process
+4. Press any key to stop the booting process and receive the Marvell U-Boot prompt
 
 ```
 BootROM 1.15
@@ -132,11 +132,43 @@ Hit any key to stop autoboot:  0
 Marvell>> 
 ```
 
+## Boot the NAS from TFTP server
+
+Skip it if you prepared the USB stick.
+
+From `Marvell>>` prompt enter the following commands:
+
+Set the ip address of the NAS: 
+```
+setenv ipaddress 192.168.1.111
+```
+
+Set the ip address of the macOS tftp server: 
+```
+setenv serverip 192.168.1.10
+```
+
+Check if network connection works: 
+```
+ping 192.168.1.10
+```
+
+Transfer the Debian installer via tftp into the NAS RAM:
+```
+tftpboot uImage_ix4_300d_bookworm
+```
+
+Boot the Debian installer in RAM: 
+```
+bootm 0x2000000
+```
+
+
 ## Boot from USB stick
 
 Skip it if you preapred the TFTP server.
 
-From Marvell>> prompt enter the following commands:
+From `Marvell>>` prompt enter the following commands:
 ```
 usb info
 usb part
