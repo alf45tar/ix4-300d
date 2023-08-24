@@ -159,6 +159,7 @@ The End Of Service Life (EOSL) was March 31, 2020.
 - A TFTP server (faster) or and USB stick (slower) to download the Debian installer
 - A PC with macOS or Windows. The following procedure is for macOS because we do not need any additional software to install for complete the task. The procedure for Windows is not documented here.
 - A Linux box or a virtual machine with any Linux flavour (optional) to prepare the Debian installed image. I used an online Ubuntu VM on https://www.onworks.net.
+- Wired connection from NAS Ethernet port 1 (the top one) with DHCP and internet access to continue the Debian installation after boot.
 
 ## Preparing the file
 
@@ -175,11 +176,14 @@ On a Linux box:
    cat vmlinuz armada-xp-lenovo-ix4-300d.dtb > vmlinuz_ix4_300d
    ```
 
-3. Create an uImage with appended init ramdisk:
+3. Create an uImage with appended init ramdisk for TFTP boot:
    ```
-   mkimage -A arm -O linux -T multi -C none -a 0x04000000 -e 0x04000000  -n "Debian armhf installer" -d vmlinuz_ix4_300d:initrd.gz uImage_di_ix4_300d_bookworm
-   mkimage -A arm -O linux -T kernel -C none -a 0x04000000 -e 0x04000000  -n "Debian armhf installer" -d vmlinuz_ix4_300d uImage_ix4_300d_bookworm
-   mkimage -A arm -O linux -T ramdisk -C none -a 0x2000000 -e 0x2000000  -n "Debian armhf installer" -d initrd.gz uInitrd_ix4_300d_bookworm
+   mkimage -A arm -O linux -T multi -C none -a 0x04000000 -e 0x04000000 -n "Debian armhf installer" -d vmlinuz_ix4_300d:initrd.gz uImage_di_ix4_300d_bookworm
+   ```
+4. Create separate uImage and uInitrd for USB boot:
+   ```
+   mkimage -A arm -O linux -T kernel  -C none -a 0x04000000 -e 0x04000000  -n "Debian armhf installer" -d vmlinuz_ix4_300d uImage_ix4_300d_bookworm
+   mkimage -A arm -O linux -T ramdisk -C none -a 0x2000000  -e 0x2000000   -n "Debian armhf installer" -d initrd.gz        uInitrd_ix4_300d_bookworm
    ```
    > [!NOTE]
    > The `mkimage` command is used to create images for use with the U-Boot boot loader. Thes images can contain the linux kernel, device tree blob, root file system image, firmware images etc., either separate or combined.
@@ -188,13 +192,13 @@ On a Linux box:
    >
    >The legacy image format concatenates the individual parts (for example, kernel image, device tree blob and ramdisk image) and adds a 64 byte header containing information about the target architecture, operating system, image type, compression method, entry points, time stamp, checksums, etc.
 
-For lazy people the final file is also available [here](uImage_ix4_300d_bookworm) ready to download.
+For lazy people the final files are also available here [](uImage_di_ix4_300d_bookworm) ready to download.
 
 ## Preparing the TFTP server
 
 _Skip it if you want to proceed with an USB stick._
 
-1. Copy the `uImage_ix4_300d_bookworm` file prepared above into `/private/tftpboot` folder of macOS.
+1. Copy the `uImage_di_ix4_300d_bookworm` file prepared above into `/private/tftpboot` folder of macOS.
    > [!NOTE]
    > By default the built in macOS TFTP server uses the folder `/private/tftpboot` which is hidden in Finder, but can be accessed by using “Go to Folder” or hitting Command+Shift+G and entering `/private/tftpboot`
 3. Open a Terminal an execute the following command
@@ -209,8 +213,8 @@ _Skip it if you want to proceed with an USB stick._
 
 _Skip it if you prepared a TFTP server._
 
-1. Create an ext2 partition
-2. Copy 
+1. Create an USB stick with an ext2 partition as first. Marvell U-Boot can only boot from the first partition.
+2. Copy `uImage_ix4_300d_bookworm` and `uinitrd_ix4_300d_bookworm` into it.
 
 ## Connecting the USB-to-TTL adapter
 
@@ -323,7 +327,7 @@ Assuming `192.168.1.10` is the macOS IP address (TFTP server) and `192.168.1.111
 
 _Skip it if you prepared the TFTP server._
 
-1. Insert the USB stick into the **rear top** USB port (mandatory).
+1. Insert the USB stick into the **rear top** USB port (mandatory). Marvell U-Boot can only boot from the rear top USB port.
 
 2. From `Marvell>>` prompt enter the following commands:
    ```
@@ -337,10 +341,12 @@ _Skip it if you prepared the TFTP server._
    setenv bootargs $console $mtdparts root=/dev/sda2 rw rootdelay=10
    bootm 0x40000 0x2000000
    ```
+   > [!NOTE]
+   > `usb tree`, `usb info` and `usb part` are for information only.
 
 The log of previous commands is available in the following:
 ```
-Marvell>> usb reset
+Marvell>> usb start
 (Re)start USB...
 USB:   Active port:     0
 Register 10011 NbrPorts 1
@@ -421,6 +427,10 @@ OK
 
 Starting kernel ...
 ```
+
+## Debian installation
+
+The Debian installer should start in the serial console window with the following screen:
 ```
 [            (1*installer)  2 shell  3 shell  4- log           ][ Aug 24 21:36 ]
                                                                                 
@@ -448,14 +458,12 @@ Starting kernel ...
 <Tab> moves; <Space> selects; <Enter> activates buttons                         
 ```
 
-## Debian installation
-
-The Debian installer should start in the serial console window. Go through the process as shown on screen. 
+Go through the process as shown on screen. 
 Skipping grub and bootloader results in the following warning: 
 
 You will need to boot manually with the /vmlinuz kernel on partition /dev/sda1 and root=/dev/sda2 passed as a kernel argument. 
 
-Do not complete the final 'cleanup and reboot' stage of the install but choose to execute a shell instead. 
+Do not complete the final 'cleanup and reboot' stage of the install but choose to `Execute a shell` instead to run the followinf commands: 
 
 ```
 mount --bind /dev /target/dev
