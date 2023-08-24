@@ -332,7 +332,9 @@ _Skip it if you prepared the TFTP server._
    usb info
    usb part
    usb stop
-   ext2load usb 0:1 0x0040000 uImage_ix4_300d_bookworm; ext2load usb 0:1 0x2000000 uInitrd_ix4_300d_bookworm; setenv bootargs $console $mtdparts root=/dev/sda2 rw rootdelay=10
+   ext2load usb 0:1 0x0040000 uImage_ix4_300d_bookworm
+   ext2load usb 0:1 0x2000000 uInitrd_ix4_300d_bookworm
+   setenv bootargs $console $mtdparts root=/dev/sda2 rw rootdelay=10
    bootm 0x40000 0x2000000
    ```
 
