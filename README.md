@@ -260,7 +260,7 @@ permitted by applicable law.
 root@lenovo:~# 
 ```
 
-## Proceed with Debian installation
+## Debian installation
 
 The Debian installer should start in the serial console window. Go through the process as shown on screen. 
 Skipping grub and bootloader results in the following warning: 
@@ -278,12 +278,12 @@ apt-get update
 apt-get install flash-kernel
 ```
 
-Configure flash-kernel database as follows: 
-
+Replace the content of the flash-kernel database file `/etc/flash-kernel/db` using `nano`: 
 ```
 nano /etc/flash-kernel/db
 ```
 
+with the following content
 ```
 Machine: Lenovo Iomega ix4-300d
 Kernel-Flavors: armmp armmp-lpae
@@ -298,7 +298,7 @@ Required-Packages: u-boot-tools
 Bootloader-Sets-Incorrect-Root: no
 ```
 
-Generate / update initramfs and kernel: 
+Update initramfs and kernel: 
 ```
 update-initramfs -u
 ```
