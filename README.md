@@ -38,7 +38,7 @@ For lazy people the final file is also available [here](uImage_ix4_300d_bookworm
 
 ## Preparing the TFTP server
 
-Skip it if you want to proceed with an USB stick.
+_Skip it if you want to proceed with an USB stick._
 
 1. Copy the `uImage_ix4_300d_bookworm` file prepared into `/private/tftpboot` folder of macOS.
    > [!NOTE]
@@ -53,7 +53,7 @@ Skip it if you want to proceed with an USB stick.
    
 ## Preparing the USB stick
 
-Skip it if you prepared a TFTP server.
+_Skip it if you prepared a TFTP server._
 
 
 ## Connecting the USB-to-TTL adapter
@@ -134,50 +134,51 @@ Marvell>>
 
 ## Boot the NAS from TFTP server
 
-Skip it if you prepared the USB stick.
+_Skip it if you prepared the USB stick._
 
-From `Marvell>>` prompt enter the following commands assuming `192.168.1.10` is the macOS IP address and `192.168.1.111` ia an available IP in your network. 
+Assuming `192.168.1.10` is the macOS IP address (TFTP server) and `192.168.1.111` ia an available IP address in your network, from `Marvell>>` prompt enter the following commands.
 
-Set the ip address of the NAS: 
-```
-setenv ipaddress 192.168.1.111
-```
+1. Set the IP address of the NAS: 
+   ```
+   setenv ipaddress 192.168.1.111
+   ```
 
-Set the ip address of the macOS tftp server: 
-```
-setenv serverip 192.168.1.10
-```
+2. Set the IP address of the macOS TFTP server: 
+   ```
+   setenv serverip 192.168.1.10
+   ```
 
-Check if network connection works: 
-```
-ping 192.168.1.10
-```
+3. Check if network connection works:
+   ```
+   ping 192.168.1.10
+   ```
 
-Transfer the Debian installer via tftp into the NAS RAM:
-```
-tftpboot uImage_ix4_300d_bookworm
-```
+4. Transfer the Debian installer via TFTP into the NAS RAM:
+   ```
+   tftpboot uImage_ix4_300d_bookworm
+   ```
 
-Boot the Debian installer in RAM: 
-```
-bootm 0x2000000
-```
+5. Boot the Debian installer in RAM:
+   ```
+   bootm 0x2000000
+   ```
 
+## Boot th NAS from USB stick
 
-## Boot from USB stick
+_Skip it if you preapred the TFTP server._
 
-Skip it if you preapred the TFTP server.
+1. Insert the USB stick into the **rear top** USB port (mandatory).
 
-From `Marvell>>` prompt enter the following commands:
-```
-usb info
-usb part
-usb stop
-ext2load usb 0:1 0x0040000 uImage
-ext2load usb 0:1 0x2000000 uInitrd
-setenv bootargs $console $mtdparts root=/dev/sda2 rw rootdelay=10
-bootm 0x40000 0x2000000
-```
+2. From `Marvell>>` prompt enter the following commands:
+   ```
+   usb info
+   usb part
+   usb stop
+   ext2load usb 0:1 0x0040000 uImage
+   ext2load usb 0:1 0x2000000 uInitrd
+   setenv bootargs $console $mtdparts root=/dev/sda2 rw rootdelay=10
+   bootm 0x40000 0x2000000
+   ```
 
 The log of previous commands is available in the following:
 ```
