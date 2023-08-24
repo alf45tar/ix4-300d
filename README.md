@@ -34,16 +34,18 @@ The final file is also available [here](uImage_di_ix4_300d_bookworm) to download
 
 ## Connecting the USB-to-TTL adapter
 
-UART on connector CN9 (four pins, outer side of board).
+UART is on connector CN9 (four pins). Connection parameters are 115200/8N1.
 
-[](images/CN9_UART_Connector.png)
+![](images/CN9_UART_Connector.png)
 
-Pin 1 provides Vcc (marked). Vcc can be controlled by the adjacent JP1: bridging 1 and 2 provides 3V3, bridging 2 and 3 provides 5V - but beware that this does NOT change the I/O voltage.
-Pin 2 is TX. Connect to the RX pin of your USB-to-TTL adapter,
-Pin 3 is GND. Connect to GND of your USB-to-TTL adapter,
-Pin 4 is RX. Connect to the TX pin of your USB-to-TTL adapter,
+Pin|Function|Description
+---|--------|-----------
+1|VCC|VCC can be controlled by the adjacent JP1: bridging 1 and 2 provides 3V3, bridging 2 and 3 provides 5V - but beware that this does NOT change the TX/RX voltage which is 3V3 max. VCC is not connected to the USB-to-TTL adapter.
+2|TX|Connect to the RX pin of your USB-to-TTL adapter
+3|GND|Connect to GND of your USB-to-TTL adapter
+4|RX|Connect to the TX pin of your USB-to-TTL adapter
 
-Connection parameters are 115200/8N1.
+
 
 
 ## Links
