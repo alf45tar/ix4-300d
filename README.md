@@ -1,2 +1,48 @@
 # ix4-300d
 Installing Debian 12 on Lenovo Iomega ix4-300d NAS
+
+## Prerequisites
+
+- USB-to-TTL adapter (mandatory)
+- A TFTP server
+- A Linux box or a virtual machine with any Linux flavour (optional). I used an online Ubuntu VM on https://www.onworks.net.
+
+## Preparing the file
+
+Download `vmlinuz`, `initrd.gz` and `armada-xp-lenovo-ix4-300d.dtb` files from the Debian website: 
+
+https://deb.debian.org/debian/dists/bookworm/main/installer-armhf/current/images/netboot/vmlinuz
+https://deb.debian.org/debian/dists/bookworm/main/installer-armhf/current/images/netboot/initrd.gz
+https://deb.debian.org/debian/dists/bookworm/main/installer-armhf/current/images/device-tree/armada-xp-lenovo-ix4-300d.dtb
+
+Append dtb file to the kernel: 
+
+```cat vmlinuz armada-xp-lenovo-ix4-300d.dtb > vmlinuz_ix4_300d```
+
+Create an uImage with appended init ramdisk: 
+
+```mkimage -A arm -O linux -T multi -C none -a 0x04000000 -e 0x04000000  -n "Debian armhf installer" -d vmlinuz_ix4_300d:initrd.gz uImage_di_ix4_300d_bookworm```
+
+The final file is also available [here](uImage_di_ix4_300d_bookworm) to download.
+
+## Connecting the USB-to-TTL adapter
+
+UART on connector CN9 (four pins, outer side of board).
+
+[](images/CN9_UART_Connector.png)
+
+Pin 1 provides Vcc (marked). Vcc can be controlled by the adjacent JP1: bridging 1 and 2 provides 3V3, bridging 2 and 3 provides 5V - but beware that this does NOT change the I/O voltage.
+Pin 2 is TX. Connect to the RX pin of your USB-to-TTL adapter,
+Pin 3 is GND. Connect to GND of your USB-to-TTL adapter,
+Pin 4 is RX. Connect to the TX pin of your USB-to-TTL adapter,
+
+Connection parameters are 115200/8N1.
+
+
+## Links
+
+https://forum.doozan.com/read.php?2,131833
+
+https://github.com/benoitm974/ix4-300d/wiki
+
+https://github.com/5p0ng3b0b/ix4-300d
