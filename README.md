@@ -19,9 +19,12 @@ Append dtb file to the kernel:
 
 ```cat vmlinuz armada-xp-lenovo-ix4-300d.dtb > vmlinuz_ix4_300d```
 
-Create an uImage with appended init ramdisk: 
+Create an uImage with appended init ramdisk:
 
 ```mkimage -A arm -O linux -T multi -C none -a 0x04000000 -e 0x04000000  -n "Debian armhf installer" -d vmlinuz_ix4_300d:initrd.gz uImage_di_ix4_300d_bookworm```
+
+> [!NOTE]
+> The `mkimage` command is used to create images for use with the U-Boot boot loader. Thes images can contain the linux kernel, device tree blob, root file system image, firmware images etc., either separate or combined.
 
 The final file is also available [here](uImage_di_ix4_300d_bookworm) to download.
 
