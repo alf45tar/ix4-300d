@@ -132,6 +132,103 @@ Hit any key to stop autoboot:  0
 Marvell>> 
 ```
 
+## Boot from USB stick
+
+Skip it if you preapred the TFTP server.
+
+From Marvell>> prompt enter the following commands:
+```
+usb info
+usb part
+usb stop
+ext2load usb 0:1 0x0040000 uImage
+ext2load usb 0:1 0x2000000 uInitrd
+setenv bootargs $console $mtdparts root=/dev/sda2 rw rootdelay=10
+bootm 0x40000 0x2000000
+```
+
+The log of previous commands is available in the following:
+```
+Marvell>> usb info
+1: Hub,  USB Revision 2.0
+ - u-boot EHCI Host Controller 
+ - Class: Hub
+ - PacketSize: 64  Configurations: 1
+ - Vendor: 0x0000  Product 0x0000 Version 1.0
+   Configuration: 1
+   - Interfaces: 1 Self Powered 0mA
+     Interface: 0
+     - Alternate Setting 0, Endpoints: 1
+     - Class Hub
+     - Endpoint 1 In Interrupt MaxPacket 8 Interval 255ms
+2: Mass Storage,  USB Revision 2.10
+ - JMicron External Disk 3.0 000000778899
+ - Class: (from Interface) Mass Storage
+ - PacketSize: 64  Configurations: 1
+ - Vendor: 0x152d  Product 0x0576 Version 18.1
+   Configuration: 1
+   - Interfaces: 1 Bus Powered 500mA
+     Interface: 0
+     - Alternate Setting 0, Endpoints: 2
+     - Class Mass Storage, Transp. SCSI, Bulk only
+     - Endpoint 1 In Bulk MaxPacket 512
+     - Endpoint 2 Out Bulk MaxPacket 512
+     - Endpoint 1 Out Bulk MaxPacket 512
+     - Endpoint 2 In Bulk MaxPacket 512
+     - Endpoint 3 In Bulk MaxPacket 512
+     - Endpoint 4 Out Bulk MaxPacket 512
+Marvell>> usb part
+Partition Map for USB device 0  --   Partition Type: DOS
+Partition     Start Sector     Num Sectors     Type
+    1                 2048          997376      83
+    2               999424       623161344      83
+    3            624162814          978946       5 Extd
+    5            624162816          978944      82
+Marvell>> usb stop
+stopping USB..
+Marvell>> ext2load usb 0 0x0040000 uImage
+Loading file "uImage" from usb device 0:1 (usbda1)
+5421467 bytes read
+Marvell>> ext2load usb 0 0x2000000 uInitrd
+Loading file "uInitrd" from usb device 0:1 (usbda1)
+23417660 bytes read
+Marvell>> setenv bootargs $console $mtdparts root=/dev/sda2 rw rootdelay=10
+Marvell>> bootm 0x40000 0x2000000
+## Booting kernel from Legacy Image at 00040000 ...
+   Image Name:   kernel 6.1.0-11-armmp-lpae
+   Created:      2023-08-19  11:42:53 UTC
+   Image Type:   ARM Linux Kernel Image (uncompressed)
+   Data Size:    5421403 Bytes =  5.2 MB
+   Load Address: 00008000
+   Entry Point:  00008000
+   Verifying Checksum ... OK
+## Loading init Ramdisk from Legacy Image at 02000000 ...
+   Image Name:   ramdisk 6.1.0-11-armmp-lpae
+   Created:      2023-08-19  11:42:54 UTC
+   Image Type:   ARM Linux RAMDisk Image (uncompressed)
+   Data Size:    23417588 Bytes = 22.3 MB
+   Load Address: 00000000
+   Entry Point:  00000000
+   Verifying Checksum ... OK
+Loading Kernel Image ... OK
+OK
+Starting kernel ...
+
+.....
+
+Debian GNU/Linux 12 lenovo ttyS0
+lenovo login: root
+Password: 
+Linux lenovo 6.1.0-11-armmp-lpae #1 SMP Debian 6.1.38-4 (2023-08-08) armv7l
+The programs included with the Debian GNU/Linux system are free software;
+the exact distribution terms for each program are described in the
+individual files in /usr/share/doc/*/copyright.
+Debian GNU/Linux comes with ABSOLUTELY NO WARRANTY, to the extent
+permitted by applicable law.
+root@lenovo:~# 
+
+```
+
 ## Links
 
 https://forum.doozan.com/read.php?2,131833
