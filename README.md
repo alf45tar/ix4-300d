@@ -21,10 +21,14 @@ Append dtb file to the kernel:
 
 Create an uImage with appended init ramdisk:
 
-```mkimage -A arm -O linux -T multi -C none -a 0x04000000 -e 0x04000000  -n "Debian armhf installer" -d vmlinuz_ix4_300d:initrd.gz uImage_di_ix4_300d_bookworm```
+```mkimage -A arm -O linux -T multi -C none -a 0x04000000 -e 0x04000000  -n "Debian armhf installer" -d vmlinuz_ix4_300d:initrd.gz uImage_ix4_300d_bookworm```
 
 > [!NOTE]
 > The `mkimage` command is used to create images for use with the U-Boot boot loader. Thes images can contain the linux kernel, device tree blob, root file system image, firmware images etc., either separate or combined.
+> 
+> mkimage supports many image formats. Some of these formats may be used by embedded boot firmware to load U-Boot. Others may be used by U-Boot to load Linux (or some other kernel):
+>
+>The legacy image format concatenates the individual parts (for example, kernel image, device tree blob and ramdisk image) and adds a 64 byte header containing information about the target architecture, operating system, image type, compression method, entry points, time stamp, checksums, etc.
 
 The final file is also available [here](uImage_di_ix4_300d_bookworm) to download.
 
