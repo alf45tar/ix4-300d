@@ -105,7 +105,9 @@ Uncompressing Linux... done, booting the kernel.
 
 Welcome to CenterPoint.
 ix4-300d login: root
-Password: 
+Password:
+root@ix4-300d:/# cat /etc/debian_version 
+7.11
 root@ix4-300d:/# cat /proc/version 
 Linux version 3.2.40 (soho@bsoho083.iomegacorp.com) (gcc version 4.7.2 (crosstool-NG 1.20.0) ) #1 SMP Thu Jan 2 06:18:39 EST 2020 v2.1.1.1
 root@ix4-300d:/# cat /proc/mtd        
