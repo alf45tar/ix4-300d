@@ -332,9 +332,7 @@ _Skip it if you prepared the TFTP server._
    usb info
    usb part
    usb stop
-   ext2load usb 0:1 0x0040000 uImage
-   ext2load usb 0:1 0x2000000 uInitrd
-   setenv bootargs $console $mtdparts root=/dev/sda2 rw rootdelay=10
+   ext2load usb 0:1 0x0040000 uImage_ix4_300d_bookworm; ext2load usb 0:1 0x2000000 uInitrd_ix4_300d_bookworm; setenv bootargs $console $mtdparts root=/dev/sda2 rw rootdelay=10
    bootm 0x40000 0x2000000
    ```
 
@@ -348,32 +346,104 @@ USB EHCI 1.00
 scanning bus for devices... 2 USB Device(s) found
 Waiting for storage device(s) to settle before scanning...
        scanning bus for storage devices... 1 Storage Device(s) found
+Marvell>> usb tree
+
+Device Tree:
+  1  Hub (480 Mb/s, 0mA)
+  |  u-boot EHCI Host Controller 
+  |
+  +-2  Mass Storage (480 Mb/s, 200mA)
+         13111409002422
+     
+Marvell>> usb info
+1: Hub,  USB Revision 2.0
+ - u-boot EHCI Host Controller 
+ - Class: Hub
+ - PacketSize: 64  Configurations: 1
+ - Vendor: 0x0000  Product 0x0000 Version 1.0
+   Configuration: 1
+   - Interfaces: 1 Self Powered 0mA
+     Interface: 0
+     - Alternate Setting 0, Endpoints: 1
+     - Class Hub
+     - Endpoint 1 In Interrupt MaxPacket 8 Interval 255ms
+
+2: Mass Storage,  USB Revision 2.0
+ -   13111409002422
+ - Class: (from Interface) Mass Storage
+ - PacketSize: 64  Configurations: 1
+ - Vendor: 0x0718  Product 0x07f0 Version 1.18
+   Configuration: 1
+   - Interfaces: 1 Bus Powered 200mA
+     Interface: 0
+     - Alternate Setting 0, Endpoints: 2
+     - Class Mass Storage, Transp. SCSI, Bulk only
+     - Endpoint 1 Out Bulk MaxPacket 512
+     - Endpoint 2 In Bulk MaxPacket 512
+
 Marvell>> usb part
 
 Partition Map for USB device 0  --   Partition Type: DOS
 
 Partition     Start Sector     Num Sectors     Type
     1                 2048         2097152      83
+
 Marvell>> usb stop
 stopping USB..
-Marvell>> ext2load usb 0 0x0040000 uImage
-Loading file "uImage" from usb device 0:1 (usbda1)
-5351843 bytes read
-Marvell>> ext2load usb 0:1 0x2000000 uInitrd
-Loading file "uInitrd" from usb device 0:1 (usbda1)
-26337316 bytes read
-.....
+Marvell>> ext2load usb 0:1 0x0040000 uImage_ix4_300d_bookworm
+Loading file "uImage_ix4_300d_bookworm" from usb device 0:1 (usbda1)
+5351835 bytes read
+Marvell>> ext2load usb 0:1 0x2000000 uInitrd_ix4_300d_bookworm
+Loading file "uInitrd_ix4_300d_bookworm" from usb device 0:1 (usbda1)
+26337308 bytes read
+Marvell>> setenv bootargs $console $mtdparts root=/dev/sda2 rw rootdelay=10
+Marvell>> bootm 0x40000 0x2000000
+## Booting kernel from Legacy Image at 00040000 ...
+   Image Name:   Debian armhf installer
+   Created:      2023-08-24  21:17:04 UTC
+   Image Type:   ARM Linux Kernel Image (uncompressed)
+   Data Size:    5351771 Bytes =  5.1 MB
+   Load Address: 04000000
+   Entry Point:  04000000
+   Verifying Checksum ... OK
+## Loading init Ramdisk from Legacy Image at 02000000 ...
+   Image Name:   Debian armhf installer
+   Created:      2023-08-24  21:14:13 UTC
+   Image Type:   ARM Linux RAMDisk Image (uncompressed)
+   Data Size:    26337244 Bytes = 25.1 MB
+   Load Address: 02000000
+   Entry Point:  02000000
+   Verifying Checksum ... OK
+   Loading Kernel Image ... OK
+OK
 
-Debian GNU/Linux 12 lenovo ttyS0
-lenovo login: root
-Password: 
-Linux lenovo 6.1.0-11-armmp-lpae #1 SMP Debian 6.1.38-4 (2023-08-08) armv7l
-The programs included with the Debian GNU/Linux system are free software;
-the exact distribution terms for each program are described in the
-individual files in /usr/share/doc/*/copyright.
-Debian GNU/Linux comes with ABSOLUTELY NO WARRANTY, to the extent
-permitted by applicable law.
-root@lenovo:~# 
+Starting kernel ...
+```
+```
+[            (1*installer)  2 shell  3 shell  4- log           ][ Aug 24 21:36 ]
+                                                                                
+                                                                                
+                                                                                
+  ┌───────────────────────┤ [!!] Select a language ├────────────────────────┐   
+  │                                                                         │   
+  │ Choose the language to be used for the installation process. The        │   
+  │ selected language will also be the default language for the installed   │   
+  │ system.                                                                 │   
+  │                                                                         │   
+  │ Language:                                                               │   
+  │                                                                         │   
+  │                               C                                         │   
+  │                               English                                   │   
+  │                                                                         │   
+  │     <Go Back>                                                           │   
+  │                                                                         │   
+  └─────────────────────────────────────────────────────────────────────────┘   
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+<Tab> moves; <Space> selects; <Enter> activates buttons                         
 ```
 
 ## Debian installation
