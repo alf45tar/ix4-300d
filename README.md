@@ -258,8 +258,64 @@ individual files in /usr/share/doc/*/copyright.
 Debian GNU/Linux comes with ABSOLUTELY NO WARRANTY, to the extent
 permitted by applicable law.
 root@lenovo:~# 
+```
+
+## Proceed with Debian installation
+
+The Debian installer should start in the serial console window. Go through the process as shown on screen. 
+Skipping grub and bootloader results in the following warning: 
+
+You will need to boot manually with the /vmlinuz kernel on partition /dev/sda1 and root=/dev/sda2 passed as a kernel argument. 
+
+Do not complete the final 'cleanup and reboot' stage of the install but choose to execute a shell instead. 
 
 ```
+mount --bind /dev /target/dev
+mount -t proc none /target/proc
+mount -t sysfs none /target/sys
+chroot /target /bin/sh
+apt-get update
+apt-get install flash-kernel
+```
+
+Configure flash-kernel database as follows: 
+
+```
+nano /etc/flash-kernel/db
+```
+
+```
+Machine: Lenovo Iomega ix4-300d
+Kernel-Flavors: armmp armmp-lpae
+DTB-Id: armada-xp-lenovo-ix4-300d.dtb
+DTB-Append: yes
+U-Boot-Kernel-Address: 0x00008000
+U-Boot-Initrd-Address: 0x0
+Boot-Kernel-Path: /boot/uImage
+Boot-Initrd-Path: /boot/uInitrd
+Boot-DTB-Path: /boot/dtb
+Required-Packages: u-boot-tools
+Bootloader-Sets-Incorrect-Root: no
+```
+
+Generate / update initramfs and kernel: 
+```
+update-initramfs -u
+```
+
+Set label on the rootfs partition: 
+```
+e2label /dev/sda2 rootfs
+```
+
+Exit chroot and reboot: 
+```
+exit
+reboot
+```
+
+Press any key to stop the booting process again.
+
 
 ## Links
 
