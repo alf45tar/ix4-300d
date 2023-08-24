@@ -296,7 +296,7 @@ Marvell>>
 
 _Skip it if you prepared the USB stick._
 
-Assuming `192.168.1.10` is the macOS IP address (TFTP server) and `192.168.1.111` ia an available IP address in your network, from `Marvell>>` prompt enter the following commands.
+Assuming `192.168.1.10` is the macOS IP address (TFTP server) and `192.168.1.111` ia an available IP address in your network not assigned by DHCP, from `Marvell>>` prompt enter the following commands:
 
 1. Set the IP address of the NAS: 
    ```
@@ -315,7 +315,7 @@ Assuming `192.168.1.10` is the macOS IP address (TFTP server) and `192.168.1.111
 
 4. Transfer the Debian installer via TFTP into the NAS RAM:
    ```
-   tftpboot uImage_ix4_300d_bookworm
+   tftpboot uImage_di_ix4_300d_bookworm
    ```
 
 5. Boot the Debian installer in RAM:
@@ -327,7 +327,7 @@ Assuming `192.168.1.10` is the macOS IP address (TFTP server) and `192.168.1.111
 
 _Skip it if you prepared the TFTP server._
 
-1. Insert the USB stick into the **rear top** USB port (mandatory). Marvell U-Boot can only boot from the rear top USB port.
+1. Insert the USB stick into the **rear top** USB port. Marvell U-Boot can only boot from the rear top USB port.
 
 2. From `Marvell>>` prompt enter the following commands:
    ```
