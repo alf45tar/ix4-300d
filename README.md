@@ -1,5 +1,4 @@
-# ix4-300d
-Installing Debian 12 on Lenovo Iomega ix4-300d NAS
+Installing Debian 12 (bookworm) on Lenovo Iomega ix4-300d NAS.
 
 ## Prerequisites
 
@@ -22,7 +21,9 @@ On a Linux box append dtb file to the kernel:
 
 Create an uImage with appended init ramdisk:
 
-```mkimage -A arm -O linux -T multi -C none -a 0x04000000 -e 0x04000000  -n "Debian armhf installer" -d vmlinuz_ix4_300d:initrd.gz uImage_ix4_300d_bookworm```
+```
+mkimage -A arm -O linux -T multi -C none -a 0x04000000 -e 0x04000000  -n "Debian armhf installer" -d vmlinuz_ix4_300d:initrd.gz uImage_ix4_300d_bookworm
+```
 
 > [!NOTE]
 > The `mkimage` command is used to create images for use with the U-Boot boot loader. Thes images can contain the linux kernel, device tree blob, root file system image, firmware images etc., either separate or combined.
@@ -36,6 +37,11 @@ For lazy people the final file is also available [here](uImage_ix4_300d_bookworm
 ## Preparing the TFTP server
 
 Skip it if you want to proceed with an USB stick.
+
+1. Copy the `uImage_ix4_300d_bookworm` file prepared or dowloaded into `/private/tftpboot` folder of macOS.
+   > [!NOTE]
+   > By default tftpd uses the following folder `/private/tftpboot` which is hidden in Finder, but can be accessed by using “Go to folder” or hitting Command+Shift+G and entering `/private/tftpboot`
+3. Open a Terminal an execute the following command
 
 ## Preparing the USB stick
 
