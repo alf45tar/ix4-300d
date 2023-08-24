@@ -17,7 +17,9 @@ https://deb.debian.org/debian/dists/bookworm/main/installer-armhf/current/images
 
 On a Linux box append dtb file to the kernel: 
 
-```cat vmlinuz armada-xp-lenovo-ix4-300d.dtb > vmlinuz_ix4_300d```
+```
+cat vmlinuz armada-xp-lenovo-ix4-300d.dtb > vmlinuz_ix4_300d
+```
 
 Create an uImage with appended init ramdisk:
 
@@ -38,11 +40,17 @@ For lazy people the final file is also available [here](uImage_ix4_300d_bookworm
 
 Skip it if you want to proceed with an USB stick.
 
-1. Copy the `uImage_ix4_300d_bookworm` file prepared or dowloaded into `/private/tftpboot` folder of macOS.
+1. Copy the `uImage_ix4_300d_bookworm` file prepared into `/private/tftpboot` folder of macOS.
    > [!NOTE]
-   > By default tftpd uses the following folder `/private/tftpboot` which is hidden in Finder, but can be accessed by using “Go to folder” or hitting Command+Shift+G and entering `/private/tftpboot`
+   > By default the built in macOS TFTP server uses the folder `/private/tftpboot` which is hidden in Finder, but can be accessed by using “Go to Folder” or hitting Command+Shift+G and entering `/private/tftpboot`
 3. Open a Terminal an execute the following command
-
+   ```
+   sudo launchctl load -F /System/Library/LaunchDaemons/tftp.plist
+   ```
+   ```
+   sudo launchctl start com.apple.tftpd
+   ```
+   
 ## Preparing the USB stick
 
 Skip it if you prepared a TFTP server.
