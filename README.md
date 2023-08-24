@@ -177,7 +177,9 @@ On a Linux box:
 
 3. Create an uImage with appended init ramdisk:
    ```
-   mkimage -A arm -O linux -T multi -C none -a 0x04000000 -e 0x04000000  -n "Debian armhf installer" -d vmlinuz_ix4_300d:initrd.gz uImage_ix4_300d_bookworm
+   mkimage -A arm -O linux -T multi -C none -a 0x04000000 -e 0x04000000  -n "Debian armhf installer" -d vmlinuz_ix4_300d:initrd.gz uImage_di_ix4_300d_bookworm
+   mkimage -A arm -O linux -T kernel -C none -a 0x04000000 -e 0x04000000  -n "Debian armhf installer" -d vmlinuz_ix4_300d uImage_ix4_300d_bookworm
+   mkimage -A arm -O linux -T ramdisk -C none -a 0x2000000 -e 0x2000000  -n "Debian armhf installer" -d initrd.gz uInitrd_ix4_300d_bookworm
    ```
    > [!NOTE]
    > The `mkimage` command is used to create images for use with the U-Boot boot loader. Thes images can contain the linux kernel, device tree blob, root file system image, firmware images etc., either separate or combined.
@@ -207,7 +209,8 @@ _Skip it if you want to proceed with an USB stick._
 
 _Skip it if you prepared a TFTP server._
 
-Prepare an USB stick as indicated in [Creating a Bootable Debian USB Flashdrive](https://wiki.debian.org/DebianInstall#Creating_a_Bootable_Debian_USB_Flashdrive)
+1. Create an ext2 partition
+2. Copy 
 
 ## Connecting the USB-to-TTL adapter
 
