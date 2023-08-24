@@ -319,9 +319,11 @@ Assuming `192.168.1.10` is the macOS IP address (TFTP server) and `192.168.1.111
 
 _Skip it if you preapred the TFTP server._
 
-1. Insert the USB stick into the **rear top** USB port (mandatory).
+1. Prepare an USB stick as indicated in [Creating a Bootable Debian USB Flashdrive](https://wiki.debian.org/DebianInstall#Creating_a_Bootable_Debian_USB_Flashdrive)
+   
+2. Insert the USB stick into the **rear top** USB port (mandatory).
 
-2. From `Marvell>>` prompt enter the following commands:
+3. From `Marvell>>` prompt enter the following commands:
    ```
    usb info
    usb part
