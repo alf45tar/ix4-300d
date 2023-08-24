@@ -136,7 +136,7 @@ Marvell>>
 
 Skip it if you prepared the USB stick.
 
-From `Marvell>>` prompt enter the following commands:
+From `Marvell>>` prompt enter the following commands assuming `192.168.1.10` is the macOS IP address and `192.168.1.111` ia an available IP in your network. 
 
 Set the ip address of the NAS: 
 ```
