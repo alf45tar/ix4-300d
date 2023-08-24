@@ -1,4 +1,25 @@
-Installing Debian 12 (bookworm) on Lenovo Iomega ix4-300d NAS.
+# Installing Debian 12 (bookworm) on Lenovo Iomega ix4-300d NAS.
+
+Lenovo Iomega ix4-300s is NAS equipped with:
+- Marvell Armada XP 1.3GHz Dual Core
+- 512MB DDR3 Memory
+- 4 x 3.5” SATA-II Hard Disk Drives
+- 2 x RJ45 10/100/1000Mbps (Gbe) Ethernet ports
+- 1 x USB 3.0 port
+- 2 x USB 2.0 ports
+
+The latest **firmware** update Version 4.1.414.34909 can be found here:
+
+http://download.lenovo.com/nas/lifeline/h4c-4.1.414.34909.tgz
+
+The latest **imager** with that version can be found here:
+
+https://download.lenovo.com/nasupdate/asgimage/h4c-4.1.414.34909.zip
+
+The original firmware is based on Debian 7 (wheezy) and it is stored into a flash memory. NAS can boot without any disk if the flash is ok. If the flash is corrupted the above imager must be used.
+
+The bootloader is Marvell U-Boot. My NAS has the following signature `U-Boot 2009.08 (Mar 04 2013 - 11:13:04) Marvell version:  2.3.2 PQ`.
+
 
 ## Prerequisites
 
