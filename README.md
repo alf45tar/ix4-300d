@@ -1,4 +1,4 @@
-# Installing Debian 12 (bookworm) on Lenovo Iomega ix4-300d NAS.
+# Installing Debian 12 (bookworm) on Lenovo Iomega ix4-300d
 
 Lenovo Iomega ix4-300s is a NAS released in late 2012 equipped with:
 - Marvell Armada XP 1.3GHz Dual Core (MV78230 ARMv7 SoC)
