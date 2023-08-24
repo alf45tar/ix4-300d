@@ -64,7 +64,7 @@ For lazy people the final file is also available [here](uImage_ix4_300d_bookworm
 
 _Skip it if you want to proceed with an USB stick._
 
-1. Copy the `uImage_ix4_300d_bookworm` file prepared into `/private/tftpboot` folder of macOS.
+1. Copy the `uImage_ix4_300d_bookworm` file prepared above into `/private/tftpboot` folder of macOS.
    > [!NOTE]
    > By default the built in macOS TFTP server uses the folder `/private/tftpboot` which is hidden in Finder, but can be accessed by using “Go to Folder” or hitting Command+Shift+G and entering `/private/tftpboot`
 3. Open a Terminal an execute the following command
