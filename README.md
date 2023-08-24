@@ -104,8 +104,9 @@ Uncompressing Linux... done, booting the kernel.
 
 
 Welcome to CenterPoint.
-ix4-300d login: root
-Password:
+ix4-300d login:
+```
+```
 root@ix4-300d:/# cat /etc/debian_version 
 7.11
 ```
