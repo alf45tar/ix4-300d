@@ -161,7 +161,7 @@ The End Of Service Life (EOSL) was March 31, 2020.
 - A Linux box or a virtual machine with any Linux flavour (optional) to prepare the Debian installed image. I used an online Ubuntu VM on https://www.onworks.net.
 - Wired connection from NAS Ethernet port 1 (the top one) with DHCP and internet access to continue the Debian installation after boot.
 
-## Preparing the file
+## Preparing the files
 
 On a Linux box:
 
@@ -192,7 +192,10 @@ On a Linux box:
    >
    >The legacy image format concatenates the individual parts (for example, kernel image, device tree blob and ramdisk image) and adds a 64 byte header containing information about the target architecture, operating system, image type, compression method, entry points, time stamp, checksums, etc.
 
-For lazy people the final files are also available here [](uImage_di_ix4_300d_bookworm) ready to download.
+For smart people the final files are also available here ready to download:
+TFTP boot|USB boot
+---------|--------
+[uImage_di_ix4_300d_bookworm](uImage_di_ix4_300d_bookworm)|[uImage_ix4_300d_bookworm](uImage_ix4_300d_bookworm)<br>[uInitrd_ix4_300d_bookwom](uInitrd_ix4_300d_bookwom)
 
 ## Preparing the TFTP server
 
@@ -213,8 +216,11 @@ _Skip it if you want to proceed with an USB stick._
 
 _Skip it if you prepared a TFTP server._
 
-1. Create an USB stick with an ext2 partition as first. Marvell U-Boot can only boot from the first partition.
+1. Create an USB stick with an ext2 partition as first partition. Marvell U-Boot can only boot from the first partition.
 2. Copy `uImage_ix4_300d_bookworm` and `uinitrd_ix4_300d_bookworm` into it.
+> [!NOTE]
+> We do not need an bootable USB stick.
+
 
 ## Connecting the USB-to-TTL adapter
 
@@ -224,14 +230,16 @@ UART is on connector CN9 (four pins). Connection parameters are 115200/8N1.
 
 Pin|Function|Description
 ---|--------|-----------
-1|VCC|VCC can be controlled by the adjacent JP1: bridging 1 and 2 provides 3V3, bridging 2 and 3 provides 5V - but beware that this does NOT change the TX/RX voltage which is 3V3 max. VCC is not connected to the USB-to-TTL adapter.
+1|VCC|VCC can be controlled by the adjacent JP1: bridging 1 and 2 provides 3V3, bridging 2 and 3 provides 5V - but beware that this does NOT change the TX/RX voltage which is 3V3 max. VCC is not used.
 2|TX|Connect to the RX pin of your USB-to-TTL adapter
 3|GND|Connect to GND of your USB-to-TTL adapter
 4|RX|Connect to the TX pin of your USB-to-TTL adapter
 
-1. Connect the USB-to-TTL adapter via USB to a PC. The following procedure is for macOS but once the necessary changes have been made can be completed with Windows too.
+1. Connect the USB-to-TTL adapter via USB to your PC.
 2. On macOS Open a Terminal and execute
-   ```screen /dev/cu.SLAB_USBtoUART 115200```
+   ```
+   screen /dev/cu.SLAB_USBtoUART 115200
+   ```
 3. Power on the Lenovo Iomega ix4-300d
 4. Press any key to stop the booting process and receive the Marvell U-Boot prompt
 
@@ -458,12 +466,13 @@ The Debian installer should start in the serial console window with the followin
 <Tab> moves; <Space> selects; <Enter> activates buttons                         
 ```
 
-Go through the process as shown on screen. 
-Skipping grub and bootloader results in the following warning: 
+Go through the process as shown on screen. You will receive an error related to `grub` installation at the end. Don't worry and skip bootloader installation. You will receive the following warning: 
 
-You will need to boot manually with the /vmlinuz kernel on partition /dev/sda1 and root=/dev/sda2 passed as a kernel argument. 
+```
+You will need to boot manually with the /vmlinuz kernel on partition /dev/sda1 and root=/dev/sda2 passed as a kernel argument.
+```
 
-Do not complete the final 'cleanup and reboot' stage of the install but choose to `Execute a shell` instead to run the followinf commands: 
+Do not complete the final stage of the install but choose to `Execute a shell` instead. Run the following commands: 
 
 ```
 mount --bind /dev /target/dev
