@@ -162,7 +162,7 @@ The End Of Service Life (EOSL) was March 31, 2020.
 - USB-to-TTL adapter (mandatory) to connect to the bootloader
 - A TFTP server (faster) or and USB stick (slower) to download the Debian installer
 - A PC with macOS or Windows. The following procedure is for macOS because we do not need any additional software to install for complete the task. The procedure for Windows is not documented here.
-- A Linux box or a virtual machine with any Linux flavour (optional) to prepare the Debian installed image. I used an online Ubuntu VM on https://www.onworks.net.
+- A Linux box or a virtual machine with any Linux flavour (optional) to prepare the Debian booting image. I used an online Ubuntu VM on https://www.onworks.net.
 - Wired connection from NAS Ethernet port 1 (the top one) with DHCP and internet access to continue the Debian installation after boot.
 
 ## Preparing the files
@@ -196,7 +196,7 @@ On a Linux box:
 >
 >The legacy image format concatenates the individual parts (for example, kernel image, device tree blob and ramdisk image) and adds a 64 byte header containing information about the target architecture, operating system, image type, compression method, entry points, time stamp, checksums, etc.
 
-For smart people the final files are also available here ready to download:
+For smart people the files are available here ready to download.
 TFTP boot|USB boot
 ---------|--------
 [uImage_di_ix4_300d_bookworm](uImage_di_ix4_300d_bookworm)|[uImage_ix4_300d_bookworm](uImage_ix4_300d_bookworm)<br>[uInitrd_ix4_300d_bookwom](uInitrd_ix4_300d_bookwom)
@@ -530,18 +530,19 @@ Press any key to stop the booting process again.
 
 ## Improve the experience
 
-Once the Debian installation is completed I suggest to install some packages to improve the experience.
+Once the Debian installation is completed I suggest to install some packages to improve the user experience.
 
-First of all we need the `resize` command to set environment and terminal settings to current xterm window size
+First of all we need the `resize` command to set environment and terminal settings to current xterm window size. Use `resize` every time you resize the terminal window.
 
-`apt install xterm`
-
-Use `resize` every time you resize the current window.
+Avahi is a system which facilitates service discovery on a local network via the mDNS/DNS-SD protocol suite (a.k.a. Bonjour or Zeroconf).
+```
+apt install xterm
+apt install avahi-daemon
+```
 
 ## Connect temperature sensors and fan control
 
 Install the following packages (and dependencies too of course):
-
 ```
 apt install smartmontools
 apt install lm-sensors
@@ -549,7 +550,6 @@ apt install fancontrol
 ```
 
 Edit the `/etc/modules` as follow to load the correct kernel modules:
-
 ```
 #
 # This file contains the names of kernel modules that should be loaded
@@ -916,10 +916,12 @@ systemctl restart fancontrol.service
 
 During Debian installation you selected your primary network interface and the proper configuration file has been created.
 
-If you want to use the the second ethernet ports like a LAN port of your switch/router you need a bridge.
+If you want to use the second ethernet ports like a LAN port of your switch/router you need a bridge.
 
 The create a bridge between `eth0` and `eth1`:
+
 1. Install the `bridge-utils` package
+
    ```
    apt install bridge-utils
    ```
@@ -955,10 +957,12 @@ systemctl restart networking.service
 For best performance you could create a bonding between `eth0` and `eth1`. You can connect all of them to your switch/router and increase the speed up to 2 Gbit/s and add redundancy.
 
 1. Install the `ifenslave` package
+
    ```
    apt install ifenslave
    ```
 2. Replace your `/etc/network/interfaces` file with the following one and change `address`, `netmask`, `network` and `gateway` according your needs
+
    ```
    # This file describes the network interfaces available on your system
    # and how to activate them. For more information, see interfaces(5).
@@ -987,9 +991,22 @@ Restart the service on changes
 systemctl restart networking.service
 ```
 
-## Installing a WiFi 
+## Installing a WiFi
 
 
+## Installing Webmin
+
+Last but not least we can install [Webmin](https://webmin.com).
+```
+wget https://raw.githubusercontent.com/webmin/webmin/master/setup-repos.sh
+chmod 755 setup-repos.sh
+./setup-repos.sh
+rm setup-repos.sh
+apt-get install webmin --install-recommends
+```
+Open your browser and connect to `http://192.168.1.14:10000` or `http://lenovo.local:10000`. URL can be different in your installation.
+
+![](images/webmin.png)
 
 ## Useful links
 
