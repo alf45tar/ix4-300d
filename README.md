@@ -7,6 +7,8 @@ Lenovo Iomega ix4-300s is a NAS released in late 2012 equipped with:
 - 2 x 1 GbE Ethernet ports
 - 1 x USB 3.0 port
 - 2 x USB 2.0 ports
+- LCD display (128x64 pixels)
+- 2 multipurpose buttons
 
 The latest **firmware** update Version 4.1.414.34909 can be found here:
 
@@ -185,12 +187,12 @@ On a Linux box:
    mkimage -A arm -O linux -T kernel  -C none -a 0x04000000 -e 0x04000000  -n "Debian armhf installer" -d vmlinuz_ix4_300d uImage_ix4_300d_bookworm
    mkimage -A arm -O linux -T ramdisk -C none -a 0x2000000  -e 0x2000000   -n "Debian armhf installer" -d initrd.gz        uInitrd_ix4_300d_bookworm
    ```
-   > [!NOTE]
-   > The `mkimage` command is used to create images for use with the U-Boot boot loader. Thes images can contain the linux kernel, device tree blob, root file system image, firmware images etc., either separate or combined.
-   > 
-   > mkimage supports many image formats. Some of these formats may be used by embedded boot firmware to load U-Boot. Others may be used by U-Boot to load Linux (or some other kernel):
-   >
-   >The legacy image format concatenates the individual parts (for example, kernel image, device tree blob and ramdisk image) and adds a 64 byte header containing information about the target architecture, operating system, image type, compression method, entry points, time stamp, checksums, etc.
+> [!NOTE]
+> The `mkimage` command is used to create images for use with the U-Boot boot loader. Thes images can contain the linux kernel, device tree blob, root file system image, firmware images etc., either separate or combined.
+> 
+> mkimage supports many image formats. Some of these formats may be used by embedded boot firmware to load U-Boot. Others may be used by U-Boot to load Linux (or some other kernel):
+>
+>The legacy image format concatenates the individual parts (for example, kernel image, device tree blob and ramdisk image) and adds a 64 byte header containing information about the target architecture, operating system, image type, compression method, entry points, time stamp, checksums, etc.
 
 For smart people the final files are also available here ready to download:
 TFTP boot|USB boot
@@ -204,7 +206,7 @@ _Skip it if you want to proceed with an USB stick._
 1. Copy the `uImage_di_ix4_300d_bookworm` file prepared above into `/private/tftpboot` folder of macOS.
    > [!NOTE]
    > By default the built in macOS TFTP server uses the folder `/private/tftpboot` which is hidden in Finder, but can be accessed by using “Go to Folder” or hitting Command+Shift+G and entering `/private/tftpboot`
-3. Open a Terminal an execute the following command
+3. Open a Terminal an execute the following commands:
    ```
    sudo launchctl load -F /System/Library/LaunchDaemons/tftp.plist
    ```
@@ -304,7 +306,9 @@ Marvell>>
 
 _Skip it if you prepared the USB stick._
 
-Assuming `192.168.1.10` is the macOS IP address (TFTP server) and `192.168.1.111` ia an available IP address in your network not assigned by DHCP, from `Marvell>>` prompt enter the following commands:
+Connect the NAS Ethernet port 1 to your network. In the following we will assume `192.168.1.10` is the macOS IP address (TFTP server) and `192.168.1.111` ia an available IP address in your network not assigned by DHCP. If not, as should be, replace them with your values.
+
+From `Marvell>>` prompt enter the following commands:
 
 1. Set the IP address of the NAS: 
    ```
@@ -520,6 +524,361 @@ reboot
 ```
 
 Press any key to stop the booting process again.
+
+
+## Improve the experience
+
+Once the Debian installation is completed I suggest to install some packages to improve the experience.
+
+First of all we need the `resize` command to set environment and terminal settings to current xterm window size
+
+`apt install xterm`
+
+Use `resize` every time you resize the current window.
+
+## Connect temperature sensors and fan control
+
+Install the following packages (and dependencies too of course):
+
+```
+apt install smartmontools
+apt install lm-sensors
+apt install fancontrol
+```
+
+Edit the `/etc/modules` as follow to load the correct kernel modules:
+
+```
+#
+# This file contains the names of kernel modules that should be loaded
+# at boot time, one per line. Lines beginning with "#" are ignored.
+# Parameters can be specified after the module name.
+
+# Adapter drivers
+i2c_mv64xxx
+
+# Chip drivers
+adt7475
+ 
+# Hard disk temperature
+drivetemp
+```
+
+> [!NOTE]
+> The order of listed modules is very important because it determines the numbering of sensors in /sys/ filesystem.
+
+As alternative use `sensors-detect` to do yourself but remember that `drivetemp` must be added manually.
+```
+root@lenovo:~# sensors-detect 
+# sensors-detect version 3.6.0
+# Kernel: 6.1.0-11-armmp-lpae armv7l
+# Processor: ARMv7 Processor rev 2 (v7l)
+
+This program will help you determine which kernel modules you need
+to load to use lm_sensors most effectively. It is generally safe
+and recommended to accept the default answers to all questions,
+unless you know what you're doing.
+
+Some south bridges, CPUs or memory controllers contain embedded sensors.
+Do you want to scan for them? This is totally safe. (YES/no): 
+modprobe: FATAL: Module cpuid not found in directory /lib/modules/6.1.0-11-armmp-lpae
+Failed to load module cpuid.
+Silicon Integrated Systems SIS5595...                       No
+VIA VT82C686 Integrated Sensors...                          No
+VIA VT8231 Integrated Sensors...                            No
+AMD K8 thermal sensors...                                   No
+AMD Family 10h thermal sensors...                           No
+AMD Family 11h thermal sensors...                           No
+AMD Family 12h and 14h thermal sensors...                   No
+AMD Family 15h thermal sensors...                           No
+AMD Family 16h thermal sensors...                           No
+AMD Family 17h thermal sensors...                           No
+AMD Family 15h power sensors...                             No
+AMD Family 16h power sensors...                             No
+Hygon Family 18h thermal sensors...                         No
+Intel digital thermal sensor...                             No
+Intel AMB FB-DIMM thermal sensor...                         No
+Intel 5500/5520/X58 thermal sensor...                       No
+VIA C7 thermal sensor...                                    No
+VIA Nano thermal sensor...                                  No
+
+Lastly, we can probe the I2C/SMBus adapters for connected hardware
+monitoring devices. This is the most risky part, and while it works
+reasonably well on most systems, it has been reported to cause trouble
+on some systems.
+Do you want to probe the I2C/SMBus adapters now? (YES/no): 
+Sorry, no supported PCI bus adapters found.
+[10847.429051] i2c_dev: i2c /dev entries driver
+Module i2c-dev loaded successfully.
+
+Next adapter: mv64xxx_i2c adapter (i2c-0)
+Do you want to scan it? (YES/no/selectively): 
+Client found at address 0x2e
+Handled by driver `adt7475' (already loaded), chip type `adt7473'
+Client found at address 0x50
+Handled by driver `at24' (already loaded), chip type `24c64'
+    (note: this is probably NOT a sensor chip!)
+Client found at address 0x51
+Handled by driver `rtc-pcf8563' (built-in), chip type `pcf8563'
+    (note: this is probably NOT a sensor chip!)
+
+
+Now follows a summary of the probes I have just done.
+Just press ENTER to continue: 
+
+Driver `adt7475':
+  * Bus `mv64xxx_i2c adapter'
+    Busdriver `i2c_mv64xxx', I2C address 0x2e
+    Chip `adt7473' (confidence: 6)
+
+To load everything that is needed, add this to /etc/modules:
+#----cut here----
+# Adapter drivers
+i2c_mv64xxx
+# Chip drivers
+adt7475
+#----cut here----
+If you have some drivers built into your kernel, the list above will
+contain too many modules. Skip the appropriate ones!
+
+Do you want to add these lines automatically to /etc/modules? (yes/NO)
+
+Unloading i2c-dev... OK
+```
+
+Restart the service on changes
+
+```
+systemctl restart lm-sensors.service
+```
+
+Edit the `/etc/fancontrol` as follow to control the fan speed using the temperature of hard disk in the second bay:
+
+```
+# Configuration file generated by pwmconfig, changes will be lost
+INTERVAL=10
+DEVPATH=hwmon1=devices/platform/soc/soc:internal-regs/d0011000.i2c/i2c-0/0-002e hwmon3=devices/platform/soc/soc:pcie@82000000/pci0000:00/0000:00:01.0/0000:01:00.0/ata2/host1/target1:0:0/1:0:0:0
+DEVNAME=hwmon1=adt7473 hwmon3=drivetemp
+FCTEMPS= hwmon1/pwm1=hwmon3/temp1_input
+FCFANS= hwmon1/pwm1=hwmon1/fan1_input
+MINTEMP= hwmon1/pwm1=20
+MAXTEMP= hwmon1/pwm1=60
+MINSTART= hwmon1/pwm1=150
+MINSTOP= hwmon1/pwm1=0
+```
+
+As alternative use `pwmconfig' to create your configuration
+
+```
+root@lenovo:~# pwmconfig
+File /var/run/fancontrol.pid exists. This typically means that the
+fancontrol deamon is running. You should stop it before running pwmconfig.
+If you are certain that fancontrol is not running, then you can delete
+/var/run/fancontrol.pid manually.
+root@lenovo:~# systemctl stop fancontrol.service
+root@lenovo:~# pwmconfig
+# pwmconfig version 3.6.0
+This program will search your sensors for pulse width modulation (pwm)
+controls, and test each one to see if it controls a fan on
+your motherboard. Note that many motherboards do not have pwm
+circuitry installed, even if your sensor chip supports pwm.
+
+We will attempt to briefly stop each fan using the pwm controls.
+The program will attempt to restore each fan to full speed
+after testing. However, it is ** very important ** that you
+physically verify that the fans have been to full speed
+after the program has completed.
+
+Found the following devices:
+   hwmon0 is d00182b0.thermal
+   hwmon1 is adt7473
+   hwmon2 is drivetemp
+   hwmon3 is drivetemp
+   hwmon4 is drivetemp
+
+Found the following PWM controls:
+   hwmon1/pwm1           current value: 126
+hwmon1/pwm1 is currently setup for automatic speed control.
+In general, automatic mode is preferred over manual mode, as
+it is more efficient and it reacts faster. Are you sure that
+you want to setup this output for manual control? (n) y
+   hwmon1/pwm2           current value: 255
+   hwmon1/pwm3           current value: 255
+
+Giving the fans some time to reach full speed...
+Found the following fan sensors:
+   hwmon1/fan1_input     current speed: 2973 RPM
+   hwmon1/fan2_input     current speed: 0 ... skipping!
+   hwmon1/fan3_input     current speed: 0 ... skipping!
+   hwmon1/fan4_input     current speed: 0 ... skipping!
+
+Warning!!! This program will stop your fans, one at a time,
+for approximately 5 seconds each!!!
+This may cause your processor temperature to rise!!!
+If you do not want to do this hit control-C now!!!
+Hit return to continue:
+
+Testing pwm control hwmon1/pwm1 ...
+  hwmon1/fan1_input ... speed was 2973 now 972
+    It appears that fan hwmon1/fan1_input
+    is controlled by pwm hwmon1/pwm1
+Would you like to generate a detailed correlation (y)?
+    PWM 255 FAN 2945
+    PWM 240 FAN 2971
+    PWM 225 FAN 2973
+    PWM 210 FAN 2973
+    PWM 195 FAN 2975
+    PWM 180 FAN 2975
+    PWM 165 FAN 2926
+    PWM 150 FAN 2591
+    PWM 135 FAN 2148
+    PWM 120 FAN 1731
+    PWM 105 FAN 1333
+    PWM 90 FAN 1073
+    PWM 75 FAN 950
+    PWM 60 FAN 929
+    PWM 45 FAN 927
+    PWM 30 FAN 927
+    PWM 28 FAN 927
+    PWM 26 FAN 927
+    PWM 24 FAN 927
+    PWM 22 FAN 927
+    PWM 20 FAN 927
+    PWM 18 FAN 928
+    PWM 16 FAN 927
+    PWM 14 FAN 927
+    PWM 12 FAN 928
+    PWM 10 FAN 928
+    PWM 8 FAN 928
+    PWM 6 FAN 928
+    PWM 4 FAN 928
+    PWM 2 FAN 928
+    PWM 0 FAN 928
+
+
+Testing pwm control hwmon1/pwm2 ...
+  hwmon1/fan1_input ... speed was 2973 now 2962
+    no correlation
+
+No correlations were detected.
+There is either no fan connected to the output of hwmon1/pwm2,
+or the connected fan has no rpm-signal connected to one of
+the tested fan sensors. (Note: not all motherboards have
+the pwm outputs connected to the fan connectors,
+check out the hardware database on http://www.almico.com/forumindex.php)
+
+Did you see/hear a fan stopping during the above test (n)?
+
+
+Testing pwm control hwmon1/pwm3 ...
+  hwmon1/fan1_input ... speed was 2968 now 2968
+    no correlation
+
+No correlations were detected.
+There is either no fan connected to the output of hwmon1/pwm3,
+or the connected fan has no rpm-signal connected to one of
+the tested fan sensors. (Note: not all motherboards have
+the pwm outputs connected to the fan connectors,
+check out the hardware database on http://www.almico.com/forumindex.php)
+
+Did you see/hear a fan stopping during the above test (n)? 
+
+Testing is complete.
+Please verify that all fans have returned to their normal speed.
+
+The fancontrol script can automatically respond to temperature changes
+of your system by changing fanspeeds.
+Do you want to set up its configuration file now (y)? 
+What should be the path to your fancontrol config file (/etc/fancontrol)? 
+Loading configuration from /etc/fancontrol ...
+
+Select fan output to configure, or other action:
+1) hwmon1/pwm1
+2) Change INTERVAL
+3) Just quit
+4) Save and quit
+5) Show configuration
+select (1-n): 1
+
+
+Devices:
+hwmon0 is d00182b0.thermal
+hwmon1 is adt7473
+hwmon2 is drivetemp
+hwmon3 is drivetemp
+hwmon4 is drivetemp
+
+Current temperature readings are as follows:
+hwmon0/temp1_input      41
+hwmon1/temp1_input      39
+hwmon1/temp2_input      30
+hwmon1/temp3_input      38
+hwmon2/temp1_input      32
+hwmon3/temp1_input      37
+hwmon4/temp1_input      38
+
+Select a temperature sensor as source for hwmon1/pwm1:
+1) hwmon0/temp1_input                    4) hwmon1/temp3_input                    7) hwmon4/temp1_input
+2) hwmon1/temp1_input                    5) hwmon2/temp1_input                    8) None (Do not affect this PWM output)
+3) hwmon1/temp2_input                    6) hwmon3/temp1_input
+select (1-n): 6
+
+Enter the low temperature (degree C)
+below which the fan should spin at minimum speed (20): 
+
+Enter the high temperature (degree C)
+over which the fan should spin at maximum speed (60): 
+
+Enter the PWM value (0-255) to use when the temperature
+is over the high temperature limit (255): 
+
+
+Select fan output to configure, or other action:
+1) hwmon1/pwm1
+2) Change INTERVAL
+3) Just quit
+4) Save and quit
+5) Show configuration
+select (1-n): 5
+
+
+Common Settings:
+INTERVAL=10
+
+Settings of hwmon1/pwm1:
+  Depends on hwmon3/temp1_input
+  Controls hwmon1/fan1_input
+  MINTEMP=20
+  MAXTEMP=60
+  MINSTART=150
+  MINSTOP=0
+
+
+Select fan output to configure, or other action:
+1) hwmon1/pwm1
+2) Change INTERVAL
+3) Just quit
+4) Save and quit
+5) Show configuration
+select (1-n): 4
+
+Saving configuration to /etc/fancontrol...
+Configuration saved
+```
+Restart the service on changes
+
+```
+systemctl restart fancontrol.service
+```
+
+
+## Personalize the LCD display
+
+```
+apt install python3-periphery
+apt install python3-pil
+```
+
 
 
 ## Links
