@@ -287,7 +287,7 @@ def draw_text():
         with open('/sys/class/hwmon/hwmon1/fan1_input','r') as file:
            fanSpeed = file.read()
         file.close()
-        drw.text((0, 40), "Fan Speed: " + fanSpeed.strip() + " 1/min", fill='white')
+        drw.text((0, 40), "Fan Speed: " + fanSpeed.strip() + " rpm", fill='white')
         pixels = im.load()
 
         width  = im.size[0]  
