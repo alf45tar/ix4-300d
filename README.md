@@ -877,21 +877,22 @@ systemctl restart fancontrol.service
 ![](images/LCD.png)
 
 1. Install  the following packages
-
    ```
    apt install python3-periphery
    apt install python3-pil
    ```
 2. Download the `lcd.py` script into `/opt/lcd` folder
-
    ```
    mkdir /opt/lcd
    cd /opt/lcd
-   wget https://github.com/alf45tar/ix4-300d/lcd.py
+   wget https://raw.githubusercontent.com/alf45tar/ix4-300d/main/lcd.py
+   ```
+3. Create a new file
+   ```
    nano /etc/systemd/system/lcd.service
    ```
 
-   Copy and paste
+   copy and paste
    ```
    [Unit]
    Description=Manage LCD display
@@ -903,7 +904,7 @@ systemctl restart fancontrol.service
    [Install]
    WantedBy=default.target
    ```
-2. Finish the installation with
+4. Finish the installation with
    ```
    chmod 755 /etc/systemd/system/lcd.service
    systemctl daemon-reload
@@ -919,7 +920,6 @@ If you want to use the the second ethernet ports like a LAN port of your switch/
 
 The create a bridge between `eth0` and `eth1`:
 1. Install the `bridge-utils` package
-
    ```
    apt install bridge-utils
    ```
