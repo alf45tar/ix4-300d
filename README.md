@@ -667,7 +667,7 @@ MINSTART= hwmon1/pwm1=150
 MINSTOP= hwmon1/pwm1=0
 ```
 
-As alternative use `pwmconfig' to create your configuration
+As alternative use `pwmconfig` to create your configuration
 
 ```
 root@lenovo:~# pwmconfig
@@ -874,16 +874,48 @@ systemctl restart fancontrol.service
 
 ## Personalize the LCD display
 
-```
-apt install python3-periphery
-apt install python3-pil
-```
+![](images/LCD.png)
+
+1. Install  the following packages
+
+   ```
+   apt install python3-periphery
+   apt install python3-pil
+   ```
+2. Download the `lcd.py` script into `/opt/lcd` folder
+
+   ```
+   mkdir /opt/lcd
+   cd /opt/lcd
+   wget https://github.com/alf45tar/ix4-300d/lcd.py
+   nano /etc/systemd/system/lcd.service
+   ```
+
+   Copy and paste
+   ```
+   [Unit]
+   Description=Manage LCD display
+   After=default.target
+
+   [Service]
+   ExecStart=python3 /opt/lcd/lcd.py
+
+   [Install]
+   WantedBy=default.target
+   ```
+2. Finish the installation with
+   ```
+   chmod 755 /etc/systemd/system/lcd.service
+   systemctl daemon-reload
+   systemctl enable lcd.service 
+   systemctl start lcd.service 
+   ```
 
 ## Bridging network ports
 
 During Debian installation you selected your primary network interface and the proper configuration file has been created.
 
-You need a bridge in case you want to use the the second ethernet ports like a LAN switch where you can attach any device to your LAN.
+If you want to use the the second ethernet ports like a LAN port of your switch/router you need a bridge.
 
 The create a bridge between `eth0` and `eth1`:
 1. Install the `bridge-utils` package
@@ -920,7 +952,7 @@ systemctl restart networking.service
 
 ## Bonding network ports
 
-For best performance you could create a bonding between `eth0` and `eth1`. You can connect all of them to your switch or router and maximise the speed up to 2 Gbit/s and the
+For best performance you could create a bonding between `eth0` and `eth1`. You can connect all of them to your switch/router and increase the speed up to 2 Gbit/s and add redundancy.
 
 1. Install the `ifenslave` package
    ```
@@ -944,7 +976,7 @@ For best performance you could create a bonding between `eth0` and `eth1`. You c
       network 192.168.1.0
       gateway 192.168.1.1
       bond-slaves eth0 eth1
-      bond-mode active-backup
+      bond-mode balance-rr
       bond-miimon 100
       bond-downdelay 200
       bond-updelay 200
@@ -955,7 +987,11 @@ Restart the service on changes
 systemctl restart networking.service
 ```
 
-## Links
+## Installing a WiFi 
+
+
+
+## Useful links
 
 https://forum.doozan.com/read.php?2,131833
 
