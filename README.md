@@ -1007,6 +1007,7 @@ They are recognized as keyboard entry. The keyboard device is `/dev/input/event0
    ```
    mkdir /opt/ix4-300d
    wget -P /opt/ix4-300d https://raw.githubusercontent.com/alf45tar/ix4-300d/main/kbdactions.sh
+   chmod 755 /opt/ix4-300d/kbdactions.sh
    ```
 4. Customize the file (optional)
    ```
@@ -1020,7 +1021,7 @@ They are recognized as keyboard entry. The keyboard device is `/dev/input/event0
    copy and paste
    ```
    [Unit]
-   Description=Manage LCD display
+   Description=Manage keyboard display
    After=default.target
 
    [Service]
