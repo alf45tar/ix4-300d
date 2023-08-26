@@ -174,6 +174,7 @@ The End Of Service Life (EOSL) was March 31, 2020.
 - [Connecting to WiFi](https://github.com/alf45tar/ix4-300d#connecting-to-wifi)
 - [Using the buttons to trigger actions](https://github.com/alf45tar/ix4-300d#using-the-buttons-to-trigger-actions)
 - [Installing Webmin](https://github.com/alf45tar/ix4-300d#installing-webmin)
+- [Useful links](https://github.com/alf45tar/ix4-300d#useful-links)
 
 ## Prerequisites
 
@@ -326,7 +327,7 @@ Marvell>>
 
 _Skip it if you prepared the USB stick._
 
-Connect the NAS Ethernet port 1 to your network. In the following we will assume `192.168.1.10` is the macOS IP address (TFTP server) and `192.168.1.111` ia an available IP address in your network not assigned by DHCP. If not, as should be, replace them with your values.
+Connect the NAS Ethernet port 1 to your network. In the following we will assume `192.168.1.10` is the macOS IP address (TFTP server) and `192.168.1.111` ia an available IP address in your network not assigned by DHCP. If not ok for you, as should be, replace them with your values.
 
 From `Marvell>>` prompt enter the following commands:
 
@@ -355,13 +356,13 @@ From `Marvell>>` prompt enter the following commands:
    bootm 0x2000000
    ```
 
-## Boot th NAS from USB stick
+## Boot the NAS from USB stick
 
 _Skip it if you prepared the TFTP server._
 
 1. Insert the USB stick into the **rear upper** USB port. Marvell U-Boot can only boot from the rear upper USB port.
 
-2. From `Marvell>>` prompt enter the following commands:
+2. From `Marvell>>` prompt enter the following commands
    ```
    usb start
    usb tree
@@ -376,7 +377,7 @@ _Skip it if you prepared the TFTP server._
    > [!NOTE]
    > `usb tree`, `usb info` and `usb part` are for information only.
 
-The log of previous commands is available in the following:
+The log of previous commands is available in the following
 ```
 Marvell>> usb start
 (Re)start USB...
@@ -462,7 +463,7 @@ Starting kernel ...
 
 ## Debian installation
 
-The Debian installer should start in the serial console window with the following screen:
+The Debian installer should start in the serial console window with the following screen
 ```
 [            (1*installer)  2 shell  3 shell  4- log           ][ Aug 24 21:36 ]
                                                                                 
@@ -496,7 +497,7 @@ Go through the process as shown on screen. You will receive an error related to 
 You will need to boot manually with the /vmlinuz kernel on partition /dev/sda1 and root=/dev/sda2 passed as a kernel argument.
 ```
 
-Do not complete the final stage of the install but choose to `Execute a shell` instead. Run the following commands: 
+Do not complete the final stage of the install but choose to `Execute a shell` instead. Run the following commands
 
 ```
 mount --bind /dev /target/dev
@@ -507,7 +508,7 @@ apt-get update
 apt-get install flash-kernel
 ```
 
-Replace the content of the flash-kernel database file `/etc/flash-kernel/db` using `nano`: 
+Replace the content of the flash-kernel database file `/etc/flash-kernel/db` using `nano` 
 ```
 nano /etc/flash-kernel/db
 ```
@@ -924,11 +925,10 @@ systemctl restart fancontrol.service
    apt install python3-periphery
    apt install python3-pil
    ```
-2. Download the `lcd.py` script into `/opt/lcd` folder
+2. Download the `lcd.py` script into `/opt/ix4-300d` folder
    ```
-   mkdir /opt/lcd
-   cd /opt/lcd
-   wget https://raw.githubusercontent.com/alf45tar/ix4-300d/main/lcd.py
+   mkdir /opt/ix4-300d
+   wget -P /opt/ix4-300d https://raw.githubusercontent.com/alf45tar/ix4-300d/main/lcd.py
    ```
 3. Create a new file
    ```
@@ -942,7 +942,7 @@ systemctl restart fancontrol.service
    After=default.target
 
    [Service]
-   ExecStart=python3 /opt/lcd/lcd.py
+   ExecStart=python3 /opt/ix4-300d/lcd.py
 
    [Install]
    WantedBy=default.target
@@ -953,6 +953,88 @@ systemctl restart fancontrol.service
    systemctl daemon-reload
    systemctl enable lcd.service 
    systemctl start lcd.service 
+   ```
+
+## Using the buttons to trigger actions
+
+The NAS has 4 buttons connected to gpio and supported as `gpio-keys`.
+
+Button|Action
+------|-----------
+Power|Shutdown the system when pressed
+Restart|Reboot the system when pressed
+Select|Available to trigger an action
+Scroll down|Available to trigger an action
+
+They are recognized as keyboard entry. The keyboard device is `/dev/input/event0`.
+
+1. Install `evtest` package
+
+   ```
+   apt install evtest
+   ```
+2. Run `evtest` to obtain detailed information
+
+   ```
+   root@lenovo:~# evtest 
+   No device specified, trying to scan all of /dev/input/event*
+   Available devices:
+   /dev/input/event0:      gpio-keys
+   Select the device event number [0-0]: 0
+   Input driver version is 1.0.1
+   Input device ID: bus 0x19 vendor 0x1 product 0x1 version 0x100
+   Input device name: "gpio-keys"
+   Supported events:
+   Event type 0 (EV_SYN)
+   Event type 1 (EV_KEY)
+      Event code 116 (KEY_POWER)
+      Event code 178 (KEY_SCROLLDOWN)
+      Event code 314 (BTN_SELECT)
+      Event code 408 (KEY_RESTART)
+   Properties:
+   Testing ... (interrupt to exit)
+   Event: time 1693054739.406736, type 1 (EV_KEY), code 314 (BTN_SELECT), value 1
+   Event: time 1693054739.406736, -------------- SYN_REPORT ------------
+   Event: time 1693054739.520158, type 1 (EV_KEY), code 314 (BTN_SELECT), value 0
+   Event: time 1693054739.520158, -------------- SYN_REPORT ------------
+   Event: time 1693054740.906984, type 1 (EV_KEY), code 178 (KEY_SCROLLDOWN), value 1
+   Event: time 1693054740.906984, -------------- SYN_REPORT ------------
+   Event: time 1693054741.093218, type 1 (EV_KEY), code 178 (KEY_SCROLLDOWN), value 0
+   Event: time 1693054741.093218, -------------- SYN_REPORT ------------
+   ^C
+   ```
+3. Download the `kbdactions.sh` file into `/opt/ix4-300d` folder
+   ```
+   mkdir /opt/ix4-300d
+   wget -P /opt/ix4-300d https://raw.githubusercontent.com/alf45tar/ix4-300d/main/kbdactions.sh
+   ```
+4. Customize the file (optional)
+   ```
+   nano /opt/ix4-300d/kbdactions.sh
+   ```
+5. Create a new file
+   ```
+   nano /etc/systemd/system/kbdactions.service
+   ```
+
+   copy and paste
+   ```
+   [Unit]
+   Description=Manage LCD display
+   After=default.target
+
+   [Service]
+   ExecStart=/opt/ix4-300d/kbdactions.sh
+
+   [Install]
+   WantedBy=default.target
+   ```
+6. Finish the installation with
+   ```
+   chmod 755 /etc/systemd/system/kbdactions.service
+   systemctl daemon-reload
+   systemctl enable kbdactions.service 
+   systemctl start kbdactions.service 
    ```
 
 ## Bridging network ports
@@ -1067,7 +1149,7 @@ systemctl restart networking.service
    iwctl station wlan0 show
    ```
 
-   Here the log
+   The log of previous commands is available in the following
    ```
    root@lenovo:~# iwctl device list
                                        Devices                                    
@@ -1109,44 +1191,6 @@ systemctl restart networking.service
                ExpectedThroughput    18375 Kbit/s                                     
 
    root@lenovo:~# 
-   ```
-
-## Using the buttons to trigger actions
-
-The NAS has 4 buttons (power, restart, select and scroll down) connected to gpio and supported as `gpio-keys` and recognized as keyboard entry.
-
-- Power button executes a shutdown when pressed.
-- Restart button executes a reboot when pressed.
-- Select and scroll down are available as multipurpose buttons to trigger programs.
-
-The keyboard device is `/dev/input/event0`.
-
-1. Install `evtest` package
-
-   ```
-   apt install evtest
-   ```
-2. Run `evtest`
-
-   ```
-   root@lenovo:~# evtest 
-   No device specified, trying to scan all of /dev/input/event*
-   Available devices:
-   /dev/input/event0:      gpio-keys
-   Select the device event number [0-0]: 0
-   Input driver version is 1.0.1
-   Input device ID: bus 0x19 vendor 0x1 product 0x1 version 0x100
-   Input device name: "gpio-keys"
-   Supported events:
-   Event type 0 (EV_SYN)
-   Event type 1 (EV_KEY)
-      Event code 116 (KEY_POWER)
-      Event code 178 (KEY_SCROLLDOWN)
-      Event code 314 (BTN_SELECT)
-      Event code 408 (KEY_RESTART)
-   Properties:
-   Testing ... (interrupt to exit)
-   ^C
    ```
 
 ## Installing Webmin
