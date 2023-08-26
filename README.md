@@ -10,7 +10,7 @@ Lenovo Iomega ix4-300d is a NAS released in late 2012 equipped with:
 - 1 x USB 3.0 port
 - 2 x USB 2.0 ports
 - LCD display (128x64 pixels)
-- 2 multipurpose buttons
+- 2 multipurpose buttons (Select and Scroll Down)
 
 The latest **firmware** update Version 4.1.414.34909 can be found here:
 
@@ -163,7 +163,7 @@ The End Of Service Life (EOSL) was March 31, 2020.
 - A TFTP server (faster) or and USB stick (slower) to download the Debian installer
 - A PC with macOS or Windows. The following procedure is for macOS because we do not need any additional software to install for complete the task. The procedure for Windows is not documented here.
 - A Linux box or a virtual machine with any Linux flavour (optional) to prepare the Debian booting image. I used an online Ubuntu VM on https://www.onworks.net.
-- Wired connection from NAS Ethernet port 1 (the top one) with DHCP and internet access to continue the Debian installation after boot.
+- Wired connection from NAS Ethernet port 1 (the upper one) with DHCP and internet access to continue the Debian installation after boot.
 
 ## Preparing the files
 
@@ -341,7 +341,7 @@ From `Marvell>>` prompt enter the following commands:
 
 _Skip it if you prepared the TFTP server._
 
-1. Insert the USB stick into the **rear top** USB port. Marvell U-Boot can only boot from the rear top USB port.
+1. Insert the USB stick into the **rear upper** USB port. Marvell U-Boot can only boot from the rear upper USB port.
 
 2. From `Marvell>>` prompt enter the following commands:
    ```
@@ -527,6 +527,25 @@ reboot
 
 Press any key to stop the booting process again.
 
+## Boot from internal disk
+
+Assuming the installation has been completed with the default disk partitioning (`/boot` on `/dev/sda1` and `/` on `/dev/sda2`) use the following commands
+```
+ide reset
+ext2load ide 2:1 0x0040000 uImage
+ext2load ide 2:1 0x2000000 uInitrd
+setenv bootargs $console $mtdparts root=/dev/sda2 rw rootdelay=10
+bootm 0x40000 0x2000000
+```
+
+Better to boot with label since there is no guarantee that the disk will always be sda
+```
+ide reset
+ext2load ide 2:1 0x0040000 uImage
+ext2load ide 2:1 0x2000000 uInitrd
+setenv bootargs $console $mtdparts root=LABEL=rootfs rw rootdelay=5
+bootm 0x40000 0x2000000
+```
 
 ## Improve the experience
 
@@ -538,6 +557,8 @@ Avahi is a system which facilitates service discovery on a local network via the
 ```
 apt install xterm
 apt install avahi-daemon
+apt install acpid
+apt install pm-utils
 ```
 
 ## Connect temperature sensors and fan control
@@ -652,6 +673,10 @@ Restart the service on changes
 ```
 systemctl restart lm-sensors.service
 ```
+
+The default fan speed is around 1800 rpm and it is quite noisy. Using fan control we can reduce a lot the fan noise using a fan speed around 1400 rpm in normal condition.
+
+Using the standard firmware I never noted any fan speed increase. May be it was never requested. With the fan control the fan speed increase up to 2950 rpm when the temperature increase. 
 
 Edit the `/etc/fancontrol` as follow to control the fan speed using the temperature of hard disk in the second bay:
 ```
@@ -954,7 +979,7 @@ systemctl restart networking.service
 
 ## Bonding network ports
 
-For best performance you could create a bonding between `eth0` and `eth1`. You can connect all of them to your switch/router and increase the speed up to 2 Gbit/s and add redundancy.
+For best performance you could create a bonding between `eth0` and `eth1`. You can connect all of them to your switch/router and increase the speed up to 2 Gbit/s and/or add redundancy.
 
 1. Install the `ifenslave` package
 
@@ -991,8 +1016,120 @@ Restart the service on changes
 systemctl restart networking.service
 ```
 
-## Installing a WiFi
+## Connecting to WiFi
 
+`iwd` is an all-in-one wireless client, wireless daemon, and even a DHCP client optionally. 
+
+`iwd` is an alternative to `wpasupplicant`. `iwd` itself is considered stable since Debian 12 Bookworm. It is much faster to connect to networks than wpa_supplicant, and has better roaming support, among other perceived improvements.
+
+1. Install the following package
+   ```
+   apt install iwd
+   ```
+2. Insert a supported USB WiFi adapter into one of the available USB ports. Here in the following the log for a Linksys WUSB54GC v2 based on Realtek RTL8187B chip.
+   ```
+   [ 1267.712422] usb 2-1: new high-speed USB device number 2 using xhci_hcd
+   [ 1267.874230] usb 2-1: New USB device found, idVendor=1737, idProduct=0073, bcdDevice= 2.00
+   [ 1267.882586] usb 2-1: New USB device strings: Mfr=1, Product=2, SerialNumber=3
+   [ 1267.889796] usb 2-1: Product: RTL8187B_WLAN_Adapter
+   [ 1267.894748] usb 2-1: Manufacturer: Manufacturer_Realtek
+   [ 1267.900041] usb 2-1: SerialNumber: 00e04c000001
+   [ 1268.671137] ieee80211 phy0: hwaddr 00:22:6b:da:ea:cb, RTL8187BvE V0 + rtl8225z2, rfkill mask 2
+   [ 1268.719600] rtl8187: Customer ID is 0x00
+   [ 1268.726537] rtl8187: wireless switch is on
+   [ 1268.732574] usbcore: registered new interface driver rtl8187
+   [ 1268.950444] rtl8187 2-1:1.0 wlx00226bdaeacb: renamed from wlan0
+   ```   
+3. Configure thw WiFi connection using the following commands
+   ```
+   iwctl device list
+   iwctl station wlan0 scan
+   iwctl station wlan0 get-networks
+   iwctl --passphrase "wifi password" station wlan0 connect "MyWireless"
+   iwctl station wlan0 show
+   ```
+
+   Here the log
+   ```
+   root@lenovo:~# iwctl device list
+                                       Devices                                    
+   --------------------------------------------------------------------------------
+     Name                  Address               Powered     Adapter     Mode      
+   --------------------------------------------------------------------------------
+     wlan0                 00:22:6b:da:ea:cb     on          phy0        station     
+
+   root@lenovo:~# iwctl station wlan0 scan
+   root@lenovo:~# iwctl station wlan0 get-networks
+                                  Available networks                              
+   --------------------------------------------------------------------------------
+         Network name                      Security            Signal
+   --------------------------------------------------------------------------------
+         MyWireless                        psk                 ****
+   root@lenovo:~# iwctl --passphrase "wifi password" station wlan0 connect "MyWireless"
+   [  469.632453] wlan0: authenticate with a4:2b:b0:b9:14:84
+   [  469.928878] wlan0: send auth to a4:2b:b0:b9:14:84 (try 1/3)
+   [  469.936527] wlan0: authenticated
+   [  469.940374] wlan0: associate with a4:2b:b0:b9:14:84 (try 1/3)
+   [  469.949572] wlan0: RX AssocResp from a4:2b:b0:b9:14:84 (capab=0x1011 status=0 aid=5)
+   [  469.958899] wlan0: associated
+   root@lenovo:~# iwctl station wlan0 show
+                                    Station: wlan0                                
+   --------------------------------------------------------------------------------
+     Settable  Property              Value                                          
+   --------------------------------------------------------------------------------
+               Scanning              no                                               
+               State                 connected                                        
+               Connected network     MyWireless                                       
+               IPv4 address          192.168.1.190                                    
+               ConnectedBss          a4:2b:b0:b9:14:84                                
+               Frequency             2437                                             
+               Security              WPA2-Personal                                    
+               RSSI                  -39 dBm                                          
+               AverageRSSI           -40 dBm                                          
+               TxBitrate             54000 Kbit/s                                     
+               RxBitrate             1000 Kbit/s                                      
+               ExpectedThroughput    18375 Kbit/s                                     
+
+   root@lenovo:~# 
+   ```
+
+## Using the buttons to trigger actions
+
+The NAS has 4 buttons (power, restart, select and scroll down) connected to gpio and supported as `gpio-keys` and recognized as keyboard entry.
+
+- Power button executes a shutdown when pressed.
+- Restart button executes a reboot when pressed.
+- Select and scroll down are available as multipurpose buttons to trigger programs.
+
+The keyboard device is `/dev/input/event0`.
+
+1. Install `evtest` package
+
+   ```
+   apt install evtest
+   ```
+2. Run `evtest`
+
+   ```
+   root@lenovo:~# evtest 
+   No device specified, trying to scan all of /dev/input/event*
+   Available devices:
+   /dev/input/event0:      gpio-keys
+   Select the device event number [0-0]: 0
+   Input driver version is 1.0.1
+   Input device ID: bus 0x19 vendor 0x1 product 0x1 version 0x100
+   Input device name: "gpio-keys"
+   Supported events:
+   Event type 0 (EV_SYN)
+   Event type 1 (EV_KEY)
+      Event code 116 (KEY_POWER)
+      Event code 178 (KEY_SCROLLDOWN)
+      Event code 314 (BTN_SELECT)
+      Event code 408 (KEY_RESTART)
+   Properties:
+   Testing ... (interrupt to exit)
+   ^C
+   ```
 
 ## Installing Webmin
 
