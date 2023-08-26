@@ -169,10 +169,10 @@ The End Of Service Life (EOSL) was March 31, 2020.
 - [Improve the experience](https://github.com/alf45tar/ix4-300d#improve-the-experience)
 - [Connect temperature sensors and fan control](https://github.com/alf45tar/ix4-300d#connect-temperature-sensors-and-fan-control)
 - [Personalize the LCD display](https://github.com/alf45tar/ix4-300d#personalize-the-lcd-display)
+- [Using the buttons to trigger actions](https://github.com/alf45tar/ix4-300d#using-the-buttons-to-trigger-actions)
 - [Bridging network ports](https://github.com/alf45tar/ix4-300d#bridging-network-ports)
 - [Bonding network ports](https://github.com/alf45tar/ix4-300d#bonding-network-ports)
 - [Connecting to WiFi](https://github.com/alf45tar/ix4-300d#connecting-to-wifi)
-- [Using the buttons to trigger actions](https://github.com/alf45tar/ix4-300d#using-the-buttons-to-trigger-actions)
 - [Installing Webmin](https://github.com/alf45tar/ix4-300d#installing-webmin)
 - [Useful links](https://github.com/alf45tar/ix4-300d#useful-links)
 
