@@ -949,7 +949,6 @@ systemctl restart fancontrol.service
    ```
 4. Finish the installation with
    ```
-   chmod 755 /etc/systemd/system/lcd.service
    systemctl daemon-reload
    systemctl enable lcd.service 
    systemctl start lcd.service 
@@ -1032,7 +1031,6 @@ They are recognized as keyboard entry. The keyboard device is `/dev/input/event0
    ```
 6. Finish the installation with
    ```
-   chmod 755 /etc/systemd/system/kbdactions.service
    systemctl daemon-reload
    systemctl enable kbdactions.service 
    systemctl start kbdactions.service 
