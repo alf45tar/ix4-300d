@@ -156,6 +156,24 @@ The bootloader is Marvell U-Boot. My NAS has the following signature:
 
 The End Of Service Life (EOSL) was March 31, 2020.
 
+## Index
+- [Prerequisites](https://github.com/alf45tar/ix4-300d#prerequisites)
+- [Preparing the files](https://github.com/alf45tar/ix4-300d#preparing-the-files)
+- [Preparing the TFTP server](https://github.com/alf45tar/ix4-300d#preparing-the-tftp-server)
+- [Preparing the USB stick](https://github.com/alf45tar/ix4-300d#preparing-the-usb-stick)
+- [Connecting the USB-to-TTL adapter](https://github.com/alf45tar/ix4-300d#connecting-the-usb-to-ttl-adapter)
+- [Boot the NAS from TFTP server](https://github.com/alf45tar/ix4-300d#boot-the-nas-from-tftp-server)
+- [Boot the NAS from USB stick](https://github.com/alf45tar/ix4-300d#boot-the-nas-from-usb-stick)
+- [Debian installation](https://github.com/alf45tar/ix4-300d#debian-installation)
+- [Boot from internal disk](https://github.com/alf45tar/ix4-300d#boot-from-internal-disk)
+- [Improve the experience](https://github.com/alf45tar/ix4-300d#improve-the-experience)
+- [Connect temperature sensors and fan control](https://github.com/alf45tar/ix4-300d#connect-temperature-sensors-and-fan-control)
+- [Personalize the LCD display](https://github.com/alf45tar/ix4-300d#personalize-the-lcd-display)
+- [Bridging network ports](https://github.com/alf45tar/ix4-300d#bridging-network-ports)
+- [Bonding network ports](https://github.com/alf45tar/ix4-300d#bonding-network-ports)
+- [Connecting to WiFi](https://github.com/alf45tar/ix4-300d#connecting-to-wifi)
+- [Using the buttons to trigger actions](https://github.com/alf45tar/ix4-300d#using-the-buttons-to-trigger-actions)
+- [Installing Webmin](https://github.com/alf45tar/ix4-300d#installing-webmin)
 
 ## Prerequisites
 
