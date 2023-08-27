@@ -557,7 +557,7 @@ setenv bootargs $console $mtdparts root=/dev/sda2 rw rootdelay=10
 bootm 0x40000 0x2000000
 ```
 
-Better to boot with label since there is no guarantee that the disk will always be sda
+Better to boot with label since there is no guarantee that the disk will always `sda`
 ```
 ide reset
 ext2load ide 2:1 0x0040000 uImage
@@ -576,8 +576,6 @@ Avahi is a system which facilitates service discovery on a local network via the
 ```
 apt install xterm
 apt install avahi-daemon
-apt install acpid
-apt install pm-utils
 ```
 
 ## Connect temperature sensors and fan control
