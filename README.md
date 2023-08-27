@@ -1031,12 +1031,11 @@ They are recognized as keyboard entry. The keyboard device is `/dev/input/event0
          ($event_restart)             echo "RESTART" ;;
       esac
    done
-```
+   ```
 5. Create a new file
    ```
    nano /etc/systemd/system/kbdactions.service
    ```
-
    copy and paste
    ```
    [Unit]
