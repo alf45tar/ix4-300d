@@ -253,75 +253,76 @@ UART is on connector CN9 (four pins). Connection parameters are 115200/8N1.
 
 Pin|Function|Description
 ---|--------|-----------
-1|VCC|VCC can be controlled by the adjacent JP1: bridging 1 and 2 provides 3V3, bridging 2 and 3 provides 5V - but beware that this does NOT change the TX/RX voltage which is 3V3 max. VCC is not used.
+1|VCC|VCC can be controlled by the adjacent JP1: bridging 1 and 2 provides 3V3, bridging 2 and 3 provides 5V - but beware that this does NOT change the TX/RX voltage which is 3V3 max. VCC is not used here.
 2|TX|Connect to the RX pin of your USB-to-TTL adapter
 3|GND|Connect to GND of your USB-to-TTL adapter
 4|RX|Connect to the TX pin of your USB-to-TTL adapter
 
-1. Connect the USB-to-TTL adapter via USB to your PC.
+1. Connect the USB-to-TTL adapter to an USB port of your PC.
 2. On macOS Open a Terminal and execute
+
    ```
    screen /dev/cu.SLAB_USBtoUART 115200
    ```
+   Your serial port can be different from `/dev/cu.SLAB_USBtoUART` because it depends by USB-to-TTL adapter used
 3. Power on the Lenovo Iomega ix4-300d
-4. Press any key to stop the booting process and receive the Marvell U-Boot prompt
+4. Press any key to stop the booting process and receive the Marvell U-Boot promp
+   ```
+   BootROM 1.15
+   Booting from NAND flash
+   DDR3 Training Sequence - Ver 2.3.4 
+   DDR3 Training Sequence - Ended Successfully 
+   BootROM: Image checksum verification PASSED
 
-```
-BootROM 1.15
-Booting from NAND flash
-DDR3 Training Sequence - Ver 2.3.4 
-DDR3 Training Sequence - Ended Successfully 
-BootROM: Image checksum verification PASSED
-
- __   __                      _ _
-|  \/  | __ _ _ ____   _____| | |
-| |\/| |/ _` | '__\ \ / / _ \ | |
-| |  | | (_| | |   \ V /  __/ | |
-|_|  |_|\__,_|_|    \_/ \___|_|_|
-         _   _     ____              _
-        | | | |   | __ )  ___   ___ | |_ 
-        | | | |___|  _ \ / _ \ / _ \| __| 
-        | |_| |___| |_) | (_) | (_) | |_ 
-         \___/    |____/ \___/ \___/ \__| 
- ** LOADER 2.3.2.6  **
+   __   __                      _ _
+   |  \/  | __ _ _ ____   _____| | |
+   | |\/| |/ _` | '__\ \ / / _ \ | |
+   | |  | | (_| | |   \ V /  __/ | |
+   |_|  |_|\__,_|_|    \_/ \___|_|_|
+            _   _     ____              _
+           | | | |   | __ )  ___   ___ | |_ 
+           | | | |___|  _ \ / _ \ / _ \| __| 
+           | |_| |___| |_) | (_) | (_) | |_ 
+            \___/    |____/ \___/ \___/ \__| 
+    ** LOADER 2.3.2.6  **
 
 
-U-Boot 2009.08 (Mar 04 2013 - 11:13:04) Marvell version:  2.3.2 PQ
-U-Boot Addressing:
-       Code:            00600000:006BFFF0
-       BSS:             00708EC0
-       Stack:           0x5fff70
-       PageTable:       0x8e0000
-       Heap address:    0x900000:0xe00000
-Board: DB-78230-BP rev 2.0 Wistron
-SoC:   MV78230 A0
+   U-Boot 2009.08 (Mar 04 2013 - 11:13:04) Marvell version:  2.3.2 PQ
+   U-Boot Addressing:
+          Code:            00600000:006BFFF0
+          BSS:             00708EC0
+          Stack:           0x5fff70
+          PageTable:       0x8e0000
+          Heap address:    0x900000:0xe00000
+   Board: DB-78230-BP rev 2.0 Wistron
+   SoC:   MV78230 A0
        running 2 CPUs
        Custom configuration
-CPU:   Marvell PJ4B (584) v7 (Rev 2) LE
-       CPU # 0
-       CPU @ 1333Mhz, L2 @ 667Mhz
-       DDR @ 667Mhz, TClock @ 250Mhz
-       DDR 32Bit Width, FastPath Memory Access
-       DDR ECC Disabled
-PEX 0.0(0): Root Complex Interface, Detected Link X4, GEN 1.1
-PEX 1.0(1): Root Complex Interface, Detected Link X1, GEN 2.0
-DRAM:  512 MB
-       CS 0: base 0x00000000 size 512 MB
-       Addresses 14M - 0M are saved for the U-Boot usage.
-NAND:  1024 MiB
-Bad block table found at page 524224, version 0x01
-Bad block table found at page 524160, version 0x01
-nand_read_bbt: Bad block at 0x000003c60000
-FPU initialized to Run Fast Mode.
-USB 0: Host Mode
-USB 1: Host Mode
-USB 2: Device Mode
-Modules Detected:
-MMC:   MRVL_MMC: 0
-Net:   egiga0 [PRIME], egiga1
-Hit any key to stop autoboot:  0 
-Marvell>> 
-```
+   CPU:   Marvell PJ4B (584) v7 (Rev 2) LE
+          CPU # 0
+          CPU @ 1333Mhz, L2 @ 667Mhz
+          DDR @ 667Mhz, TClock @ 250Mhz
+          DDR 32Bit Width, FastPath Memory Access
+          DDR ECC Disabled
+   PEX 0.0(0): Root Complex Interface, Detected Link X4, GEN 1.1
+   PEX 1.0(1): Root Complex Interface, Detected Link X1, GEN 2.0
+   DRAM:  512 MB
+          CS 0: base 0x00000000 size 512 MB
+          Addresses 14M - 0M are saved for the U-Boot usage.
+   NAND:  1024 MiB
+   Bad block table found at page 524224, version 0x01
+   Bad block table found at page 524160, version 0x01
+   nand_read_bbt: Bad block at 0x000003c60000
+   FPU initialized to Run Fast Mode.
+   USB 0: Host Mode
+   USB 1: Host Mode
+   USB 2: Device Mode
+   Modules Detected:
+   MMC:   MRVL_MMC: 0
+   Net:   egiga0 [PRIME], egiga1
+   Hit any key to stop autoboot:  0 
+   Marvell>> 
+   ```
 
 ## Boot the NAS from TFTP server
 
