@@ -10,6 +10,7 @@ import socket
 import time
 import base64
 import io
+import psutil
 
 RS = GPIO(29, "out")
 A0 = GPIO(30, "out")
@@ -226,17 +227,18 @@ def set_page(page):
 	write_lcm(A0_CMD,0x10)
 	write_lcm(A0_CMD,0x00)
 
-def draw_lcm(image):
-	write_lcm(A0_CMD,0xae)
+def draw_lcm(image, display_off = True):
+	if display_off:
+		write_lcm(A0_CMD,0xae)
 	for page in range(8):
 		set_page(page)
 		for line in range(128):
 			write_lcm(A0_DATA, image[(page*128)+line])
-	write_lcm(A0_CMD,0xaf)
+	if display_off:
+		write_lcm(A0_CMD,0xaf)
 
 def draw_file():
 	img = [0x00] * 1024
-	#im = Image.open(path)
 	im = Image.open(io.BytesIO(base64.b64decode(logo)))
 	drw = ImageDraw.Draw(im)
 	pixels = im.load()
@@ -261,6 +263,7 @@ def draw_text():
         img = [0x00] * 1024
         im = Image.new(mode = "L", size = (128, 64))
         drw = ImageDraw.Draw(im)
+        drw.text((0, 50), "CPU: " + str(int(psutil.cpu_percent(60))) + "%   RAM: " + str(int(psutil.virtual_memory()[2])) + "%", fill='white')
         hostname = socket.gethostname()
         drw.text((0, 0), "Hostname: " + hostname, fill='white')
         drw.text((0, 10), "IP: " + get_local_ip(), fill='white')
@@ -268,14 +271,23 @@ def draw_text():
            cpuTemp = file.read()
         file.close()
         drw.text((0, 20), "CPU Temp: " + str(round(int(cpuTemp)/1000, 1)) + " °C", fill='white')
-        with open('/sys/class/hwmon/hwmon2/temp1_input','r') as file:
-           hd1Temp = file.read()
+        try:
+           with open('/sys/class/hwmon/hwmon2/temp1_input','r') as file:
+              hd1Temp = file.read()
+        except:
+           hd1Temp = 0
         file.close()
-        with open('/sys/class/hwmon/hwmon3/temp1_input','r') as file:
-           hd2Temp = file.read()
+        try:
+           with open('/sys/class/hwmon/hwmon3/temp1_input','r') as file:
+              hd2Temp = file.read()
+        except:
+           hd2Temp = 0
         file.close()
-        with open('/sys/class/hwmon/hwmon4/temp1_input','r') as file:
-           hd3Temp = file.read()
+        try:
+           with open('/sys/class/hwmon/hwmon4/temp1_input','r') as file:
+              hd3Temp = file.read()
+        except:
+           hd3Temp = 0
         file.close()
         try:
            with open('/sys/class/hwmon/hwmon5/temp1_input','r') as file:
@@ -290,7 +302,7 @@ def draw_text():
         drw.text((0, 40), "Fan Speed: " + fanSpeed.strip() + " rpm", fill='white')
         pixels = im.load()
 
-        width  = im.size[0]  
+        width  = im.size[0]
         height = im.size[1]
 
         if width > 128:
@@ -304,14 +316,13 @@ def draw_text():
                                 if pixels[x,(y*8)+bit] != 0:
                                         outbyte += 2**bit
                         img[x+(128*y)] = outbyte
-        draw_lcm(img)
+        draw_lcm(img, False)
 
 
 
 init_lcm()
 draw_file()
-time.sleep(3)
 while 1:
 	draw_text()
-	time.sleep(60)
+	time.sleep(1)
 exit_lcm()

@@ -918,6 +918,8 @@ systemctl restart fancontrol.service
 
 ## Personalize the LCD display
 
+We can customiza the information to show on the NAS display using the `lcd.py` script. Display is updated every 60 seconds. CPU load % is the average of the last 60 seconds. RAM is the used percentage of physical RAM without swap file.
+
 ![](images/LCD.png)
 
 1. Install  the following packages
@@ -1012,6 +1014,29 @@ They are recognized as keyboard entry. The keyboard device is `/dev/input/event0
    ```
    nano /opt/ix4-300d/kbdactions.sh
    ```
+   The file provided start/stop `webmin` interface with Select and restart the `lcd.service` with Scroll Down
+   ```
+   #!/bin/bash
+
+   device='/dev/input/event0'
+   event_select_press='*code 314 (BTN_SELECT), value 1*'
+   event_select_release='*code 314 (BTN_SELECT), value 0*'
+   event_scroll_down_press='*code 178 (KEY_SCROLLDOWN), value 1*'
+   event_scroll_down_release='*code 178 (KEY_SCROLLDOWN), value 0*'
+   event_power='*code 116 (KEY_POWER), value 1*'
+   event_restart='*code 408 (KEY_RESTART), value 1*'
+
+   evtest "$device" | while read line; do
+      case $line in
+         ($event_select_press)        systemctl is-active --quiet webmin.service && systemctl stop webmin.service || systemctl restart webmin.service ;;
+         ($event_select_release)      echo "SELECT release" ;;
+         ($event_scroll_down_press)   systemctl restart lcd.service ;;
+         ($event_scroll_down_release) echo "SCROLl DOWN release" ;;
+         ($event_power)               echo "POWER" ;;
+         ($event_restart)             echo "RESTART" ;;
+      esac
+   done
+```
 5. Create a new file
    ```
    nano /etc/systemd/system/kbdactions.service
