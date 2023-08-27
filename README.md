@@ -1,4 +1,4 @@
-# Installing Debian 12 (bookworm) on Lenovo Iomega ix4-300d
+# Installing Debian 12 on Lenovo Iomega ix4-300d
 
 The scope of this tutorial is to revamp a Lenovo Iomega ix4-300d NAS installing the last version of Debian and potentially any recent software. 
 
