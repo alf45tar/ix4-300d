@@ -264,9 +264,9 @@ Pin|Function|Description
    ```
    screen /dev/cu.SLAB_USBtoUART 115200
    ```
-   Your serial port can be different from `/dev/cu.SLAB_USBtoUART` because it depends by USB-to-TTL adapter used
+   Your serial port can be different from `/dev/cu.SLAB_USBtoUART` because it depends by USB-to-TTL adapter used.
 3. Power on the Lenovo Iomega ix4-300d
-4. Press any key to stop the booting process and receive the Marvell U-Boot promp
+4. Press any key to stop the booting process and receive the Marvell U-Boot prompt
    ```
    BootROM 1.15
    Booting from NAND flash
@@ -914,7 +914,9 @@ systemctl restart fancontrol.service
 
 ## Personalize the LCD display
 
-We can customiza the information to show on the NAS display using the `lcd.py` script. Display is updated every 60 seconds. CPU load % is the average of the last 60 seconds. RAM is the used percentage of physical RAM without swap file.
+We can customize the information to show on the NAS display using the `lcd.py` script. The script update the display every 60 seconds.
+
+CPU load is the average percentage of the last 60 seconds. RAM is the used percentage of physical RAM without swap file.
 
 ![](images/LCD.png)
 
