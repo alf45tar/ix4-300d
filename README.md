@@ -615,7 +615,6 @@ drivetemp
 > The order of listed modules is very important because it determines the numbering of sensors in /sys/ filesystem.
 
 > [!NOTE]
-
 > The Marvell [mv64[345]6x](https://www.kernel.org/doc/Documentation/devicetree/bindings/marvell.txt) series of system controller chips contain many of the peripherals needed to implement a complete computer system. FOr example the Discovery II MV64361 controller offers a 72-bit DDR memory controller with a 183 MHz clock rate (366 MHz data rate), on-board 2 Megabits Static Random Access Memory (SRAM), dual 32-bit PCI/ PCI-X interfaces, PCI bridge and arbiter, two 10/100/1000 Mbps Ethernet controllers, two multi-protocol serial channels, and TWSI and interrupt controllers.
 
 > The ADT7475 controller is a thermal monitor and multiple PWM fan controller for noise-sensitive or power-sensitive applications requiring active system cooling. The ADT7475 can drive a fan using either a low or high frequency drive signal, monitor the temperature of up to two remote sensor diodes plus its own internal temperature, and measure and control the speed of up to four fans so that they operate at the lowest possible speed for minimum acoustic noise.
@@ -1243,7 +1242,7 @@ Enable `root` access deleting it from `/etc/cockpit/disallowed-users` using
 ```
 nano /etc/cockpit/disallowed-users
 ```
-Open your browser and connect to `http://192.168.1.14:9090` or `http://lenovo.local:9090`. URL can be different in your installation.
+After installing and enabling Cockpit, visit port 9090 on your server (for example: `http://192.168.1.14:9090` or `http://lenovo.local:9090` but URL can be different in your installation.).
 ![](images/cockpit.png)
 Additional [plugins](https://cockpit-project.org/applications.html) can be installed to extend functionalities.
 
