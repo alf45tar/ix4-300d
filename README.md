@@ -1244,7 +1244,7 @@ Enable `root` access deleting it from `/etc/cockpit/disallowed-users` using
 nano /etc/cockpit/disallowed-users
 ```
 Open your browser and connect to `http://192.168.1.14:9090` or `http://lenovo.local:9090`. URL can be different in your installation.
-
+![](images/cockpit.png)
 Additional [plugins](https://cockpit-project.org/applications.html) can be installed to extend functionalities.
 
 A third-party Cockpit plugin to easily manage Samba and NFS file sharing can be installed using
@@ -1270,7 +1270,6 @@ rm setup-repos.sh
 apt-get install webmin --install-recommends
 ```
 Open your browser and connect to `http://192.168.1.14:10000` or `http://lenovo.local:10000`. URL can be different in your installation.
-
 ![](images/webmin.png)
 
 ## Useful links
