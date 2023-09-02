@@ -170,9 +170,11 @@ The End Of Service Life (EOSL) was March 31, 2020.
 - [Connect temperature sensors and fan control](https://github.com/alf45tar/ix4-300d#connect-temperature-sensors-and-fan-control)
 - [Personalize the LCD display](https://github.com/alf45tar/ix4-300d#personalize-the-lcd-display)
 - [Using the buttons to trigger actions](https://github.com/alf45tar/ix4-300d#using-the-buttons-to-trigger-actions)
+- [Controlling the leds](https://github.com/alf45tar/ix4-300d#controlling-the-leds)
 - [Bridging network ports](https://github.com/alf45tar/ix4-300d#bridging-network-ports)
 - [Bonding network ports](https://github.com/alf45tar/ix4-300d#bonding-network-ports)
 - [Connecting to WiFi](https://github.com/alf45tar/ix4-300d#connecting-to-wifi)
+- [Installing Cockpit](https://github.com/alf45tar/ix4-300d#installing-cockpit)
 - [Installing Webmin](https://github.com/alf45tar/ix4-300d#installing-webmin)
 - [Useful links](https://github.com/alf45tar/ix4-300d#useful-links)
 
@@ -566,6 +568,10 @@ ext2load ide 2:1 0x2000000 uInitrd
 setenv bootargs $console $mtdparts root=LABEL=rootfs rw rootdelay=5
 bootm 0x40000 0x2000000
 ```
+or even better in a single command line
+```
+ide reset; ext2load ide 2:1 0x0040000 uImage; ext2load ide 2:1 0x2000000 uInitrd; setenv bootargs $console $mtdparts root=LABEL=rootfs rw rootdelay=5; bootm 0x40000 0x2000000
+```
 
 ## Improve the experience
 
@@ -607,6 +613,12 @@ drivetemp
 
 > [!NOTE]
 > The order of listed modules is very important because it determines the numbering of sensors in /sys/ filesystem.
+
+> [!NOTE]
+
+> The Marvell [mv64[345]6x](https://www.kernel.org/doc/Documentation/devicetree/bindings/marvell.txt) series of system controller chips contain many of the peripherals needed to implement a complete computer system. FOr example the Discovery II MV64361 controller offers a 72-bit DDR memory controller with a 183 MHz clock rate (366 MHz data rate), on-board 2 Megabits Static Random Access Memory (SRAM), dual 32-bit PCI/ PCI-X interfaces, PCI bridge and arbiter, two 10/100/1000 Mbps Ethernet controllers, two multi-protocol serial channels, and TWSI and interrupt controllers.
+
+> The ADT7475 controller is a thermal monitor and multiple PWM fan controller for noise-sensitive or power-sensitive applications requiring active system cooling. The ADT7475 can drive a fan using either a low or high frequency drive signal, monitor the temperature of up to two remote sensor diodes plus its own internal temperature, and measure and control the speed of up to four fans so that they operate at the lowest possible speed for minimum acoustic noise.
 
 To do yourself use `sensors-detect` but remember that `drivetemp` must be added manually.
 ```
@@ -914,7 +926,7 @@ systemctl restart fancontrol.service
 
 ## Personalize the LCD display
 
-We can customize the information to show on the NAS display using the `lcd.py` script. The script update the display every 60 seconds.
+We can customize the information to show on the NAS display using the `lcd.py` script. The script updates the display every 60 seconds.
 
 CPU load is the average percentage of the last 60 seconds. RAM is the used percentage of physical RAM without swap file.
 
@@ -1012,7 +1024,7 @@ They are recognized as keyboard entry. The keyboard device is `/dev/input/event0
    ```
    nano /opt/ix4-300d/kbdactions.sh
    ```
-   The file provided start/stop `webmin` interface with Select and restart the `lcd.service` with Scroll Down
+   The file provided below start/stop `webmin` interface with Select and restart the `lcd.service` with Scroll Down
    ```
    #!/bin/bash
 
@@ -1057,6 +1069,11 @@ They are recognized as keyboard entry. The keyboard device is `/dev/input/event0
    systemctl enable kbdactions.service 
    systemctl start kbdactions.service 
    ```
+
+## Controlling the leds
+
+   Leds are working for the first 30 seconds after reboot. Need more investigation.
+
 
 ## Bridging network ports
 
@@ -1213,6 +1230,34 @@ systemctl restart networking.service
 
    root@lenovo:~# 
    ```
+
+## Installing Cockpit
+
+[Cockpit](https://cockpit-project.org) is a web-based graphical interface for servers, intended for everyone.
+
+See your server in a web browser and perform system tasks with a mouse. It’s easy to start containers, administer storage, configure networks, and inspect logs. Basically, you can think of Cockpit like a graphical “desktop interface”, but for individual servers.
+```
+apt install cockpit
+```
+Enable `root` access deleting it from `/etc/cockpit/disallowed-users` using
+```
+nano /etc/cockpit/disallowed-users
+```
+Open your browser and connect to `http://192.168.1.14:9090` or `http://lenovo.local:9090`. URL can be different in your installation.
+
+Additional [plugins](https://cockpit-project.org/applications.html) can be installed to extend functionalities.
+
+A third-party Cockpit plugin to easily manage Samba and NFS file sharing can be installed using
+```
+wget https://github.com/45Drives/cockpit-identities/releases/download/v0.1.12/cockpit-identities_0.1.12-1focal_all.deb
+wget https://github.com/45Drives/cockpit-file-sharing/releases/download/v3.2.9/cockpit-file-sharing_3.2.9-2focal_all.deb
+apt intall ./cockpit-identities_0.1.12-1focal_all.deb ./cockpit-file-sharing_3.2.9-2focal_all.deb
+```
+A file system browser to remotely browse, manage, edit, upload, and download files on your server through your web browser
+```
+wget https://github.com/45Drives/cockpit-navigator/releases/download/v0.5.10/cockpit-navigator_0.5.10-1focal_all.deb
+apt install ./cockpit-navigator_0.5.10-1focal_all.deb
+```
 
 ## Installing Webmin
 
