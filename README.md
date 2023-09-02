@@ -174,7 +174,7 @@ The End Of Service Life (EOSL) was March 31, 2020.
 - [Bridging network ports](https://github.com/alf45tar/ix4-300d#bridging-network-ports)
 - [Bonding network ports](https://github.com/alf45tar/ix4-300d#bonding-network-ports)
 - [Connecting to WiFi](https://github.com/alf45tar/ix4-300d#connecting-to-wifi)
-- [Trasform the NAS into a AirPlay speaker](https://github.com/alf45tar/ix4-300d#trasform-the-nas-into-a-airplay-speaker)
+- [Transform the NAS into a AirPlay speaker](https://github.com/alf45tar/ix4-300d#transform-the-nas-into-a-airplay-speaker)
 - [Installing Cockpit](https://github.com/alf45tar/ix4-300d#installing-cockpit)
 - [Installing Webmin](https://github.com/alf45tar/ix4-300d#installing-webmin)
 - [Useful links](https://github.com/alf45tar/ix4-300d#useful-links)
@@ -1232,7 +1232,7 @@ systemctl restart networking.service
    root@lenovo:~# 
    ```
 
-## Trasform the NAS into a AirPlay speaker
+## Transform the NAS into a AirPlay speaker
 
 1. Connect a supported USB sound card
    ```
@@ -1251,13 +1251,14 @@ systemctl restart networking.service
    ```
 2. Install ALSA the Advanced Linux Sound Architecture (`alsa-utils`, `alsamixergui` and `mpg123` are optional)
    ```
-   apt install libasound2 alsa-utils alsamixergui mpg123
+   apt install libasound2
+   apt install alsa-utils alsamixergui mpg123
    ```
 3. Install the AirPlay receiver
    ```
    apt install shairport-sync
    ```
-   Shairport Sync plays audio streamed from iOS devices and third-party AirPlay sources. Audio played by a Shairport Sync-powered device stays synchronised with the source and hence with similar devices playing the same source. In this way, synchronised multi-room audio is possible without difficulty.
+   > [!NOTE] Shairport Sync plays audio streamed from iOS devices and third-party AirPlay sources. Audio played by a Shairport Sync-powered device stays synchronised with the source and hence with similar devices playing the same source. In this way, synchronised multi-room audio is possible without difficulty.
 
 4. Stream music from your iOS device (don't forget to attach a speker to your sound card).
 
