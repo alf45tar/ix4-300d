@@ -174,6 +174,7 @@ The End Of Service Life (EOSL) was March 31, 2020.
 - [Bridging network ports](https://github.com/alf45tar/ix4-300d#bridging-network-ports)
 - [Bonding network ports](https://github.com/alf45tar/ix4-300d#bonding-network-ports)
 - [Connecting to WiFi](https://github.com/alf45tar/ix4-300d#connecting-to-wifi)
+- [Trasform the NAS into a AirPlay speaker](https://github.com/alf45tar/ix4-300d#trasform-the-nas-into-a-airplay-speaker)
 - [Installing Cockpit](https://github.com/alf45tar/ix4-300d#installing-cockpit)
 - [Installing Webmin](https://github.com/alf45tar/ix4-300d#installing-webmin)
 - [Useful links](https://github.com/alf45tar/ix4-300d#useful-links)
@@ -615,7 +616,7 @@ drivetemp
 > The order of listed modules is very important because it determines the numbering of sensors in /sys/ filesystem.
 
 > [!NOTE]
-> The Marvell [mv64[345]6x](https://www.kernel.org/doc/Documentation/devicetree/bindings/marvell.txt) series of system controller chips contain many of the peripherals needed to implement a complete computer system. FOr example the Discovery II MV64361 controller offers a 72-bit DDR memory controller with a 183 MHz clock rate (366 MHz data rate), on-board 2 Megabits Static Random Access Memory (SRAM), dual 32-bit PCI/ PCI-X interfaces, PCI bridge and arbiter, two 10/100/1000 Mbps Ethernet controllers, two multi-protocol serial channels, and TWSI and interrupt controllers.
+> The Marvell [mv64[345]6x](https://www.kernel.org/doc/Documentation/devicetree/bindings/marvell.txt) series of system controller chips contain many of the peripherals needed to implement a complete computer system. For example the Discovery II MV64361 controller offers a 72-bit DDR memory controller with a 183 MHz clock rate (366 MHz data rate), on-board 2 Megabits Static Random Access Memory (SRAM), dual 32-bit PCI/ PCI-X interfaces, PCI bridge and arbiter, two 10/100/1000 Mbps Ethernet controllers, two multi-protocol serial channels, and TWSI and interrupt controllers.
 
 > The ADT7475 controller is a thermal monitor and multiple PWM fan controller for noise-sensitive or power-sensitive applications requiring active system cooling. The ADT7475 can drive a fan using either a low or high frequency drive signal, monitor the temperature of up to two remote sensor diodes plus its own internal temperature, and measure and control the speed of up to four fans so that they operate at the lowest possible speed for minimum acoustic noise.
 
@@ -719,6 +720,7 @@ MAXTEMP= hwmon1/pwm1=60
 MINSTART= hwmon1/pwm1=150
 MINSTOP= hwmon1/pwm1=0
 ```
+
 To create your own configuration use `pwmconfig`
 ```
 root@lenovo:~# pwmconfig
@@ -1071,7 +1073,7 @@ They are recognized as keyboard entry. The keyboard device is `/dev/input/event0
 
 ## Controlling the leds
 
-   Leds are working for the first 30 seconds after reboot. Need more investigation.
+Leds are working for the first 30 seconds after reboot. Need more investigation.
 
 
 ## Bridging network ports
@@ -1229,6 +1231,35 @@ systemctl restart networking.service
 
    root@lenovo:~# 
    ```
+
+## Trasform the NAS into a AirPlay speaker
+
+1. Connect a supported USB sound card
+   ```
+   [21652.175526] usb 2-1: new full-speed USB device number 2 using orion-ehci
+   [21652.346344] usb 2-1: New USB device found, idVendor=8086, idProduct=0808, bcdDevice= 1.00
+   [21652.354621] usb 2-1: New USB device strings: Mfr=1, Product=2, SerialNumber=0
+   [21652.361863] usb 2-1: Product: USB PnP Sound Device
+   [21652.366740] usb 2-1: Manufacturer: C-Media Electronics Inc.      
+   [21652.630390] hid: raw HID events driver (C) Jiri Kosina
+   [21652.646899] usbcore: registered new interface driver usbhid
+   [21652.652564] usbhid: USB HID core driver
+   [21652.793898] mc: Linux media interface: v0.10
+   [21652.976077] usbcore: registered new interface driver snd-usb-audio
+   [21653.044913] input: C-Media Electronics Inc.       USB PnP Sound Device as /devices/platform/soc/soc:internal-regs/d0051000.usb/usb2/2-1/2-1:1.3/0003:8086:0808.0001/input/input1
+   [21653.120228] hid-generic 0003:8086:0808.0001: input,hidraw0: USB HID v1.00 Device [C-Media Electronics Inc.       USB PnP Sound Device] on usb-d0051000.usb-1/input3
+   ```
+2. Install ALSA the Advanced Linux Sound Architecture (`alsa-utils`, `alsamixergui` and `mpg123` are optional)
+   ```
+   apt install libasound2 alsa-utils alsamixergui mpg123
+   ```
+3. Install the AirPlay receiver
+   ```
+   apt install shairport-sync
+   ```
+   Shairport Sync plays audio streamed from iOS devices and third-party AirPlay sources. Audio played by a Shairport Sync-powered device stays synchronised with the source and hence with similar devices playing the same source. In this way, synchronised multi-room audio is possible without difficulty.
+
+4. Stream music from your iOS device (don't forget to attach a speker to your sound card).
 
 ## Installing Cockpit
 
