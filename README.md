@@ -1258,9 +1258,10 @@ systemctl restart networking.service
    ```
    apt install shairport-sync
    ```
-   > [!NOTE] Shairport Sync plays audio streamed from iOS devices and third-party AirPlay sources. Audio played by a Shairport Sync-powered device stays synchronised with the source and hence with similar devices playing the same source. In this way, synchronised multi-room audio is possible without difficulty.
+   > [!NOTE]
+   > Shairport Sync plays audio streamed from iOS devices and third-party AirPlay sources. Audio played by a Shairport Sync-powered device stays synchronised with the source and hence with similar devices playing the same source. In this way, synchronised multi-room audio is possible without difficulty.
 
-4. Stream music from your iOS device (don't forget to attach a speker to your sound card).
+4. Stream music from your iOS device (don't forget to attach a speker to your sound card)
 
 ## Installing Cockpit
 
