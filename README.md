@@ -584,13 +584,18 @@ Avahi is a system which facilitates service discovery on a local network via the
 ```
 apt install xterm
 apt install avahi-daemon
+apt install smartmontools
 ```
 
 ## Connect temperature sensors and fan control
 
-Install the following packages (and dependencies too of course):
+One way to alter fan speed with temperature is with the package `fancontrol`. This package includes the bash script `fancontrol` and a configuration utility called `pwmconfig` which creates the configuration file `/etc/fancontrol` which is used by the `fancontrol` bash script when is starts running. This script runs as a service at startup, checks the temperature sensor of your choice every ten seconds and sets the fan speed accordingly.
+
+> [!NOTE]
+> The `fancontrol` package is not requested because the ADT7475 supports automatic fan control (see below). However, the `fancontrol` program can use the CPU and HDD temperature as an input whereas the ADT7475 only has access to its three temperature sensors.
+
+Install the following packages
 ```
-apt install smartmontools
 apt install lm-sensors
 apt install fancontrol
 ```
@@ -703,9 +708,7 @@ Restart the service on changes
 ```
 systemctl restart lm-sensors.service
 ```
-The default fan speed is around 1800 rpm and it is quite noisy. Using fan control we can reduce a lot the fan noise using a fan speed around 1400 rpm in normal condition.
-
-Using the standard firmware I never noted any fan speed increase. May be it was never requested. With the fan control the fan speed increase up to 2950 rpm when the temperature increase. 
+The default fan speed is around 1800 rpm and it is quite noisy. Using fan control we can reduce a lot the fan noise using a fan speed around 1400 rpm in normal condition and increase up to 2950 rpm when the temperature increase. 
 
 Edit the `/etc/fancontrol` as follow to control the fan speed using the temperature of hard disk in the second bay
 ```
@@ -924,6 +927,75 @@ Restart the service on changes
 systemctl restart fancontrol.service
 ```
 
+The ADT7475 has two modes of operation: manual and automatic. When the system boots up, the controller is in manual mode and the fan runs at a predefined speed. There is only one fan in the ix400-300d and it is controlled via the `pwm1*` `sysfs` files. In manual mode, the file `pwm1` controls the speed of the fan. These files are found in the following directory:
+
+`/sys/class/i2c-adapter/i2c-0/0-002e/hwmon/hwmon1`
+
+For example run
+
+`echo "1" > /sys/class/i2c-adapter/i2c-0/0-002e/hwmon/hwmon1/pwm1_enable`
+
+to switch in manaul mode and
+
+`echo "100" > /sys/class/i2c-adapter/i2c-0/0-002e/hwmon/hwmon1/pwm1`
+
+to reduce the fan speed around to 1145 rpm.
+
+The default value of `pwm1` is 126 (1800 rpm) but it can be set from 0 (920 rpm) to 255 (2900 rpm).
+
+The ADT7475 device driver supports the following "control" values in `pwm1_enable`:
+
+Value|Meaning
+-----|-------
+0|Run fan at full speed
+1|Manual mode
+2|Automatic mode
+
+In automatic mode you must first select channel (see below).
+
+The [ADT7475 data sheet](https://www.onsemi.com/download/data-sheet/pdf/adt7475-d.pdf) is extremely detailed. The following table shows the correspondence between the kernel sensor names and the ADT names.
+
+Kernel Name|ADT7475 Name
+-----------|------------
+temp1|Remote 1
+temp2|Local
+temp3|Remote 2
+
+In automatic mode, the ADT7475 chip will monitor one or more temperature inputs and adjust the fan speed based on the following properties (the `sysfs` names are used here):
+
+- `pwm1_auto_point1_pwm` is the lowest fan speed
+- `pwm1_auto_point2_pwm` is the highest fan speed
+- `temp1_auto_point1_temp` is the lowest autopoint temperature for sensor 1
+- `temp1_auto_point2_temp `is the highest autopoint temperature for sensor 1
+- `temp2_auto_point1_temp` is the lowest autopoint temperature for sensor 2
+- `temp2_auto_point2_temp` is the highest autopoint temperature for sensor 2
+- `temp3_auto_point1_temp` is the lowest autopoint temperature for sensor 3
+- `temp3_auto_point2_temp` is the highest autopoint temperature for sensor 3
+
+When the temperature is below `tempX_auto_point1_temp`, the fan will run at `pwm1_auto_point1_pwm`. When the temperature is above `tempX_auto_point2_temp`, the fan will run at `pwm1_auto_point2_pwm`. If the temperature is above `tempX_crit`, the fan will be run at maximum speed (255).
+
+For temperatures between `tempX_auto_point1_temp` and `tempX_auto_point2_temp`, the fan power is set proportionally between `pwm1_auto_point1_pwm` and `pwm1_auto_point2_pwm`. You don't have to set `tempX_auto_point2_temp` because it will automatically be set 32°C higher than `temp1_auto_point1_temp` by the kernel driver.
+
+The ADT7475 can be programmed to check one, two or three temperature sensors when determining the current fan speed. When more than one sensor is selected, the highest calculated fan speed is used. 
+
+To use automatic mode, you first have to tell the device driver which temperature channel to use. This is done with the `pwm1_auto_channels_temp` file. The following table maps the kernel values with the ADT7475 data sheet values (page 31) for bits <7:5> (BHVR) of register 0x5C:
+
+Kernel Channel|ADT7475 Value|Meaning
+--------------|-------------|-------
+1|0|Remote 1
+2|1|Local
+4|2|Remote 2
+6|5|Local + Remote 2
+7|6|All three sensors
+
+In the last two cases where two or more temperature sensors are used as input, the value that produces the highest fan speed is used to control the fan. To select all three sensors, the following command is used:
+
+`echo "7" > /sys/class/i2c-adapter/i2c-0/0-002e/hwmon/hwmon1/pwm1_auto_channels_temp`
+
+Once the channel has been set, the ADT7475 is put into automatic mode as follows:
+
+`echo "2" > /sys/class/i2c-adapter/i2c-0/0-002e/hwmon/hwmon1/pwm1_enable`
+
 
 ## Personalize the LCD display
 
@@ -1075,6 +1147,90 @@ They are recognized as keyboard entry. The keyboard device is `/dev/input/event0
 
 Leds are working for the first 30 seconds after reboot. Need more investigation.
 
+Install tools for interacting with Linux GPIO character device
+```
+apt install gpiod
+```
+> [!NOTE]
+> `libgpiod` encapsulates the ioctl calls and data structures behind a straightforward API. This new character device interface guarantees all allocated resources are freed after closing the device file descriptor and adds several new features that are not present in the obsolete `sysfs` interface (like event polling, setting/reading multiple values at once or open-source and open-drain GPIOs).
+
+```
+root@lenovo:~# gpiodetect 
+gpiochip0 [d0018100.gpio] (32 lines)
+gpiochip1 [d0018140.gpio] (17 lines)
+root@lenovo:~# gpioinfo 
+gpiochip0 - 32 lines:
+        line   0:      unnamed       unused   input  active-high 
+        line   1:      unnamed       unused   input  active-high 
+        line   2:      unnamed       unused   input  active-high 
+        line   3:      unnamed       unused   input  active-high 
+        line   4:      unnamed       unused   input  active-high 
+        line   5:      unnamed       unused   input  active-high 
+        line   6:      unnamed       unused   input  active-high 
+        line   7:      unnamed       unused   input  active-high 
+        line   8:      unnamed       unused   input  active-high 
+        line   9:      unnamed       unused   input  active-high 
+        line  10:      unnamed       unused   input  active-high 
+        line  11:      unnamed       unused   input  active-high 
+        line  12:      unnamed       unused   input  active-high 
+        line  13:      unnamed       unused   input  active-high 
+        line  14:      unnamed       unused   input  active-high 
+        line  15:      unnamed       unused   input  active-high 
+        line  16:      unnamed       unused   input  active-high 
+        line  17:      unnamed       unused   input  active-high 
+        line  18:      unnamed       unused   input  active-high 
+        line  19:      unnamed       unused   input  active-high 
+        line  20:      unnamed       unused   input  active-high 
+        line  21:      unnamed       unused   input  active-high 
+        line  22:      unnamed       unused   input  active-high 
+        line  23:      unnamed       unused   input  active-high 
+        line  24:      unnamed "gpio-poweroff" output active-high [used]
+        line  25:      unnamed        "sck"  output   active-low [used]
+        line  26:      unnamed       unused   input  active-high 
+        line  27:      unnamed   "spi0 CS0"  output   active-low [used]
+        line  28:      unnamed      "sysfs"  output  active-high [used]
+        line  29:      unnamed      "sysfs"  output  active-high [used]
+        line  30:      unnamed      "sysfs"  output  active-high [used]
+        line  31:      unnamed      "sysfs"  output  active-high [used]
+gpiochip1 - 17 lines:
+        line   0:      unnamed      "sysfs"  output  active-high [used]
+        line   1:      unnamed      "sysfs"  output  active-high [used]
+        line   2:      unnamed      "sysfs"  output  active-high [used]
+        line   3:      unnamed      "sysfs"  output  active-high [used]
+        line   4:      unnamed      "sysfs"  output  active-high [used]
+        line   5:      unnamed      "sysfs"  output  active-high [used]
+        line   6:      unnamed      "sysfs"  output  active-high [used]
+        line   7:      unnamed      "sysfs"  output  active-high [used]
+        line   8:      unnamed      "sysfs"  output  active-high [used]
+        line   9:      unnamed "Select Button" input active-low [used]
+        line  10:      unnamed "Scroll Button" input active-low [used]
+        line  11:      unnamed       unused   input  active-high 
+        line  12:      unnamed "Power Button" input active-high [used]
+        line  13:      unnamed "Reset Button" input active-low [used]
+        line  14:      unnamed       unused   input  active-high 
+        line  15:      unnamed       "mosi"  output   active-low [used]
+        line  16:      unnamed       unused   input  active-high 
+
+```
+> [!NOTE]
+> GPIO pins has been assigned to a hardware device driver in kernel device tree. We will not be able to control the pin from user-space as it will forever be "busy". The only solution in this case would be to alter the device tree (likely disabling the HW driver) as to leave the pin unassigned by DTS.
+
+Turn on HDD led
+```
+gpioset gpiochip0 26=1
+```
+Turn off HDD led
+```
+gpioset gpiochip0 26=0
+```
+
+Using `sys` file system
+```
+echo 26 > /sys/class/gpio/export
+echo  1 > /sys/class/gpio/gpio26/value 
+echo  0 > /sys/class/gpio/gpio26/value 
+echo 26 > /sys/class/gpio/unexport 
+```
 
 ## Bridging network ports
 
