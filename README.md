@@ -618,12 +618,10 @@ drivetemp
 ```
 
 > [!NOTE]
-> The order of listed modules is very important because it determines the numbering of sensors in /sys/ filesystem.
+> The order of listed modules is very important because it determines the numbering of sensors in `/sys` file system.
 
 > [!NOTE]
-> The Marvell [mv64[345]6x](https://www.kernel.org/doc/Documentation/devicetree/bindings/marvell.txt) series of system controller chips contain many of the peripherals needed to implement a complete computer system. For example the Discovery II MV64361 controller offers a 72-bit DDR memory controller with a 183 MHz clock rate (366 MHz data rate), on-board 2 Megabits Static Random Access Memory (SRAM), dual 32-bit PCI/ PCI-X interfaces, PCI bridge and arbiter, two 10/100/1000 Mbps Ethernet controllers, two multi-protocol serial channels, and TWSI and interrupt controllers.
-
-> The ADT7475 controller is a thermal monitor and multiple PWM fan controller for noise-sensitive or power-sensitive applications requiring active system cooling. The ADT7475 can drive a fan using either a low or high frequency drive signal, monitor the temperature of up to two remote sensor diodes plus its own internal temperature, and measure and control the speed of up to four fans so that they operate at the lowest possible speed for minimum acoustic noise.
+> The Marvell [mv64[345]6x](https://www.kernel.org/doc/Documentation/devicetree/bindings/marvell.txt) series of system controller chips contain many of the peripherals needed to implement a complete computer system. For example the Discovery II MV64361 controller offers a 72-bit DDR memory controller with a 183 MHz clock rate (366 MHz data rate), on-board 2 Megabits Static Random Access Memory (SRAM), dual 32-bit PCI/ PCI-X interfaces, PCI bridge and arbiter, two 10/100/1000 Mbps Ethernet controllers, two multi-protocol serial channels, and TWSI and interrupt controllers. The ADT7475 controller is a thermal monitor and multiple PWM fan controller for noise-sensitive or power-sensitive applications requiring active system cooling. The ADT7475 can drive a fan using either a low or high frequency drive signal, monitor the temperature of up to two remote sensor diodes plus its own internal temperature, and measure and control the speed of up to four fans so that they operate at the lowest possible speed for minimum acoustic noise.
 
 To do yourself use `sensors-detect` but remember that `drivetemp` must be added manually.
 ```
@@ -927,19 +925,17 @@ Restart the service on changes
 systemctl restart fancontrol.service
 ```
 
-The ADT7475 has two modes of operation: manual and automatic. When the system boots up, the controller is in manual mode and the fan runs at a predefined speed. There is only one fan in the ix400-300d and it is controlled via the `pwm1*` `sysfs` files. In manual mode, the file `pwm1` controls the speed of the fan. These files are found in the following directory:
+To avoid `fancontrol` use ADT7475 directly. The ADT7475 has two modes of operation: manual and automatic. When the system boots up, the controller is in manual mode and the fan runs at a predefined speed. There is only one fan in the ix400-300d and it is controlled via the `pwm1*` `/sys` file system. In manual mode, the file `pwm1` controls the speed of the fan. These files are found in the following directory:
 
 `/sys/class/i2c-adapter/i2c-0/0-002e/hwmon/hwmon1`
 
-For example run
+For example to switch in manaul mode
 
 `echo "1" > /sys/class/i2c-adapter/i2c-0/0-002e/hwmon/hwmon1/pwm1_enable`
 
-to switch in manaul mode and
+and to reduce the fan speed around to 1145 rpm
 
 `echo "100" > /sys/class/i2c-adapter/i2c-0/0-002e/hwmon/hwmon1/pwm1`
-
-to reduce the fan speed around to 1145 rpm.
 
 The default value of `pwm1` is 126 (1800 rpm) but it can be set from 0 (920 rpm) to 255 (2900 rpm).
 
@@ -1224,7 +1220,7 @@ Turn off HDD led
 gpioset gpiochip0 26=0
 ```
 
-Using `sys` file system
+Using `/sys` file system
 ```
 echo 26 > /sys/class/gpio/export
 echo  1 > /sys/class/gpio/gpio26/value 
