@@ -171,7 +171,7 @@ The End Of Service Life (EOSL) was March 31, 2020.
 - [Personalize the LCD display](https://github.com/alf45tar/ix4-300d#personalize-the-lcd-display)
 - [Using the buttons to trigger actions](https://github.com/alf45tar/ix4-300d#using-the-buttons-to-trigger-actions)
 - [Controlling the leds](https://github.com/alf45tar/ix4-300d#controlling-the-leds)
-- [Fix the poweroff/reboot issue](https://github.com/alf45tar/ix4-300d#fix_the_poweroff_reboot_issue)
+- [Fix the poweroff/reboot issue](https://github.com/alf45tar/ix4-300d#fix-the-poweroffreboot-issue)
 - [Bridging network ports](https://github.com/alf45tar/ix4-300d#bridging-network-ports)
 - [Bonding network ports](https://github.com/alf45tar/ix4-300d#bonding-network-ports)
 - [Connecting to WiFi](https://github.com/alf45tar/ix4-300d#connecting-to-wifi)
