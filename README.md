@@ -223,6 +223,11 @@ TFTP boot|USB boot
 ---------|--------
 [uImage_di_ix4_300d_bookworm](uImage_di_ix4_300d_bookworm)|[uImage_ix4_300d_bookworm](uImage_ix4_300d_bookworm)<br>[uInitrd_ix4_300d_bookwom](uInitrd_ix4_300d_bookwom)
 
+We provide files for installing Debian 11 too. The tutorial remains valid just replacing `bookworm` with `bullseye`.
+TFTP boot|USB boot
+---------|--------
+[uImage_di_ix4_300d_bullseye](uImage_di_ix4_300d_bullseye)|[uImage_ix4_300d_bullseye](uImage_ix4_300d_bullseye)<br>[uInitrd_ix4_300d_bullseye](uInitrd_ix4_300d_bullseye)
+
 ## Preparing the TFTP server
 
 _Skip it if you want to proceed with an USB stick._
@@ -495,13 +500,208 @@ The Debian installer should start in the serial console window with the followin
 <Tab> moves; <Space> selects; <Enter> activates buttons                         
 ```
 
-Go through the process as shown on screen. You will receive an error related to `grub` installation at the end. Don't worry and skip bootloader installation. You will receive the following warning: 
+Go through the process as shown on screen. You will receive an error related to `grub` installation at the end.
+```
+[            (1*installer)  2 shell  3 shell  4- log           ][ Sep 09 10:48 ]
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+    ┌────────────────┤ [!!] Install the GRUB boot loader ├────────────────┐     
+    │                                                                     │     
+    │                      GRUB installation failed                       │     
+    │ The 'grub-pc' package failed to install into /target/. Without the  │     
+    │ GRUB boot loader, the installed system will not boot.               │     
+    │                                                                     │     
+    │     <Go Back>                                        <Continue>     │     
+    │                                                                     │     
+    └─────────────────────────────────────────────────────────────────────┘     
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+<Tab> moves; <Space> selects; <Enter> activates buttons                         
+```
+
+Select `Continue`
 
 ```
-You will need to boot manually with the /vmlinuz kernel on partition /dev/sda1 and root=/dev/sda2 passed as a kernel argument.
+[            (1*installer)  2 shell  3 shell  4- log           ][ Sep 09 10:50 ]
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+     ┌───────────────┤ [!!] Install the GRUB boot loader ├───────────────┐      
+     │                                                                   │      
+     │                     Installation step failed                      │      
+     │ An installation step failed. You can try to run the failing item  │      
+     │ again from the menu, or skip it and choose something else. The    │      
+     │ failing step is: Install the GRUB boot loader                     │      
+     │                                                                   │      
+     │                            <Continue>                             │      
+     │                                                                   │      
+     └───────────────────────────────────────────────────────────────────┘      
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+<Tab> moves; <Space> selects; <Enter> activates buttons                         
 ```
 
-Do not complete the final stage of the install but choose to `Execute a shell` instead. Run the following commands
+Select `Continue`
+
+```
+[            (1*installer)  2 shell  3 shell  4- log           ][ Sep 09 10:51 ]
+                                                                                
+             ┌─────────┤ [?] Debian installer main menu ├─────────┐             
+             │                                                    │             
+             │ Choose the next step in the install process:       │             
+             │                                                    │             
+             │      Set up users and passwords             -      │             
+             │      Configure the clock                    ▒      │             
+             │      Detect disks                           ▒      │             
+             │      Partition disks                        ▒      │             
+             │      Install the base system                ▒      │             
+             │      Configure the package manager          ▒      │             
+             │      Select and install software            ▒      │             
+             │      Install the GRUB boot loader           ▒      │             
+             │      Continue without boot loader           ▒      │             
+             │      Finish the installation                0      │             
+             │      Change debconf priority                ▒      │             
+             │      Save debug logs                        ▒      │             
+             │      Execute a shell                        ▒      │             
+             │      Abort the installation                 .      │             
+             │                                                    │             
+             └────────────────────────────────────────────────────┘             
+                                                                                
+<Tab> moves; <Space> selects; <Enter> activates buttons                         
+```
+
+Select `Continue without boot loader`
+```
+[            (1*installer)  2 shell  3 shell  4- log           ][ Sep 09 10:53 ]
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+   ┌─────────────────┤ [!] Continue without boot loader ├──────────────────┐    
+   │                                                                       │    
+   │                       No boot loader installed                        │    
+   │ No boot loader has been installed, either because you chose not to or │    
+   │ because your specific architecture doesn't support a boot loader yet. │    
+   │                                                                       │    
+   │ You will need to boot manually with the /vmlinuz kernel on partition  │    
+   │ /dev/sda1 and root=/dev/sda2 passed as a kernel argument.             │    
+   │                                                                       │    
+   │                              <Continue>                               │    
+   │                                                                       │    
+   └───────────────────────────────────────────────────────────────────────┘    
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+<Tab> moves; <Space> selects; <Enter> activates buttons                         
+```
+
+Select `Continue`
+
+```
+[            (1*installer)  2 shell  3 shell  4- log           ][ Sep 09 10:55 ]
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+   ┌───────────────────┤ [!!] Finish the installation ├────────────────────┐    
+   │                                                                       │    
+  ┌│                         Installation complete                         │    
+  ││ Installation is complete, so it is time to boot into your new system. │    
+  ││ Make sure to remove the installation media, so that you boot into the │    
+  ││ new system rather than restarting the installation.                   │    
+  ││                                                                       │    
+  ││     <Go Back>                                          <Continue>     │    
+  └│                                                                       │    
+   └───────────────────────────────────────────────────────────────────────┘    
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+<Tab> moves; <Space> selects; <Enter> activates buttons                         
+```
+
+Select `Continue`
+
+```
+[            (1*installer)  2 shell  3 shell  4- log           ][ Sep 09 10:56 ]
+                                                                                
+             ┌─────────┤ [?] Debian installer main menu ├─────────┐             
+             │                                                    │             
+             │ Choose the next step in the install process:       │             
+             │                                                    │             
+             │      Set up users and passwords             -      │             
+             │      Configure the clock                    ▒      │             
+             │      Detect disks                           ▒      │             
+             │      Partition disks                        ▒      │             
+             │      Install the base system                ▒      │             
+             │      Configure the package manager          ▒      │             
+             │      Select and install software            ▒      │             
+             │      Install the GRUB boot loader           ▒      │             
+             │      Continue without boot loader           ▒      │             
+             │      Finish the installation                0      │             
+             │      Change debconf priority                ▒      │             
+             │      Save debug logs                        ▒      │             
+             │      Execute a shell                        ▒      │             
+             │      Abort the installation                 .      │             
+             │                                                    │             
+             └────────────────────────────────────────────────────┘             
+                                                                                
+<Tab> moves; <Space> selects; <Enter> activates buttons                         
+```
+
+Select `Execute a shell`
+
+```
+[            (1*installer)  2 shell  3 shell  4- log           ][ Sep 09 10:56 ]
+                                                                                
+                                                                                
+                                                                                
+   ┌────────────────────────┤ [!] Execute a shell ├────────────────────────┐    
+   │                                                                       │    
+   │                           Interactive shell                           │    
+   │ After this message, you will be running "ash", a Bourne-shell clone.  │    
+   │                                                                       │    
+   │ The root file system is a RAM disk. The hard disk file systems are    │    
+   │ mounted on "/target". The editor available to you is nano. It's very  │    
+   │ small and easy to figure out. To get an idea of what Unix utilities   │    
+   │ are available to you, use the "help" command.                         │    
+   │                                                                       │    
+   │ Use the "exit" command to return to the installation menu.            │    
+   │                                                                       │    
+   │     <Go Back>                                          <Continue>     │    
+   │                                                                       │    
+   └───────────────────────────────────────────────────────────────────────┘    
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+<Tab> moves; <Space> selects; <Enter> activates buttons                         
+```
+
+Select `Continue` and at the prompt run the following commands
 
 ```
 mount --bind /dev /target/dev
@@ -510,6 +710,29 @@ mount -t sysfs none /target/sys
 chroot /target /bin/sh
 apt-get update
 apt-get install flash-kernel
+```
+
+The following errors are ok
+```
+Creating config file /etc/default/flash-kernel with new version
+Processing triggers for libc-bin (2.31-13+deb11u6) ...
+Processing triggers for man-db (2.9.4-2) ...
+Processing triggers for initramfs-tools (0.140) ...
+update-initramfs: Generating /boot/initrd.img-5.10.0-25-armmp-lpae
+W: Possible missing firmware /lib/firmware/imx/sdma/sdma-imx6q.bin for built-in driver imx_sdma
+W: Possible missing firmware /lib/firmware/xc3028L-v36.fw for built-in driver tuner_xc2028
+W: Possible missing firmware /lib/firmware/xc3028-v27.fw for built-in driver tuner_xc2028
+W: Possible missing firmware /lib/firmware/dvb-fe-xc5000c-4.1.30.7.fw for built-in driver xc5000
+W: Possible missing firmware /lib/firmware/dvb-fe-xc5000-1.6.114.fw for built-in driver xc5000
+W: Possible missing firmware /lib/firmware/dvb-fe-xc4000-1.4.fw for built-in driver xc4000
+W: Possible missing firmware /lib/firmware/dvb-fe-xc4000-1.4.1.fw for built-in driver xc4000
+Unsupported platform 'Lenovo Iomega ix4-300d'.
+run-parts: /etc/initramfs/post-update.d//flash-kernel exited with return code 1
+dpkg: error processing package initramfs-tools (--configure):
+ installed initramfs-tools package post-installation script subprocess returned error exit status 1
+Errors were encountered while processing:
+ initramfs-tools
+E: Sub-process /usr/bin/dpkg returned an error code (1)
 ```
 
 Replace the content of the flash-kernel database file `/etc/flash-kernel/db` using `nano` 
@@ -535,6 +758,32 @@ Bootloader-Sets-Incorrect-Root: no
 Update initramfs and kernel: 
 ```
 update-initramfs -u
+```
+
+Now the errors are gone
+```
+update-initramfs: Generating /boot/initrd.img-5.10.0-25-armmp-lpae
+W: Possible missing firmware /lib/firmware/imx/sdma/sdma-imx6q.bin for built-in driver imx_sdma
+W: Possible missing firmware /lib/firmware/xc3028L-v36.fw for built-in driver tuner_xc2028
+W: Possible missing firmware /lib/firmware/xc3028-v27.fw for built-in driver tuner_xc2028
+W: Possible missing firmware /lib/firmware/dvb-fe-xc5000c-4.1.30.7.fw for built-in driver xc5000
+W: Possible missing firmware /lib/firmware/dvb-fe-xc5000-1.6.114.fw for built-in driver xc5000
+W: Possible missing firmware /lib/firmware/dvb-fe-xc4000-1.4.fw for built-in driver xc4000
+W: Possible missing firmware /lib/firmware/dvb-fe-xc4000-1.4.1.fw for built-in driver xc4000
+Using DTB: armada-xp-lenovo-ix4-300d.dtb
+Installing /usr/lib/linux-image-5.10.0-25-armmp-lpae/armada-xp-lenovo-ix4-300d.dtb into /boot/dtbs/5.10.0-25-armmp-lpae/./armada-xp-lenovo-ix4-300d.dtb
+Installing new armada-xp-lenovo-ix4-300d.dtb.
+Installing /usr/lib/linux-image-5.10.0-25-armmp-lpae/armada-xp-lenovo-ix4-300d.dtb into /boot/dtbs/5.10.0-25-armmp-lpae/./armada-xp-lenovo-ix4-300d.dtb
+Taking backup of armada-xp-lenovo-ix4-300d.dtb.
+Installing new armada-xp-lenovo-ix4-300d.dtb.
+flash-kernel: installing version 5.10.0-25-armmp-lpae
+flash-kernel: appending /usr/lib/linux-image-5.10.0-25-armmp-lpae/armada-xp-lenovo-ix4-300d.dtb to kernel
+Generating kernel u-boot image... done.
+Installing new uImage.
+Generating initramfs u-boot image... done.
+Installing new uInitrd.
+Taking backup of dtb.
+Installing new dtb.
 ```
 
 Set label on the rootfs partition: 
@@ -569,6 +818,7 @@ ext2load ide 2:1 0x2000000 uInitrd
 setenv bootargs $console $mtdparts root=LABEL=rootfs rw rootdelay=5
 bootm 0x40000 0x2000000
 ```
+
 or even better in a single command line
 ```
 ide reset; ext2load ide 2:1 0x0040000 uImage; ext2load ide 2:1 0x2000000 uInitrd; setenv bootargs $console $mtdparts root=LABEL=rootfs rw rootdelay=5; bootm 0x40000 0x2000000
@@ -706,6 +956,7 @@ Restart the service on changes
 ```
 systemctl restart lm-sensors.service
 ```
+
 The default fan speed is around 1800 rpm and it is quite noisy. Using fan control we can reduce a lot the fan noise using a fan speed around 1400 rpm in normal condition and increase up to 2950 rpm when the temperature increase. 
 
 Edit the `/etc/fancontrol` as follow to control the fan speed using the temperature of hard disk in the second bay
@@ -1005,6 +1256,7 @@ CPU load is the average percentage of the last 60 seconds. RAM is the used perce
    ```
    apt install python3-periphery
    apt install python3-pil
+   apt install python3-psutil
    ```
 2. Download the `lcd.py` script into `/opt/ix4-300d` folder
    ```
@@ -1459,6 +1711,8 @@ Open your browser and connect to `http://192.168.1.14:10000` or `http://lenovo.l
 ## Useful links
 
 https://forum.doozan.com/read.php?2,131833
+
+https://forum.doozan.com/read.php?2,32146
 
 https://github.com/benoitm974/ix4-300d/wiki
 
