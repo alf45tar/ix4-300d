@@ -171,6 +171,7 @@ The End Of Service Life (EOSL) was March 31, 2020.
 - [Personalize the LCD display](https://github.com/alf45tar/ix4-300d#personalize-the-lcd-display)
 - [Using the buttons to trigger actions](https://github.com/alf45tar/ix4-300d#using-the-buttons-to-trigger-actions)
 - [Controlling the leds](https://github.com/alf45tar/ix4-300d#controlling-the-leds)
+- [Fix the poweroff/reboot issue](https://github.com/alf45tar/ix4-300d#fix_the_poweroff_reboot_issue)
 - [Bridging network ports](https://github.com/alf45tar/ix4-300d#bridging-network-ports)
 - [Bonding network ports](https://github.com/alf45tar/ix4-300d#bonding-network-ports)
 - [Connecting to WiFi](https://github.com/alf45tar/ix4-300d#connecting-to-wifi)
@@ -1480,6 +1481,39 @@ echo  0 > /sys/class/gpio/gpio26/value
 echo 26 > /sys/class/gpio/unexport 
 ```
 
+## Fix the poweroff/reboot issue
+
+With the default network configuration the NAS reboot on poweroff. Both interfaces need to be brought up at boot for poweroff to work correctly.
+
+My suggested fix is to use a [bridge](https://github.com/alf45tar/ix4-300d#bridging-network-ports) or a [bond](https://github.com/alf45tar/ix4-300d#bonding-network-ports) of network ports but the below configuration is a fix too.
+
+Edit `/etc/network/interfaces` as follows 
+```
+# This file describes the network interfaces available on your system
+# and how to activate them. For more information, see interfaces(5).
+
+source /etc/network/interfaces.d/*
+
+# The loopback network interface
+auto lo
+iface lo inet loopback
+
+# The primary network interface
+auto eth0
+iface eth0 inet static
+address 192.168.1.14
+netmask 255.255.255.0
+gateway 192.168.1.1
+
+auto eth1
+iface eth1 inet static
+address 169.254.1.1
+netmask 255.255.0.0
+gateway 169.254.1.254
+```
+
+This setup forces `eth0` and `eth1` to go up at boot even when no cable is plugged in. 
+
 ## Bridging network ports
 
 During Debian installation you selected your primary network interface and the proper configuration file has been created.
@@ -1497,7 +1531,9 @@ The create a bridge between `eth0` and `eth1`:
    ```
    # This file describes the network interfaces available on your system
    # and how to activate them. For more information, see interfaces(5).
+
    source /etc/network/interfaces.d/*
+
    # The loopback network interface
    auto lo
    iface lo inet loopback
@@ -1653,10 +1689,9 @@ systemctl restart networking.service
    [21653.044913] input: C-Media Electronics Inc.       USB PnP Sound Device as /devices/platform/soc/soc:internal-regs/d0051000.usb/usb2/2-1/2-1:1.3/0003:8086:0808.0001/input/input1
    [21653.120228] hid-generic 0003:8086:0808.0001: input,hidraw0: USB HID v1.00 Device [C-Media Electronics Inc.       USB PnP Sound Device] on usb-d0051000.usb-1/input3
    ```
-2. Install ALSA the Advanced Linux Sound Architecture (`alsa-utils`, `alsamixergui` and `mpg123` are optional)
+2. Install the Advanced Linux Sound Architecture (ALSA)
    ```
-   apt install libasound2
-   apt install alsa-utils alsamixergui mpg123
+   apt install libasound2 alsa-utils
    ```
 3. Install the AirPlay receiver
    ```
@@ -1665,7 +1700,11 @@ systemctl restart networking.service
    > [!NOTE]
    > Shairport Sync plays audio streamed from iOS devices and third-party AirPlay sources. Audio played by a Shairport Sync-powered device stays synchronised with the source and hence with similar devices playing the same source. In this way, synchronised multi-room audio is possible without difficulty.
 
-4. Stream music from your iOS device (don't forget to attach a speker to your sound card)
+4. Stream music from your iOS device (don't forget to attach a speaker or headphones to your sound card)
+5. Adjust the volume
+   ```
+   alsamixer -c 1
+   ```
 
 ## Installing Cockpit
 
