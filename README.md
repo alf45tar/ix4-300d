@@ -1183,11 +1183,11 @@ To avoid `fancontrol` use ADT7475 directly. The ADT7475 has two modes of operati
 
 For example to switch in manaul mode
 
-`echo "1" > /sys/class/i2c-adapter/i2c-0/0-002e/hwmon/hwmon1/pwm1_enable`
+`echo 1 > /sys/class/i2c-adapter/i2c-0/0-002e/hwmon/hwmon1/pwm1_enable`
 
 and to reduce the fan speed around to 1145 rpm
 
-`echo "100" > /sys/class/i2c-adapter/i2c-0/0-002e/hwmon/hwmon1/pwm1`
+`echo 100 > /sys/class/i2c-adapter/i2c-0/0-002e/hwmon/hwmon1/pwm1`
 
 The default value of `pwm1` is 126 (1800 rpm) but it can be set from 0 (920 rpm) to 255 (2900 rpm).
 
@@ -1238,11 +1238,11 @@ Kernel Channel|ADT7475 Value|Meaning
 
 In the last two cases where two or more temperature sensors are used as input, the value that produces the highest fan speed is used to control the fan. To select all three sensors, the following command is used:
 
-`echo "7" > /sys/class/i2c-adapter/i2c-0/0-002e/hwmon/hwmon1/pwm1_auto_channels_temp`
+`echo 7 > /sys/class/i2c-adapter/i2c-0/0-002e/hwmon/hwmon1/pwm1_auto_channels_temp`
 
 Once the channel has been set, the ADT7475 is put into automatic mode as follows:
 
-`echo "2" > /sys/class/i2c-adapter/i2c-0/0-002e/hwmon/hwmon1/pwm1_enable`
+`echo 2 > /sys/class/i2c-adapter/i2c-0/0-002e/hwmon/hwmon1/pwm1_enable`
 
 
 ## Personalize the LCD display
@@ -1485,7 +1485,7 @@ echo 26 > /sys/class/gpio/unexport
 
 With the default network configuration the NAS reboot on poweroff. Both interfaces need to be brought up at boot for poweroff to work correctly.
 
-My suggested fix is to use a [bridge](https://github.com/alf45tar/ix4-300d#bridging-network-ports) or a [bond](https://github.com/alf45tar/ix4-300d#bonding-network-ports) of network ports but the below configuration is a fix too.
+My preferred solution is to use a [bridge](https://github.com/alf45tar/ix4-300d#bridging-network-ports) or a [bond](https://github.com/alf45tar/ix4-300d#bonding-network-ports) of network ports but the below configuration is a fix too.
 
 Edit `/etc/network/interfaces` as follows 
 ```
@@ -1512,7 +1512,7 @@ netmask 255.255.0.0
 gateway 169.254.1.254
 ```
 
-This setup forces `eth0` and `eth1` to go up at boot even when no cable is plugged in. 
+The setup forces `eth0` and `eth1` to go up at boot even when no cable is plugged in. 
 
 ## Bridging network ports
 
