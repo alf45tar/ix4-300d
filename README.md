@@ -1495,7 +1495,7 @@ ledtrig-usbport
 
 To socialize with `/sys/class/leds` filesystem here in the following some examples.
 
-- Setup System led (blue) to show network activity of `bond0` interface
+- Show network activity of `bond0` interface on System led (blue)
    ```
    modprobe netdev;
    echo netdev > /sys/class/leds/ix4-300d:sys:blue/trigger;
@@ -1503,15 +1503,16 @@ To socialize with `/sys/class/leds` filesystem here in the following some exampl
    echo 1      > /sys/class/leds/ix4-300d:sys:blue/link;
    echo 1      > /sys/class/leds/ix4-300d:sys:blue/tx;
    echo 1      > /sys/class/leds/ix4-300d:sys:blue/rx;
+
    ```
 
-- Setup HDD led (blue) to show disk activity
+- Show disk activity on HDD led (blue)
    ```
    echo disk-activity > /sys/class/leds/ix4-300d:hdd:blue/trigger;
    echo 1             > /sys/class/leds/ix4-300d:hdd:blue/brightness;
    ```
 
-- Setup Power led (white) to show heartbeat (the flash frequency is a hyperbolic function of the 1-minute CPU load average)
+- Show heartbeat (the flash frequency is a hyperbolic function of the 1-minute CPU load average) on Power led (white)
    ```
    echo heartbeat > /sys/class/leds/ix4-300d:power:white/trigger;
    echo 1         > /sys/class/leds/ix4-300d:power:white/invert;
@@ -1521,16 +1522,19 @@ To socialize with `/sys/class/leds` filesystem here in the following some exampl
 - To disable any trigger function for System blue led
    ```
    echo none > /sys/class/leds/ix4-300d:sys:blue/trigger
+
    ```
 
 - To power on the System blue led
    ```
    echo 0 > /sys/class/leds/ix4-300d:sys:blue/brightness
+
    ```
 
 - To power off the System blue led
    ```
    echo 1 > /sys/class/leds/ix4-300d:sys:blue/brightness
+
    ```
 
 
@@ -1749,7 +1753,15 @@ systemctl restart networking.service
    ```
    apt install iwd
    ```
-2. Insert a supported USB WiFi adapter into one of the available USB ports. Here in the following the log for a Linksys WUSB54GC v2 based on Realtek RTL8187B chip.
+2. Edit `/etc/iwd/main.conf` and uncomment the line
+   ```
+   EnableNetworkConfiguration=true
+   ```
+3. Restart the service
+   ```
+   systemctl restart iwd.service
+   ```
+4. Insert a supported USB WiFi adapter into one of the available USB ports. Here in the following the log for a Linksys WUSB54GC v2 based on Realtek RTL8187B chip.
    ```
    [ 1267.712422] usb 2-1: new high-speed USB device number 2 using xhci_hcd
    [ 1267.874230] usb 2-1: New USB device found, idVendor=1737, idProduct=0073, bcdDevice= 2.00
@@ -1763,58 +1775,55 @@ systemctl restart networking.service
    [ 1268.732574] usbcore: registered new interface driver rtl8187
    [ 1268.950444] rtl8187 2-1:1.0 wlx00226bdaeacb: renamed from wlan0
    ```   
-3. Configure thw WiFi connection using the following commands
+5. Configure thw WiFi connection using the interactive mode of `iwctl`
    ```
-   iwctl device list
-   iwctl station wlan0 scan
-   iwctl station wlan0 get-networks
-   iwctl --passphrase "wifi password" station wlan0 connect "MyWireless"
-   iwctl station wlan0 show
-   ```
-
-   The log of previous commands is available in the following
-   ```
-   root@lenovo:~# iwctl device list
-                                       Devices                                    
+   root@lenovo:~# iwctl 
+   NetworkConfigurationEnabled: enabled
+   StateDirectory: /var/lib/iwd
+   Version: 2.3
+   [iwd]# device list
+                                       Devices                                   *
    --------------------------------------------------------------------------------
      Name                  Address               Powered     Adapter     Mode      
    --------------------------------------------------------------------------------
-     wlan0                 00:22:6b:da:ea:cb     on          phy0        station     
+     wlx00226bdaeacb       00:22:6b:da:ea:cb     on          phy0        station     
 
-   root@lenovo:~# iwctl station wlan0 scan
-   root@lenovo:~# iwctl station wlan0 get-networks
-                                  Available networks                              
+   [iwd]# station wlx00226bdaeacb scan
+   [iwd]# station wlx00226bdaeacb get-networks
+                                  Available networks                             *
    --------------------------------------------------------------------------------
          Network name                      Security            Signal
    --------------------------------------------------------------------------------
-         MyWireless                        psk                 ****
-   root@lenovo:~# iwctl --passphrase "wifi password" station wlan0 connect "MyWireless"
-   [  469.632453] wlan0: authenticate with a4:2b:b0:b9:14:84
-   [  469.928878] wlan0: send auth to a4:2b:b0:b9:14:84 (try 1/3)
-   [  469.936527] wlan0: authenticated
-   [  469.940374] wlan0: associate with a4:2b:b0:b9:14:84 (try 1/3)
-   [  469.949572] wlan0: RX AssocResp from a4:2b:b0:b9:14:84 (capab=0x1011 status=0 aid=5)
-   [  469.958899] wlan0: associated
-   root@lenovo:~# iwctl station wlan0 show
-                                    Station: wlan0                                
+         MyWireless                        psk                 ****      
+
+   [iwd]# station wlx00226bdaeacb connect MyWireless 
+   Type the network passphrase for MyWireless psk.
+   Passphrase: ***********                                                         
+   [iwd]# station wlx00226bdaeacb show
+                               Station: wlx00226bdaeacb                           
    --------------------------------------------------------------------------------
      Settable  Property              Value                                          
    --------------------------------------------------------------------------------
                Scanning              no                                               
                State                 connected                                        
                Connected network     MyWireless                                       
-               IPv4 address          192.168.1.190                                    
+               IPv4 address          192.168.1.192                                    
                ConnectedBss          a4:2b:b0:b9:14:84                                
-               Frequency             2437                                             
+               Frequency             2412                                             
                Security              WPA2-Personal                                    
-               RSSI                  -39 dBm                                          
-               AverageRSSI           -40 dBm                                          
+               RSSI                  -31 dBm                                          
+               AverageRSSI           -30 dBm                                          
                TxBitrate             54000 Kbit/s                                     
-               RxBitrate             1000 Kbit/s                                      
-               ExpectedThroughput    18375 Kbit/s                                     
+               RxBitrate             54000 Kbit/s                                     
+               ExpectedThroughput    19593 Kbit/s                                     
 
-   root@lenovo:~# 
+   [iwd]# quit
    ```
+
+If you ave another wired interface on the same LAN (broadcast domain) remember to disable it with
+```
+ifdown bond0
+```
 
 ## Transform the NAS into a AirPlay speaker
 
