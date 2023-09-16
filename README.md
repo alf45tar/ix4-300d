@@ -343,7 +343,7 @@ From `Marvell>>` prompt enter the following commands:
 
 1. Set the IP address of the NAS: 
    ```
-   setenv ipaddress 192.168.1.111
+   setenv ipaddr 192.168.1.111
    ```
 
 2. Set the IP address of the macOS TFTP server: 
@@ -618,7 +618,7 @@ Select `Continue without boot loader`
 Select `Continue`
 
 ```
-[            (1*installer)  2 shell  3 shell  4- log           ][ Sep 09 10:55 ]
+[            (1*installer)  2 shell  3 shell  4- log           ][ Sep 09 10:54 ]
                                                                                 
                                                                                 
                                                                                 
@@ -631,20 +631,20 @@ Select `Continue`
   ││ Make sure to remove the installation media, so that you boot into the │    
   ││ new system rather than restarting the installation.                   │    
   ││                                                                       │    
-  ││     <Go Back>                                          <Continue>     │    
+  ││ Please choose <Continue> to reboot.                                   │    
   └│                                                                       │    
+   │     <Go Back>                                          <Continue>     │    
+   │                                                                       │    
    └───────────────────────────────────────────────────────────────────────┘    
                                                                                 
                                                                                 
                                                                                 
                                                                                 
                                                                                 
-                                                                                
-                                                                                
-<Tab> moves; <Space> selects; <Enter> activates buttons                         
+<Tab> moves; <Space> selects; <Enter> activates buttons                                      
 ```
 
-Select `Continue`
+Select `Go Back`
 
 ```
 [            (1*installer)  2 shell  3 shell  4- log           ][ Sep 09 10:56 ]
@@ -715,18 +715,40 @@ apt-get install flash-kernel
 
 The following errors are ok
 ```
+BusyBox v1.35.0 (Debian 1:1.35.0-4+b3) built-in shell (ash)
+Enter 'help' for a list of built-in commands.
+
+~ # mount --bind /dev /target/dev
+~ # mount -t proc none /target/proc
+~ # mount -t sysfs none /target/sys
+~ # chroot /target /bin/sh
+# apt-get update
+Hit:1 http://security.debian.org/debian-security bookworm-security InRelease
+Hit:2 http://deb.debian.org/debian bookworm InRelease
+Hit:3 http://deb.debian.org/debian bookworm-updates InRelease
+Reading package lists... Done
+# apt-get install flash-kernel
+Reading package lists... Done
+Building dependency tree... Done
+Reading state information... Done
+The following additional packages will be installed:
+  device-tree-compiler devio libfdt1 libiniparser1 liblzo2-2 libubootenv-tool
+  libubootenv0.1 libyaml-0-2 mtd-utils u-boot-tools
+The following NEW packages will be installed:
+  device-tree-compiler devio flash-kernel libfdt1 libiniparser1 liblzo2-2
+  libubootenv-tool libubootenv0.1 libyaml-0-2 mtd-utils u-boot-tools
+0 upgraded, 11 newly installed, 0 to remove and 0 not upgraded.
+Need to get 810 kB of archives.
+After this operation, 5143 kB of additional disk space will be used.
+Do you want to continue? [Y/n] Y
+.....
 Creating config file /etc/default/flash-kernel with new version
-Processing triggers for libc-bin (2.31-13+deb11u6) ...
-Processing triggers for man-db (2.9.4-2) ...
-Processing triggers for initramfs-tools (0.140) ...
-update-initramfs: Generating /boot/initrd.img-5.10.0-25-armmp-lpae
+Processing triggers for libc-bin (2.36-9+deb12u1) ...
+Processing triggers for man-db (2.11.2-2) ...
+Processing triggers for initramfs-tools (0.142) ...
+update-initramfs: Generating /boot/initrd.img-6.1.0-12-armmp-lpae
+W: Possible missing firmware /lib/firmware/imx/sdma/sdma-imx7d.bin for built-in driver imx_sdma
 W: Possible missing firmware /lib/firmware/imx/sdma/sdma-imx6q.bin for built-in driver imx_sdma
-W: Possible missing firmware /lib/firmware/xc3028L-v36.fw for built-in driver tuner_xc2028
-W: Possible missing firmware /lib/firmware/xc3028-v27.fw for built-in driver tuner_xc2028
-W: Possible missing firmware /lib/firmware/dvb-fe-xc5000c-4.1.30.7.fw for built-in driver xc5000
-W: Possible missing firmware /lib/firmware/dvb-fe-xc5000-1.6.114.fw for built-in driver xc5000
-W: Possible missing firmware /lib/firmware/dvb-fe-xc4000-1.4.fw for built-in driver xc4000
-W: Possible missing firmware /lib/firmware/dvb-fe-xc4000-1.4.1.fw for built-in driver xc4000
 Unsupported platform 'Lenovo Iomega ix4-300d'.
 run-parts: /etc/initramfs/post-update.d//flash-kernel exited with return code 1
 dpkg: error processing package initramfs-tools (--configure):
@@ -763,22 +785,17 @@ update-initramfs -u
 
 Now the errors are gone
 ```
-update-initramfs: Generating /boot/initrd.img-5.10.0-25-armmp-lpae
+update-initramfs: Generating /boot/initrd.img-6.1.0-12-armmp-lpae
+W: Possible missing firmware /lib/firmware/imx/sdma/sdma-imx7d.bin for built-in driver imx_sdma
 W: Possible missing firmware /lib/firmware/imx/sdma/sdma-imx6q.bin for built-in driver imx_sdma
-W: Possible missing firmware /lib/firmware/xc3028L-v36.fw for built-in driver tuner_xc2028
-W: Possible missing firmware /lib/firmware/xc3028-v27.fw for built-in driver tuner_xc2028
-W: Possible missing firmware /lib/firmware/dvb-fe-xc5000c-4.1.30.7.fw for built-in driver xc5000
-W: Possible missing firmware /lib/firmware/dvb-fe-xc5000-1.6.114.fw for built-in driver xc5000
-W: Possible missing firmware /lib/firmware/dvb-fe-xc4000-1.4.fw for built-in driver xc4000
-W: Possible missing firmware /lib/firmware/dvb-fe-xc4000-1.4.1.fw for built-in driver xc4000
 Using DTB: armada-xp-lenovo-ix4-300d.dtb
-Installing /usr/lib/linux-image-5.10.0-25-armmp-lpae/armada-xp-lenovo-ix4-300d.dtb into /boot/dtbs/5.10.0-25-armmp-lpae/./armada-xp-lenovo-ix4-300d.dtb
+Installing /usr/lib/linux-image-6.1.0-12-armmp-lpae/armada-xp-lenovo-ix4-300d.dtb into /boot/dtbs/6.1.0-12-armmp-lpae/./armada-xp-lenovo-ix4-300d.dtb
 Installing new armada-xp-lenovo-ix4-300d.dtb.
-Installing /usr/lib/linux-image-5.10.0-25-armmp-lpae/armada-xp-lenovo-ix4-300d.dtb into /boot/dtbs/5.10.0-25-armmp-lpae/./armada-xp-lenovo-ix4-300d.dtb
+Installing /usr/lib/linux-image-6.1.0-12-armmp-lpae/armada-xp-lenovo-ix4-300d.dtb into /boot/dtbs/6.1.0-12-armmp-lpae/./armada-xp-lenovo-ix4-300d.dtb
 Taking backup of armada-xp-lenovo-ix4-300d.dtb.
 Installing new armada-xp-lenovo-ix4-300d.dtb.
-flash-kernel: installing version 5.10.0-25-armmp-lpae
-flash-kernel: appending /usr/lib/linux-image-5.10.0-25-armmp-lpae/armada-xp-lenovo-ix4-300d.dtb to kernel
+flash-kernel: installing version 6.1.0-12-armmp-lpae
+flash-kernel: appending /usr/lib/linux-image-6.1.0-12-armmp-lpae/armada-xp-lenovo-ix4-300d.dtb to kernel
 Generating kernel u-boot image... done.
 Installing new uImage.
 Generating initramfs u-boot image... done.
@@ -1394,7 +1411,130 @@ They are recognized as keyboard entry. The keyboard device is `/dev/input/event0
 
 ## Controlling the leds
 
-Leds are working for the first 30 seconds after reboot. Need more investigation.
+Leds are not working with mainline Debian kernel because the `armhf` kernel is not compiled with
+
+```
+CONFIG_GPIO_74X164=m
+```
+
+I did it for you and after installing the new kernel leds are available under `/sys/class/leds`.
+
+```
+wget https://raw.githubusercontent.com/alf45tar/ix4-300d/main/linux-image-6.1.0-12-armmp-lpae_6.1.52-2_armhf.deb
+dpkg -i linux-image-6.1.0-12-armmp-lpae_6.1.52-2_armhf.deb
+reboot
+```
+
+After reboot leds are availbale under `/sys/class/leds`.
+
+The NAS has 3 external leds on front panel connected to 5 internal leds. From top to bottom:
+- System
+   - `ix4-300d:sys:blue`
+   - `ix4-300d:sysfail:red`
+- HDD
+   - `ix4-300d:hdd:blue`
+   - `ix4-300d:hddfail:red`
+- Power
+   - `ix4-300d:power:white`
+
+System and HDD leds can be blue, red or magenta (when both red and blue leds are on).
+
+The following led trigger do not require to load a module.
+```
+none
+usb-gadget
+usb-host
+kbd-scrolllock
+kbd-numlock
+kbd-capslock
+kbd-kanalock
+kbd-shiftlock
+kbd-altgrlock
+kbd-ctrllock
+kbd-altlock
+kbd-shiftllock
+kbd-shiftrlock
+kbd-ctrlllock
+kbd-ctrlrlock
+disk-activity
+disk-read
+disk-write
+ide-disk
+mtd
+nand-disk
+heartbeat
+cpu
+cpu0
+cpu1
+panic
+d0072004.mdio-mii:00:link
+d0072004.mdio-mii:00:1Gbps
+d0072004.mdio-mii:00:100Mbps
+d0072004.mdio-mii:00:10Mbps
+d0072004.mdio-mii:01:link
+d0072004.mdio-mii:01:1Gbps
+d0072004.mdio-mii:01:100Mbps
+d0072004.mdio-mii:01:10Mbps
+```
+
+The list of `ledtrig` modules that require `modprobe` or `/etc/modules` is
+```
+ledtrig-activity
+ledtrig-backlight
+ledtrig-default-on
+ledtrig-netdev
+ledtrig-pattern
+ledtrig-transient
+ledtrig-audio
+ledtrig-camera
+ledtrig-gpio
+ledtrig-oneshot
+ledtrig-timer
+ledtrig-usbport
+```
+
+To socialize with `/sys/class/leds` filesystem here in the following some examples.
+
+- Setup System led (blue) to show network activity of `bond0` interface
+   ```
+   modprobe netdev;
+   echo netdev > /sys/class/leds/ix4-300d:sys:blue/trigger;
+   echo bond0  > /sys/class/leds/ix4-300d:sys:blue/device_name;
+   echo 1      > /sys/class/leds/ix4-300d:sys:blue/link;
+   echo 1      > /sys/class/leds/ix4-300d:sys:blue/tx;
+   echo 1      > /sys/class/leds/ix4-300d:sys:blue/rx;
+   ```
+
+- Setup HDD led (blue) to show disk activity
+   ```
+   echo disk-activity > /sys/class/leds/ix4-300d:hdd:blue/trigger;
+   echo 1             > /sys/class/leds/ix4-300d:hdd:blue/brightness;
+   ```
+
+- Setup Power led (white) to show heartbeat (the flash frequency is a hyperbolic function of the 1-minute CPU load average)
+   ```
+   echo heartbeat > /sys/class/leds/ix4-300d:power:white/trigger;
+   echo 1         > /sys/class/leds/ix4-300d:power:white/invert;
+
+   ```
+
+- To disable any trigger function for System blue led
+   ```
+   echo none > /sys/class/leds/ix4-300d:sys:blue/trigger
+   ```
+
+- To power on the System blue led
+   ```
+   echo 0 > /sys/class/leds/ix4-300d:sys:blue/brightness
+   ```
+
+- To power off the System blue led
+   ```
+   echo 1 > /sys/class/leds/ix4-300d:sys:blue/brightness
+   ```
+
+
+## Interacting with GPIOs
 
 Install tools for interacting with Linux GPIO character device
 ```
@@ -1485,6 +1625,8 @@ echo 26 > /sys/class/gpio/unexport
 
 With the default network configuration the NAS reboot on poweroff. Both interfaces need to be brought up at boot for poweroff to work correctly.
 
+You need both `eth0` and `eth1` initialized (i.e having them up does the tweak) for poweroff to shutdown otherwise it reboots.
+
 My preferred solution is to use a [bridge](https://github.com/alf45tar/ix4-300d#bridging-network-ports) or a [bond](https://github.com/alf45tar/ix4-300d#bonding-network-ports) of network ports but the below configuration is a fix too.
 
 Edit `/etc/network/interfaces` as follows 
@@ -1570,7 +1712,9 @@ For best performance you could create a bonding between `eth0` and `eth1`. You c
    ```
    # This file describes the network interfaces available on your system
    # and how to activate them. For more information, see interfaces(5).
+   
    source /etc/network/interfaces.d/*
+   
    # The loopback network interface
    auto lo
    iface lo inet loopback
