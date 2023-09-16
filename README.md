@@ -171,6 +171,7 @@ The End Of Service Life (EOSL) was March 31, 2020.
 - [Personalize the LCD display](https://github.com/alf45tar/ix4-300d#personalize-the-lcd-display)
 - [Using the buttons to trigger actions](https://github.com/alf45tar/ix4-300d#using-the-buttons-to-trigger-actions)
 - [Controlling the leds](https://github.com/alf45tar/ix4-300d#controlling-the-leds)
+- [Interacting with GPIOS](https://github.com/alf45tar/ix4-300d#interacting-with-gpios)
 - [Fix the poweroff/reboot issue](https://github.com/alf45tar/ix4-300d#fix-the-poweroffreboot-issue)
 - [Bridging network ports](https://github.com/alf45tar/ix4-300d#bridging-network-ports)
 - [Bonding network ports](https://github.com/alf45tar/ix4-300d#bonding-network-ports)
@@ -1417,7 +1418,7 @@ Leds are not working with mainline Debian kernel because the `armhf` kernel is n
 CONFIG_GPIO_74X164=m
 ```
 
-I did it for you and after installing the new kernel leds are available under `/sys/class/leds`.
+I did it for you and, after installing the new kernel, leds are available under `/sys/class/leds`.
 
 ```
 wget https://raw.githubusercontent.com/alf45tar/ix4-300d/main/linux-image-6.1.0-12-armmp-lpae_6.1.52-2_armhf.deb
@@ -1497,7 +1498,7 @@ To socialize with `/sys/class/leds` filesystem here in the following some exampl
 
 - Show network activity of `bond0` interface on System led (blue)
    ```
-   modprobe netdev;
+   modprobe ledtrig-netdev;
    echo netdev > /sys/class/leds/ix4-300d:sys:blue/trigger;
    echo bond0  > /sys/class/leds/ix4-300d:sys:blue/device_name;
    echo 1      > /sys/class/leds/ix4-300d:sys:blue/link;
@@ -1510,6 +1511,7 @@ To socialize with `/sys/class/leds` filesystem here in the following some exampl
    ```
    echo disk-activity > /sys/class/leds/ix4-300d:hdd:blue/trigger;
    echo 1             > /sys/class/leds/ix4-300d:hdd:blue/brightness;
+
    ```
 
 - Show heartbeat (the flash frequency is a hyperbolic function of the 1-minute CPU load average) on Power led (white)
@@ -1551,7 +1553,8 @@ apt install gpiod
 root@lenovo:~# gpiodetect 
 gpiochip0 [d0018100.gpio] (32 lines)
 gpiochip1 [d0018140.gpio] (17 lines)
-root@lenovo:~# gpioinfo 
+gpiochip2 [74hc595] (8 lines)
+root@lenovo:~# gpioinfo
 gpiochip0 - 32 lines:
         line   0:      unnamed       unused   input  active-high 
         line   1:      unnamed       unused   input  active-high 
@@ -1579,7 +1582,7 @@ gpiochip0 - 32 lines:
         line  23:      unnamed       unused   input  active-high 
         line  24:      unnamed "gpio-poweroff" output active-high [used]
         line  25:      unnamed        "sck"  output   active-low [used]
-        line  26:      unnamed       unused   input  active-high 
+        line  26:      unnamed "ix4-300d:hdd:blue" output active-high [used]
         line  27:      unnamed   "spi0 CS0"  output   active-low [used]
         line  28:      unnamed      "sysfs"  output  active-high [used]
         line  29:      unnamed      "sysfs"  output  active-high [used]
@@ -1603,11 +1606,23 @@ gpiochip1 - 17 lines:
         line  14:      unnamed       unused   input  active-high 
         line  15:      unnamed       "mosi"  output   active-low [used]
         line  16:      unnamed       unused   input  active-high 
-
+gpiochip2 - 8 lines:
+        line   0:      unnamed       unused  output  active-high 
+        line   1:      unnamed "ix4-300d:power:white" output active-low [used]
+        line   2:      unnamed "ix4-300d:sysfail:red" output active-high [used]
+        line   3:      unnamed "ix4-300d:sys:blue" output active-high [used]
+        line   4:      unnamed "ix4-300d:hddfail:red" output active-high [used]
+        line   5:      unnamed       unused  output  active-high 
+        line   6:      unnamed       unused  output  active-high 
+        line   7:      unnamed       unused  output  active-high 
 ```
 > [!NOTE]
 > GPIO pins has been assigned to a hardware device driver in kernel device tree. We will not be able to control the pin from user-space as it will forever be "busy". The only solution in this case would be to alter the device tree (likely disabling the HW driver) as to leave the pin unassigned by DTS.
 
+Unload the `leds_gpio` module to release an output pin
+```
+rmmod leds_gpio
+```
 Turn on HDD led
 ```
 gpioset gpiochip0 26=1
