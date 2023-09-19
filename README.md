@@ -1430,8 +1430,8 @@ dpkg -i linux-image-6.1.0-12-armmp-lpae_6.1.52-2_armhf.deb
 reboot
 ```
 
-
 The NAS has 3 external leds on front panel connected to 5 internal leds. From top to bottom:
+
 - System
    - `ix4-300d:sys:blue`
    - `ix4-300d:sysfail:red`
