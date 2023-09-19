@@ -20,7 +20,13 @@ The latest **imager** with that version can be found here:
 
 https://download.lenovo.com/nasupdate/asgimage/h4c-4.1.414.34909.zip
 
+
 The original firmware is based on Debian 7 (wheezy) and it is stored into a flash memory. NAS can boot without any disk if the flash is ok. If the flash is corrupted the above imager must be used.
+
+Open source code components for LifeLine-based network devices running version [4.1.414](http://download.lenovo.com/nas/foss/lenovoemc-lifeline-fosskit-4.1.414.34909.tar.gz) can be downloade from
+
+https://download.lenovo.com/lenovoemc/na/en/app/answers/detail/a_id/34437.html
+
 
 ```
 BootROM 1.15
@@ -1195,9 +1201,7 @@ Restart the service on changes
 systemctl restart fancontrol.service
 ```
 
-To avoid `fancontrol` use ADT7475 directly. The ADT7475 has two modes of operation: manual and automatic. When the system boots up, the controller is in manual mode and the fan runs at a predefined speed. There is only one fan in the ix400-300d and it is controlled via the `pwm1*` `/sys` file system. In manual mode, the file `pwm1` controls the speed of the fan. These files are found in the following directory:
-
-`/sys/class/i2c-adapter/i2c-0/0-002e/hwmon/hwmon1`
+To avoid `fancontrol` use ADT7475 directly. The ADT7475 has two modes of operation: manual and automatic. When the system boots up, the controller is in manual mode and the fan runs at a predefined speed. There is only one fan in the ix400-300d and it is controlled via `/sys/class/i2c-adapter/i2c-0/0-002e/hwmon/hwmon1/`. In manual mode, the file `pwm1` controls the speed of the fan.
 
 For example to switch in manaul mode
 
@@ -1211,11 +1215,11 @@ The default value of `pwm1` is 126 (1800 rpm) but it can be set from 0 (920 rpm)
 
 The ADT7475 device driver supports the following "control" values in `pwm1_enable`:
 
-Value|Meaning
------|-------
-0|Run fan at full speed
-1|Manual mode
-2|Automatic mode
+Value|Meaning|Command
+-----|-------|-------
+0|Run fan at full speed|`echo 0 > /sys/class/i2c-adapter/i2c-0/0-002e/hwmon/hwmon1/pwm1_enable`
+1|Manual mode|`echo 1 > /sys/class/i2c-adapter/i2c-0/0-002e/hwmon/hwmon1/pwm1_enable`
+2|Automatic mode|`echo 2 > /sys/class/i2c-adapter/i2c-0/0-002e/hwmon/hwmon1/pwm1_enable`
 
 In automatic mode you must first select channel (see below).
 
@@ -1418,7 +1422,7 @@ Leds are not working with mainline Debian kernel because the `armhf` kernel is n
 CONFIG_GPIO_74X164=m
 ```
 
-I did it for you and, after installing the new kernel, leds are available under `/sys/class/leds`.
+I did it for you and here the instruction for installing the new kernel. After reboot leds are availbale under `/sys/class/leds`.
 
 ```
 wget https://raw.githubusercontent.com/alf45tar/ix4-300d/main/linux-image-6.1.0-12-armmp-lpae_6.1.52-2_armhf.deb
@@ -1426,7 +1430,6 @@ dpkg -i linux-image-6.1.0-12-armmp-lpae_6.1.52-2_armhf.deb
 reboot
 ```
 
-After reboot leds are availbale under `/sys/class/leds`.
 
 The NAS has 3 external leds on front panel connected to 5 internal leds. From top to bottom:
 - System
@@ -1871,7 +1874,7 @@ ifdown bond0
 4. Stream music from your iOS device (don't forget to attach a speaker or headphones to your sound card)
 5. Adjust the volume
    ```
-   alsamixer -c 1
+   alsamixer
    ```
 
 ## Installing Cockpit
