@@ -241,8 +241,8 @@ TFTP boot|USB boot
 _Skip it if you want to proceed with an USB stick._
 
 1. Copy the `uImage_di_ix4_300d_bookworm` file prepared above into `/private/tftpboot` folder of macOS.
-   > [!NOTE]
-   > By default the built in macOS TFTP server uses the folder `/private/tftpboot` which is hidden in Finder, but can be accessed by using “Go to Folder” or hitting Command+Shift+G and entering `/private/tftpboot`
+> [!NOTE]
+> By default the built in macOS TFTP server uses the folder `/private/tftpboot` which is hidden in Finder, but can be accessed by using “Go to Folder” or hitting Command+Shift+G and entering `/private/tftpboot`
 3. Open a Terminal an execute the following commands:
    ```
    sudo launchctl load -F /System/Library/LaunchDaemons/tftp.plist
@@ -391,8 +391,8 @@ _Skip it if you prepared the TFTP server._
    setenv bootargs $console $mtdparts root=/dev/sda2 rw rootdelay=10
    bootm 0x40000 0x2000000
    ```
-   > [!NOTE]
-   > `usb tree`, `usb info` and `usb part` are for information only.
+> [!NOTE]
+> `usb tree`, `usb info` and `usb part` are for information only.
 
 The log of previous commands is available in the following
 ```
