@@ -260,7 +260,7 @@ _Skip it if you prepared a TFTP server._
 1. Create an USB stick with an ext2 partition as first partition. Marvell U-Boot can only boot from the first partition.
 2. Copy `uImage_ix4_300d_bookworm` and `uinitrd_ix4_300d_bookworm` into it.
 > [!NOTE]
-> We do not need an bootable USB stick.
+> We do not need a bootable USB stick.
 
 
 ## Connecting the USB-to-TTL adapter
