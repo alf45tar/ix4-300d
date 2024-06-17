@@ -1840,7 +1840,7 @@ systemctl restart networking.service
    [iwd]# quit
    ```
 
-If you ave another wired interface on the same LAN (broadcast domain) remember to disable it with
+If you have another wired interface on the same LAN (broadcast domain) remember to disable it with
 ```
 ifdown bond0
 ```
@@ -1870,8 +1870,8 @@ ifdown bond0
    ```
    apt install shairport-sync
    ```
-   > [!NOTE]
-   > Shairport Sync plays audio streamed from iOS devices and third-party AirPlay sources. Audio played by a Shairport Sync-powered device stays synchronised with the source and hence with similar devices playing the same source. In this way, synchronised multi-room audio is possible without difficulty.
+> [!NOTE]
+> Shairport Sync plays audio streamed from iOS devices and third-party AirPlay sources. Audio played by a Shairport Sync-powered device stays synchronised with the source and hence with similar devices playing the same source. In this way, synchronised multi-room audio is possible without difficulty.
 
 4. Stream music from your iOS device (don't forget to attach a speaker or headphones to your sound card)
 5. Adjust the volume
