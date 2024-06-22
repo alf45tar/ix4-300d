@@ -851,6 +851,14 @@ or even better in a single command line
 ide reset; ext2load ide 2:1 0x0040000 uImage; ext2load ide 2:1 0x2000000 uInitrd; setenv bootargs $console $mtdparts root=LABEL=rootfs rw rootdelay=5; bootm 0x40000 0x2000000
 ```
 
+## Permanent boot from internal disk
+```
+setenv bootdebian 'ide reset; ext2load ide 2:1 0x0040000 uImage; ext2load ide 2:1 0x2000000 uInitrd; setenv bootargs $console $mtdparts root=LABEL=rootfs rw rootdelay=5; bootm 0x40000 0x2000000;'
+setenv bootcmd 'run bootdebian; reset;'
+saveenv
+reset
+```
+
 ## Improve the experience
 
 Once the Debian installation is completed I suggest to enable `root` login from network and install some packages to improve the user experience.
