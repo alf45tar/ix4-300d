@@ -248,8 +248,6 @@ _Skip it if you want to proceed with an USB stick._
 3. Open a Terminal an execute the following commands:
    ```
    sudo launchctl load -F /System/Library/LaunchDaemons/tftp.plist
-   ```
-   ```
    sudo launchctl start com.apple.tftpd
    ```
 
