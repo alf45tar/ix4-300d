@@ -1286,9 +1286,7 @@ CPU load is the average percentage of the last 60 seconds. RAM is the used perce
 
 1. Install  the following packages
    ```
-   apt install python3-periphery
-   apt install python3-pil
-   apt install python3-psutil
+   apt install python3-periphery python3-pil python3-psutil
    ```
 2. Download the `lcd.py` script into `/opt/ix4-300d` folder
    ```
