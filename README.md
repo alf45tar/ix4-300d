@@ -859,7 +859,7 @@ To enable `root` login from network add
 ```
 PermitRootLogin yes
 ```
-to file `/etc/ssh/sshd_config` and restart sshd service with
+to file `/etc/ssh/sshd_config` and restart service with
 ```
 systemctl restart ssh.service
 ```
@@ -868,9 +868,7 @@ It is nice to have the `resize` command to set environment and terminal settings
 
 Avahi is a system which facilitates service discovery on a local network via the mDNS/DNS-SD protocol suite (a.k.a. Bonjour or Zeroconf).
 ```
-apt install xterm
-apt install avahi-daemon
-apt install smartmontools
+apt install xterm avahi-daemon smartmontools
 ```
 
 ## Connect temperature sensors and fan control
