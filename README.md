@@ -1,6 +1,6 @@
 # Installing Debian 12 on Lenovo Iomega ix4-300d
 
-The scope of this tutorial is to revamp a Lenovo Iomega ix4-300d NAS installing the last version of Debian and potentially any recent software. 
+The scope of this tutorial is to revamp a Lenovo Iomega ix4-300d NAS installing the last version of Debian and potentially any recent software.
 
 Lenovo Iomega ix4-300d is a NAS released in late 2012 equipped with:
 - Marvell Armada XP 1.3GHz Dual Core (MV78230 ARMv7 SoC)
@@ -31,8 +31,8 @@ https://download.lenovo.com/lenovoemc/na/en/app/answers/detail/a_id/34437.html
 ```
 BootROM 1.15
 Booting from NAND flash
-DDR3 Training Sequence - Ver 2.3.4 
-DDR3 Training Sequence - Ended Successfully 
+DDR3 Training Sequence - Ver 2.3.4
+DDR3 Training Sequence - Ended Successfully
 BootROM: Image checksum verification PASSED
 
  __   __                      _ _
@@ -41,10 +41,10 @@ BootROM: Image checksum verification PASSED
 | |  | | (_| | |   \ V /  __/ | |
 |_|  |_|\__,_|_|    \_/ \___|_|_|
          _   _     ____              _
-        | | | |   | __ )  ___   ___ | |_ 
-        | | | |___|  _ \ / _ \ / _ \| __| 
-        | |_| |___| |_) | (_) | (_) | |_ 
-         \___/    |____/ \___/ \___/ \__| 
+        | | | |   | __ )  ___   ___ | |_
+        | | | |___|  _ \ / _ \ / _ \| __|
+        | |_| |___| |_) | (_) | (_) | |_
+         \___/    |____/ \___/ \___/ \__|
  ** LOADER 2.3.2.6  **
 
 
@@ -81,7 +81,7 @@ USB 2: Device Mode
 Modules Detected:
 MMC:   MRVL_MMC: 0
 Net:   egiga0 [PRIME], egiga1
-Hit any key to stop autoboot:  0 
+Hit any key to stop autoboot:  0
 
 NAND read: device 0 offset 0x120000, size 0x400000
  4194304 bytes read: OK
@@ -97,7 +97,7 @@ NAND read: device 0 offset 0x520000, size 0x400000
    Entry Point:  00008000
    Verifying Checksum ... OK
 ## Loading init Ramdisk from Legacy Image at 02000000 ...
-   Image Name:   
+   Image Name:
    Created:      2020-01-14  10:40:35 UTC
    Image Type:   ARM Linux RAMDisk Image (bzip2 compressed)
    Data Size:    3012478 Bytes =  2.9 MB
@@ -117,15 +117,15 @@ Welcome to CenterPoint.
 ix4-300d login:
 ```
 ```
-root@ix4-300d:/# cat /etc/debian_version 
+root@ix4-300d:/# cat /etc/debian_version
 7.11
 ```
 ```
-root@ix4-300d:/# cat /proc/version 
+root@ix4-300d:/# cat /proc/version
 Linux version 3.2.40 (soho@bsoho083.iomegacorp.com) (gcc version 4.7.2 (crosstool-NG 1.20.0) ) #1 SMP Thu Jan 2 06:18:39 EST 2020 v2.1.1.1
 ```
 ```
-root@ix4-300d:/# cat /proc/mtd        
+root@ix4-300d:/# cat /proc/mtd
 dev:    size   erasesize  name
 mtd0: 000e0000 00020000 "uboot"
 mtd1: 00020000 00020000 "env"
@@ -136,7 +136,7 @@ mtd5: 3f200000 00020000 "boot"
 mtd6: 40000000 00020000 "flash"
 ```
 ```
-root@ix4-300d:/# cat /proc/cpuinfo 
+root@ix4-300d:/# cat /proc/cpuinfo
 Processor       : Marvell PJ4Bv7 Processor rev 2 (v7l)
 processor       : 0
 BogoMIPS        : 1332.01
@@ -144,7 +144,7 @@ BogoMIPS        : 1332.01
 processor       : 1
 BogoMIPS        : 1332.01
 
-Features        : swp half thumb fastmult vfp edsp vfpv3 tls 
+Features        : swp half thumb fastmult vfp edsp vfpv3 tls
 CPU implementer : 0x56
 CPU architecture: 7
 CPU variant     : 0x2
@@ -199,7 +199,7 @@ The End Of Service Life (EOSL) was March 31, 2020.
 
 On a Linux box:
 
-1. Download `vmlinuz`, `initrd.gz` and `armada-xp-lenovo-ix4-300d.dtb` files from the Debian website: 
+1. Download `vmlinuz`, `initrd.gz` and `armada-xp-lenovo-ix4-300d.dtb` files from the Debian website:
 
    ```
    wget https://deb.debian.org/debian/dists/bookworm/main/installer-armhf/current/images/netboot/vmlinuz
@@ -207,7 +207,7 @@ On a Linux box:
    wget https://deb.debian.org/debian/dists/bookworm/main/installer-armhf/current/images/device-tree/armada-xp-lenovo-ix4-300d.dtb
    ```
 
-2. Append dtb file to the kernel: 
+2. Append dtb file to the kernel:
    ```
    cat vmlinuz armada-xp-lenovo-ix4-300d.dtb > vmlinuz_ix4_300d
    ```
@@ -223,7 +223,7 @@ On a Linux box:
    ```
 > [!NOTE]
 > The `mkimage` command is used to create images for use with the U-Boot boot loader. Thes images can contain the linux kernel, device tree blob, root file system image, firmware images etc., either separate or combined.
-> 
+>
 > mkimage supports many image formats. Some of these formats may be used by embedded boot firmware to load U-Boot. Others may be used by U-Boot to load Linux (or some other kernel):
 >
 >The legacy image format concatenates the individual parts (for example, kernel image, device tree blob and ramdisk image) and adds a 64 byte header containing information about the target architecture, operating system, image type, compression method, entry points, time stamp, checksums, etc.
@@ -252,7 +252,7 @@ _Skip it if you want to proceed with an USB stick._
    ```
    sudo launchctl start com.apple.tftpd
    ```
-   
+
 ## Preparing the USB stick
 
 _Skip it if you prepared a TFTP server._
@@ -288,8 +288,8 @@ Pin|Function|Description
    ```
    BootROM 1.15
    Booting from NAND flash
-   DDR3 Training Sequence - Ver 2.3.4 
-   DDR3 Training Sequence - Ended Successfully 
+   DDR3 Training Sequence - Ver 2.3.4
+   DDR3 Training Sequence - Ended Successfully
    BootROM: Image checksum verification PASSED
 
    __   __                      _ _
@@ -298,10 +298,10 @@ Pin|Function|Description
    | |  | | (_| | |   \ V /  __/ | |
    |_|  |_|\__,_|_|    \_/ \___|_|_|
             _   _     ____              _
-           | | | |   | __ )  ___   ___ | |_ 
-           | | | |___|  _ \ / _ \ / _ \| __| 
-           | |_| |___| |_) | (_) | (_) | |_ 
-            \___/    |____/ \___/ \___/ \__| 
+           | | | |   | __ )  ___   ___ | |_
+           | | | |___|  _ \ / _ \ / _ \| __|
+           | |_| |___| |_) | (_) | (_) | |_
+            \___/    |____/ \___/ \___/ \__|
     ** LOADER 2.3.2.6  **
 
 
@@ -338,8 +338,8 @@ Pin|Function|Description
    Modules Detected:
    MMC:   MRVL_MMC: 0
    Net:   egiga0 [PRIME], egiga1
-   Hit any key to stop autoboot:  0 
-   Marvell>> 
+   Hit any key to stop autoboot:  0
+   Marvell>>
    ```
 
 ## Boot the NAS from TFTP server
@@ -350,12 +350,12 @@ Connect the NAS Ethernet port 1 to your network. In the following we will assume
 
 From `Marvell>>` prompt enter the following commands:
 
-1. Set the IP address of the NAS: 
+1. Set the IP address of the NAS:
    ```
    setenv ipaddr 192.168.1.111
    ```
 
-2. Set the IP address of the macOS TFTP server: 
+2. Set the IP address of the macOS TFTP server:
    ```
    setenv serverip 192.168.1.10
    ```
@@ -410,14 +410,14 @@ Marvell>> usb tree
 
 Device Tree:
   1  Hub (480 Mb/s, 0mA)
-  |  u-boot EHCI Host Controller 
+  |  u-boot EHCI Host Controller
   |
   +-2  Mass Storage (480 Mb/s, 200mA)
          13111409002422
-     
+
 Marvell>> usb info
 1: Hub,  USB Revision 2.0
- - u-boot EHCI Host Controller 
+ - u-boot EHCI Host Controller
  - Class: Hub
  - PacketSize: 64  Configurations: 1
  - Vendor: 0x0000  Product 0x0000 Version 1.0
@@ -485,230 +485,230 @@ Starting kernel ...
 The Debian installer should start in the serial console window with the following screen
 ```
 [            (1*installer)  2 shell  3 shell  4- log           ][ Aug 24 21:36 ]
-                                                                                
-                                                                                
-                                                                                
-  ┌───────────────────────┤ [!!] Select a language ├────────────────────────┐   
-  │                                                                         │   
-  │ Choose the language to be used for the installation process. The        │   
-  │ selected language will also be the default language for the installed   │   
-  │ system.                                                                 │   
-  │                                                                         │   
-  │ Language:                                                               │   
-  │                                                                         │   
-  │                               C                                         │   
-  │                               English                                   │   
-  │                                                                         │   
-  │     <Go Back>                                                           │   
-  │                                                                         │   
-  └─────────────────────────────────────────────────────────────────────────┘   
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-<Tab> moves; <Space> selects; <Enter> activates buttons                         
+
+
+
+  ┌───────────────────────┤ [!!] Select a language ├────────────────────────┐
+  │                                                                         │
+  │ Choose the language to be used for the installation process. The        │
+  │ selected language will also be the default language for the installed   │
+  │ system.                                                                 │
+  │                                                                         │
+  │ Language:                                                               │
+  │                                                                         │
+  │                               C                                         │
+  │                               English                                   │
+  │                                                                         │
+  │     <Go Back>                                                           │
+  │                                                                         │
+  └─────────────────────────────────────────────────────────────────────────┘
+
+
+
+
+
+<Tab> moves; <Space> selects; <Enter> activates buttons
 ```
 
 Go through the process as shown on screen. You will receive an error related to `grub` installation at the end.
 ```
 [            (1*installer)  2 shell  3 shell  4- log           ][ Sep 09 10:48 ]
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-    ┌────────────────┤ [!!] Install the GRUB boot loader ├────────────────┐     
-    │                                                                     │     
-    │                      GRUB installation failed                       │     
-    │ The 'grub-pc' package failed to install into /target/. Without the  │     
-    │ GRUB boot loader, the installed system will not boot.               │     
-    │                                                                     │     
-    │     <Go Back>                                        <Continue>     │     
-    │                                                                     │     
-    └─────────────────────────────────────────────────────────────────────┘     
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-<Tab> moves; <Space> selects; <Enter> activates buttons                         
+
+
+
+
+
+
+
+    ┌────────────────┤ [!!] Install the GRUB boot loader ├────────────────┐
+    │                                                                     │
+    │                      GRUB installation failed                       │
+    │ The 'grub-pc' package failed to install into /target/. Without the  │
+    │ GRUB boot loader, the installed system will not boot.               │
+    │                                                                     │
+    │     <Go Back>                                        <Continue>     │
+    │                                                                     │
+    └─────────────────────────────────────────────────────────────────────┘
+
+
+
+
+
+
+<Tab> moves; <Space> selects; <Enter> activates buttons
 ```
 
 Select `Continue`
 
 ```
 [            (1*installer)  2 shell  3 shell  4- log           ][ Sep 09 10:50 ]
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-     ┌───────────────┤ [!!] Install the GRUB boot loader ├───────────────┐      
-     │                                                                   │      
-     │                     Installation step failed                      │      
-     │ An installation step failed. You can try to run the failing item  │      
-     │ again from the menu, or skip it and choose something else. The    │      
-     │ failing step is: Install the GRUB boot loader                     │      
-     │                                                                   │      
-     │                            <Continue>                             │      
-     │                                                                   │      
-     └───────────────────────────────────────────────────────────────────┘      
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-<Tab> moves; <Space> selects; <Enter> activates buttons                         
+
+
+
+
+
+     ┌───────────────┤ [!!] Install the GRUB boot loader ├───────────────┐
+     │                                                                   │
+     │                     Installation step failed                      │
+     │ An installation step failed. You can try to run the failing item  │
+     │ again from the menu, or skip it and choose something else. The    │
+     │ failing step is: Install the GRUB boot loader                     │
+     │                                                                   │
+     │                            <Continue>                             │
+     │                                                                   │
+     └───────────────────────────────────────────────────────────────────┘
+
+
+
+
+
+
+
+<Tab> moves; <Space> selects; <Enter> activates buttons
 ```
 
 Select `Continue`
 
 ```
 [            (1*installer)  2 shell  3 shell  4- log           ][ Sep 09 10:51 ]
-                                                                                
-             ┌─────────┤ [?] Debian installer main menu ├─────────┐             
-             │                                                    │             
-             │ Choose the next step in the install process:       │             
-             │                                                    │             
-             │      Set up users and passwords             -      │             
-             │      Configure the clock                    ▒      │             
-             │      Detect disks                           ▒      │             
-             │      Partition disks                        ▒      │             
-             │      Install the base system                ▒      │             
-             │      Configure the package manager          ▒      │             
-             │      Select and install software            ▒      │             
-             │      Install the GRUB boot loader           ▒      │             
-             │      Continue without boot loader           ▒      │             
-             │      Finish the installation                0      │             
-             │      Change debconf priority                ▒      │             
-             │      Save debug logs                        ▒      │             
-             │      Execute a shell                        ▒      │             
-             │      Abort the installation                 .      │             
-             │                                                    │             
-             └────────────────────────────────────────────────────┘             
-                                                                                
-<Tab> moves; <Space> selects; <Enter> activates buttons                         
+
+             ┌─────────┤ [?] Debian installer main menu ├─────────┐
+             │                                                    │
+             │ Choose the next step in the install process:       │
+             │                                                    │
+             │      Set up users and passwords             -      │
+             │      Configure the clock                    ▒      │
+             │      Detect disks                           ▒      │
+             │      Partition disks                        ▒      │
+             │      Install the base system                ▒      │
+             │      Configure the package manager          ▒      │
+             │      Select and install software            ▒      │
+             │      Install the GRUB boot loader           ▒      │
+             │      Continue without boot loader           ▒      │
+             │      Finish the installation                0      │
+             │      Change debconf priority                ▒      │
+             │      Save debug logs                        ▒      │
+             │      Execute a shell                        ▒      │
+             │      Abort the installation                 .      │
+             │                                                    │
+             └────────────────────────────────────────────────────┘
+
+<Tab> moves; <Space> selects; <Enter> activates buttons
 ```
 
 Select `Continue without boot loader`
 ```
 [            (1*installer)  2 shell  3 shell  4- log           ][ Sep 09 10:53 ]
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-   ┌─────────────────┤ [!] Continue without boot loader ├──────────────────┐    
-   │                                                                       │    
-   │                       No boot loader installed                        │    
-   │ No boot loader has been installed, either because you chose not to or │    
-   │ because your specific architecture doesn't support a boot loader yet. │    
-   │                                                                       │    
-   │ You will need to boot manually with the /vmlinuz kernel on partition  │    
-   │ /dev/sda1 and root=/dev/sda2 passed as a kernel argument.             │    
-   │                                                                       │    
-   │                              <Continue>                               │    
-   │                                                                       │    
-   └───────────────────────────────────────────────────────────────────────┘    
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-<Tab> moves; <Space> selects; <Enter> activates buttons                         
+
+
+
+
+
+   ┌─────────────────┤ [!] Continue without boot loader ├──────────────────┐
+   │                                                                       │
+   │                       No boot loader installed                        │
+   │ No boot loader has been installed, either because you chose not to or │
+   │ because your specific architecture doesn't support a boot loader yet. │
+   │                                                                       │
+   │ You will need to boot manually with the /vmlinuz kernel on partition  │
+   │ /dev/sda1 and root=/dev/sda2 passed as a kernel argument.             │
+   │                                                                       │
+   │                              <Continue>                               │
+   │                                                                       │
+   └───────────────────────────────────────────────────────────────────────┘
+
+
+
+
+
+<Tab> moves; <Space> selects; <Enter> activates buttons
 ```
 
 Select `Continue`
 
 ```
 [            (1*installer)  2 shell  3 shell  4- log           ][ Sep 09 10:54 ]
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-   ┌───────────────────┤ [!!] Finish the installation ├────────────────────┐    
-   │                                                                       │    
-  ┌│                         Installation complete                         │    
-  ││ Installation is complete, so it is time to boot into your new system. │    
-  ││ Make sure to remove the installation media, so that you boot into the │    
-  ││ new system rather than restarting the installation.                   │    
-  ││                                                                       │    
-  ││ Please choose <Continue> to reboot.                                   │    
-  └│                                                                       │    
-   │     <Go Back>                                          <Continue>     │    
-   │                                                                       │    
-   └───────────────────────────────────────────────────────────────────────┘    
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-<Tab> moves; <Space> selects; <Enter> activates buttons                                      
+
+
+
+
+
+   ┌───────────────────┤ [!!] Finish the installation ├────────────────────┐
+   │                                                                       │
+  ┌│                         Installation complete                         │
+  ││ Installation is complete, so it is time to boot into your new system. │
+  ││ Make sure to remove the installation media, so that you boot into the │
+  ││ new system rather than restarting the installation.                   │
+  ││                                                                       │
+  ││ Please choose <Continue> to reboot.                                   │
+  └│                                                                       │
+   │     <Go Back>                                          <Continue>     │
+   │                                                                       │
+   └───────────────────────────────────────────────────────────────────────┘
+
+
+
+
+
+<Tab> moves; <Space> selects; <Enter> activates buttons
 ```
 
 Select `Go Back`
 
 ```
 [            (1*installer)  2 shell  3 shell  4- log           ][ Sep 09 10:56 ]
-                                                                                
-             ┌─────────┤ [?] Debian installer main menu ├─────────┐             
-             │                                                    │             
-             │ Choose the next step in the install process:       │             
-             │                                                    │             
-             │      Set up users and passwords             -      │             
-             │      Configure the clock                    ▒      │             
-             │      Detect disks                           ▒      │             
-             │      Partition disks                        ▒      │             
-             │      Install the base system                ▒      │             
-             │      Configure the package manager          ▒      │             
-             │      Select and install software            ▒      │             
-             │      Install the GRUB boot loader           ▒      │             
-             │      Continue without boot loader           ▒      │             
-             │      Finish the installation                0      │             
-             │      Change debconf priority                ▒      │             
-             │      Save debug logs                        ▒      │             
-             │      Execute a shell                        ▒      │             
-             │      Abort the installation                 .      │             
-             │                                                    │             
-             └────────────────────────────────────────────────────┘             
-                                                                                
-<Tab> moves; <Space> selects; <Enter> activates buttons                         
+
+             ┌─────────┤ [?] Debian installer main menu ├─────────┐
+             │                                                    │
+             │ Choose the next step in the install process:       │
+             │                                                    │
+             │      Set up users and passwords             -      │
+             │      Configure the clock                    ▒      │
+             │      Detect disks                           ▒      │
+             │      Partition disks                        ▒      │
+             │      Install the base system                ▒      │
+             │      Configure the package manager          ▒      │
+             │      Select and install software            ▒      │
+             │      Install the GRUB boot loader           ▒      │
+             │      Continue without boot loader           ▒      │
+             │      Finish the installation                0      │
+             │      Change debconf priority                ▒      │
+             │      Save debug logs                        ▒      │
+             │      Execute a shell                        ▒      │
+             │      Abort the installation                 .      │
+             │                                                    │
+             └────────────────────────────────────────────────────┘
+
+<Tab> moves; <Space> selects; <Enter> activates buttons
 ```
 
 Select `Execute a shell`
 
 ```
 [            (1*installer)  2 shell  3 shell  4- log           ][ Sep 09 10:56 ]
-                                                                                
-                                                                                
-                                                                                
-   ┌────────────────────────┤ [!] Execute a shell ├────────────────────────┐    
-   │                                                                       │    
-   │                           Interactive shell                           │    
-   │ After this message, you will be running "ash", a Bourne-shell clone.  │    
-   │                                                                       │    
-   │ The root file system is a RAM disk. The hard disk file systems are    │    
-   │ mounted on "/target". The editor available to you is nano. It's very  │    
-   │ small and easy to figure out. To get an idea of what Unix utilities   │    
-   │ are available to you, use the "help" command.                         │    
-   │                                                                       │    
-   │ Use the "exit" command to return to the installation menu.            │    
-   │                                                                       │    
-   │     <Go Back>                                          <Continue>     │    
-   │                                                                       │    
-   └───────────────────────────────────────────────────────────────────────┘    
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-<Tab> moves; <Space> selects; <Enter> activates buttons                         
+
+
+
+   ┌────────────────────────┤ [!] Execute a shell ├────────────────────────┐
+   │                                                                       │
+   │                           Interactive shell                           │
+   │ After this message, you will be running "ash", a Bourne-shell clone.  │
+   │                                                                       │
+   │ The root file system is a RAM disk. The hard disk file systems are    │
+   │ mounted on "/target". The editor available to you is nano. It's very  │
+   │ small and easy to figure out. To get an idea of what Unix utilities   │
+   │ are available to you, use the "help" command.                         │
+   │                                                                       │
+   │ Use the "exit" command to return to the installation menu.            │
+   │                                                                       │
+   │     <Go Back>                                          <Continue>     │
+   │                                                                       │
+   └───────────────────────────────────────────────────────────────────────┘
+
+
+
+
+<Tab> moves; <Space> selects; <Enter> activates buttons
 ```
 
 Select `Continue` and at the prompt run the following commands
@@ -767,7 +767,7 @@ Errors were encountered while processing:
 E: Sub-process /usr/bin/dpkg returned an error code (1)
 ```
 
-Replace the content of the flash-kernel database file `/etc/flash-kernel/db` using `nano` 
+Replace the content of the flash-kernel database file `/etc/flash-kernel/db` using `nano`
 ```
 nano /etc/flash-kernel/db
 ```
@@ -787,7 +787,7 @@ Required-Packages: u-boot-tools
 Bootloader-Sets-Incorrect-Root: no
 ```
 
-Update initramfs and kernel: 
+Update initramfs and kernel:
 ```
 update-initramfs -u
 ```
@@ -813,12 +813,12 @@ Taking backup of dtb.
 Installing new dtb.
 ```
 
-Set label on the rootfs partition: 
+Set label on the rootfs partition:
 ```
 e2label /dev/sda2 rootfs
 ```
 
-Exit chroot and reboot: 
+Exit chroot and reboot:
 ```
 exit
 reboot
@@ -853,9 +853,18 @@ ide reset; ext2load ide 2:1 0x0040000 uImage; ext2load ide 2:1 0x2000000 uInitrd
 
 ## Improve the experience
 
-Once the Debian installation is completed I suggest to install some packages to improve the user experience.
+Once the Debian installation is completed I suggest to enable `root` login from network and install some packages to improve the user experience.
 
-First of all we need the `resize` command to set environment and terminal settings to current xterm window size. Use `resize` every time you resize the terminal window.
+To enable `root` login from network add
+```
+PermitRootLogin yes
+```
+to file `/etc/ssh/sshd_config` and restart sshd service with
+```
+systemctl restart ssh.service
+```
+
+It is nice to have the `resize` command to set environment and terminal settings to current xterm window size. Use `resize` every time you resize the terminal window.
 
 Avahi is a system which facilitates service discovery on a local network via the mDNS/DNS-SD protocol suite (a.k.a. Bonjour or Zeroconf).
 ```
@@ -889,7 +898,7 @@ i2c_mv64xxx
 
 # Chip drivers
 adt7475
- 
+
 # Hard disk temperature
 drivetemp
 ```
@@ -902,7 +911,7 @@ drivetemp
 
 To do yourself use `sensors-detect` but remember that `drivetemp` must be added manually.
 ```
-root@lenovo:~# sensors-detect 
+root@lenovo:~# sensors-detect
 # sensors-detect version 3.6.0
 # Kernel: 6.1.0-11-armmp-lpae armv7l
 # Processor: ARMv7 Processor rev 2 (v7l)
@@ -913,7 +922,7 @@ and recommended to accept the default answers to all questions,
 unless you know what you're doing.
 
 Some south bridges, CPUs or memory controllers contain embedded sensors.
-Do you want to scan for them? This is totally safe. (YES/no): 
+Do you want to scan for them? This is totally safe. (YES/no):
 modprobe: FATAL: Module cpuid not found in directory /lib/modules/6.1.0-11-armmp-lpae
 Failed to load module cpuid.
 Silicon Integrated Systems SIS5595...                       No
@@ -939,13 +948,13 @@ Lastly, we can probe the I2C/SMBus adapters for connected hardware
 monitoring devices. This is the most risky part, and while it works
 reasonably well on most systems, it has been reported to cause trouble
 on some systems.
-Do you want to probe the I2C/SMBus adapters now? (YES/no): 
+Do you want to probe the I2C/SMBus adapters now? (YES/no):
 Sorry, no supported PCI bus adapters found.
 [10847.429051] i2c_dev: i2c /dev entries driver
 Module i2c-dev loaded successfully.
 
 Next adapter: mv64xxx_i2c adapter (i2c-0)
-Do you want to scan it? (YES/no/selectively): 
+Do you want to scan it? (YES/no/selectively):
 Client found at address 0x2e
 Handled by driver `adt7475' (already loaded), chip type `adt7473'
 Client found at address 0x50
@@ -957,7 +966,7 @@ Handled by driver `rtc-pcf8563' (built-in), chip type `pcf8563'
 
 
 Now follows a summary of the probes I have just done.
-Just press ENTER to continue: 
+Just press ENTER to continue:
 
 Driver `adt7475':
   * Bus `mv64xxx_i2c adapter'
@@ -984,7 +993,7 @@ Restart the service on changes
 systemctl restart lm-sensors.service
 ```
 
-The default fan speed is around 1800 rpm and it is quite noisy. Using fan control we can reduce a lot the fan noise using a fan speed around 1400 rpm in normal condition and increase up to 2950 rpm when the temperature increase. 
+The default fan speed is around 1800 rpm and it is quite noisy. Using fan control we can reduce a lot the fan noise using a fan speed around 1400 rpm in normal condition and increase up to 2950 rpm when the temperature increase.
 
 Edit the `/etc/fancontrol` as follow to control the fan speed using the temperature of hard disk in the second bay
 ```
@@ -1113,15 +1122,15 @@ the tested fan sensors. (Note: not all motherboards have
 the pwm outputs connected to the fan connectors,
 check out the hardware database on http://www.almico.com/forumindex.php)
 
-Did you see/hear a fan stopping during the above test (n)? 
+Did you see/hear a fan stopping during the above test (n)?
 
 Testing is complete.
 Please verify that all fans have returned to their normal speed.
 
 The fancontrol script can automatically respond to temperature changes
 of your system by changing fanspeeds.
-Do you want to set up its configuration file now (y)? 
-What should be the path to your fancontrol config file (/etc/fancontrol)? 
+Do you want to set up its configuration file now (y)?
+What should be the path to your fancontrol config file (/etc/fancontrol)?
 Loading configuration from /etc/fancontrol ...
 
 Select fan output to configure, or other action:
@@ -1156,13 +1165,13 @@ Select a temperature sensor as source for hwmon1/pwm1:
 select (1-n): 6
 
 Enter the low temperature (degree C)
-below which the fan should spin at minimum speed (20): 
+below which the fan should spin at minimum speed (20):
 
 Enter the high temperature (degree C)
-over which the fan should spin at maximum speed (60): 
+over which the fan should spin at maximum speed (60):
 
 Enter the PWM value (0-255) to use when the temperature
-is over the high temperature limit (255): 
+is over the high temperature limit (255):
 
 
 Select fan output to configure, or other action:
@@ -1248,7 +1257,7 @@ When the temperature is below `tempX_auto_point1_temp`, the fan will run at `pwm
 
 For temperatures between `tempX_auto_point1_temp` and `tempX_auto_point2_temp`, the fan power is set proportionally between `pwm1_auto_point1_pwm` and `pwm1_auto_point2_pwm`. You don't have to set `tempX_auto_point2_temp` because it will automatically be set 32°C higher than `temp1_auto_point1_temp` by the kernel driver.
 
-The ADT7475 can be programmed to check one, two or three temperature sensors when determining the current fan speed. When more than one sensor is selected, the highest calculated fan speed is used. 
+The ADT7475 can be programmed to check one, two or three temperature sensors when determining the current fan speed. When more than one sensor is selected, the highest calculated fan speed is used.
 
 To use automatic mode, you first have to tell the device driver which temperature channel to use. This is done with the `pwm1_auto_channels_temp` file. The following table maps the kernel values with the ADT7475 data sheet values (page 31) for bits <7:5> (BHVR) of register 0x5C:
 
@@ -1308,8 +1317,8 @@ CPU load is the average percentage of the last 60 seconds. RAM is the used perce
 4. Finish the installation with
    ```
    systemctl daemon-reload
-   systemctl enable lcd.service 
-   systemctl start lcd.service 
+   systemctl enable lcd.service
+   systemctl start lcd.service
    ```
 
 ## Using the buttons to trigger actions
@@ -1333,7 +1342,7 @@ They are recognized as keyboard entry. The keyboard device is `/dev/input/event0
 2. Run `evtest` to obtain detailed information
 
    ```
-   root@lenovo:~# evtest 
+   root@lenovo:~# evtest
    No device specified, trying to scan all of /dev/input/event*
    Available devices:
    /dev/input/event0:      gpio-keys
@@ -1412,8 +1421,8 @@ They are recognized as keyboard entry. The keyboard device is `/dev/input/event0
 6. Finish the installation with
    ```
    systemctl daemon-reload
-   systemctl enable kbdactions.service 
-   systemctl start kbdactions.service 
+   systemctl enable kbdactions.service
+   systemctl start kbdactions.service
    ```
 
 ## Controlling the leds
@@ -1555,36 +1564,36 @@ apt install gpiod
 > `libgpiod` encapsulates the ioctl calls and data structures behind a straightforward API. This new character device interface guarantees all allocated resources are freed after closing the device file descriptor and adds several new features that are not present in the obsolete `sysfs` interface (like event polling, setting/reading multiple values at once or open-source and open-drain GPIOs).
 
 ```
-root@lenovo:~# gpiodetect 
+root@lenovo:~# gpiodetect
 gpiochip0 [d0018100.gpio] (32 lines)
 gpiochip1 [d0018140.gpio] (17 lines)
 gpiochip2 [74hc595] (8 lines)
 root@lenovo:~# gpioinfo
 gpiochip0 - 32 lines:
-        line   0:      unnamed       unused   input  active-high 
-        line   1:      unnamed       unused   input  active-high 
-        line   2:      unnamed       unused   input  active-high 
-        line   3:      unnamed       unused   input  active-high 
-        line   4:      unnamed       unused   input  active-high 
-        line   5:      unnamed       unused   input  active-high 
-        line   6:      unnamed       unused   input  active-high 
-        line   7:      unnamed       unused   input  active-high 
-        line   8:      unnamed       unused   input  active-high 
-        line   9:      unnamed       unused   input  active-high 
-        line  10:      unnamed       unused   input  active-high 
-        line  11:      unnamed       unused   input  active-high 
-        line  12:      unnamed       unused   input  active-high 
-        line  13:      unnamed       unused   input  active-high 
-        line  14:      unnamed       unused   input  active-high 
-        line  15:      unnamed       unused   input  active-high 
-        line  16:      unnamed       unused   input  active-high 
-        line  17:      unnamed       unused   input  active-high 
-        line  18:      unnamed       unused   input  active-high 
-        line  19:      unnamed       unused   input  active-high 
-        line  20:      unnamed       unused   input  active-high 
-        line  21:      unnamed       unused   input  active-high 
-        line  22:      unnamed       unused   input  active-high 
-        line  23:      unnamed       unused   input  active-high 
+        line   0:      unnamed       unused   input  active-high
+        line   1:      unnamed       unused   input  active-high
+        line   2:      unnamed       unused   input  active-high
+        line   3:      unnamed       unused   input  active-high
+        line   4:      unnamed       unused   input  active-high
+        line   5:      unnamed       unused   input  active-high
+        line   6:      unnamed       unused   input  active-high
+        line   7:      unnamed       unused   input  active-high
+        line   8:      unnamed       unused   input  active-high
+        line   9:      unnamed       unused   input  active-high
+        line  10:      unnamed       unused   input  active-high
+        line  11:      unnamed       unused   input  active-high
+        line  12:      unnamed       unused   input  active-high
+        line  13:      unnamed       unused   input  active-high
+        line  14:      unnamed       unused   input  active-high
+        line  15:      unnamed       unused   input  active-high
+        line  16:      unnamed       unused   input  active-high
+        line  17:      unnamed       unused   input  active-high
+        line  18:      unnamed       unused   input  active-high
+        line  19:      unnamed       unused   input  active-high
+        line  20:      unnamed       unused   input  active-high
+        line  21:      unnamed       unused   input  active-high
+        line  22:      unnamed       unused   input  active-high
+        line  23:      unnamed       unused   input  active-high
         line  24:      unnamed "gpio-poweroff" output active-high [used]
         line  25:      unnamed        "sck"  output   active-low [used]
         line  26:      unnamed "ix4-300d:hdd:blue" output active-high [used]
@@ -1605,21 +1614,21 @@ gpiochip1 - 17 lines:
         line   8:      unnamed      "sysfs"  output  active-high [used]
         line   9:      unnamed "Select Button" input active-low [used]
         line  10:      unnamed "Scroll Button" input active-low [used]
-        line  11:      unnamed       unused   input  active-high 
+        line  11:      unnamed       unused   input  active-high
         line  12:      unnamed "Power Button" input active-high [used]
         line  13:      unnamed "Reset Button" input active-low [used]
-        line  14:      unnamed       unused   input  active-high 
+        line  14:      unnamed       unused   input  active-high
         line  15:      unnamed       "mosi"  output   active-low [used]
-        line  16:      unnamed       unused   input  active-high 
+        line  16:      unnamed       unused   input  active-high
 gpiochip2 - 8 lines:
-        line   0:      unnamed       unused  output  active-high 
+        line   0:      unnamed       unused  output  active-high
         line   1:      unnamed "ix4-300d:power:white" output active-low [used]
         line   2:      unnamed "ix4-300d:sysfail:red" output active-high [used]
         line   3:      unnamed "ix4-300d:sys:blue" output active-high [used]
         line   4:      unnamed "ix4-300d:hddfail:red" output active-high [used]
-        line   5:      unnamed       unused  output  active-high 
-        line   6:      unnamed       unused  output  active-high 
-        line   7:      unnamed       unused  output  active-high 
+        line   5:      unnamed       unused  output  active-high
+        line   6:      unnamed       unused  output  active-high
+        line   7:      unnamed       unused  output  active-high
 ```
 > [!NOTE]
 > GPIO pins has been assigned to a hardware device driver in kernel device tree. We will not be able to control the pin from user-space as it will forever be "busy". The only solution in this case would be to alter the device tree (likely disabling the HW driver) as to leave the pin unassigned by DTS.
@@ -1640,9 +1649,9 @@ gpioset gpiochip0 26=0
 Using `/sys` file system
 ```
 echo 26 > /sys/class/gpio/export
-echo  1 > /sys/class/gpio/gpio26/value 
-echo  0 > /sys/class/gpio/gpio26/value 
-echo 26 > /sys/class/gpio/unexport 
+echo  1 > /sys/class/gpio/gpio26/value
+echo  0 > /sys/class/gpio/gpio26/value
+echo 26 > /sys/class/gpio/unexport
 ```
 
 ## Fix the poweroff/reboot issue
@@ -1653,7 +1662,7 @@ You need both `eth0` and `eth1` initialized (i.e having them up does the tweak) 
 
 My preferred solution is to use a [bridge](https://github.com/alf45tar/ix4-300d#bridging-network-ports) or a [bond](https://github.com/alf45tar/ix4-300d#bonding-network-ports) of network ports but the below configuration is a fix too.
 
-Edit `/etc/network/interfaces` as follows 
+Edit `/etc/network/interfaces` as follows
 ```
 # This file describes the network interfaces available on your system
 # and how to activate them. For more information, see interfaces(5).
@@ -1678,7 +1687,7 @@ netmask 255.255.0.0
 gateway 169.254.1.254
 ```
 
-The setup forces `eth0` and `eth1` to go up at boot even when no cable is plugged in. 
+The setup forces `eth0` and `eth1` to go up at boot even when no cable is plugged in.
 
 ## Bridging network ports
 
@@ -1736,9 +1745,9 @@ For best performance you could create a bonding between `eth0` and `eth1`. You c
    ```
    # This file describes the network interfaces available on your system
    # and how to activate them. For more information, see interfaces(5).
-   
+
    source /etc/network/interfaces.d/*
-   
+
    # The loopback network interface
    auto lo
    iface lo inet loopback
@@ -1765,7 +1774,7 @@ systemctl restart networking.service
 
 ## Connecting to WiFi
 
-`iwd` is an all-in-one wireless client, wireless daemon, and even a DHCP client optionally. 
+`iwd` is an all-in-one wireless client, wireless daemon, and even a DHCP client optionally.
 
 `iwd` is an alternative to `wpasupplicant`. `iwd` itself is considered stable since Debian 12 Bookworm. It is much faster to connect to networks than wpa_supplicant, and has better roaming support, among other perceived improvements.
 
@@ -1794,19 +1803,19 @@ systemctl restart networking.service
    [ 1268.726537] rtl8187: wireless switch is on
    [ 1268.732574] usbcore: registered new interface driver rtl8187
    [ 1268.950444] rtl8187 2-1:1.0 wlx00226bdaeacb: renamed from wlan0
-   ```   
+   ```
 5. Configure thw WiFi connection using the interactive mode of `iwctl`
    ```
-   root@lenovo:~# iwctl 
+   root@lenovo:~# iwctl
    NetworkConfigurationEnabled: enabled
    StateDirectory: /var/lib/iwd
    Version: 2.3
    [iwd]# device list
                                        Devices                                   *
    --------------------------------------------------------------------------------
-     Name                  Address               Powered     Adapter     Mode      
+     Name                  Address               Powered     Adapter     Mode
    --------------------------------------------------------------------------------
-     wlx00226bdaeacb       00:22:6b:da:ea:cb     on          phy0        station     
+     wlx00226bdaeacb       00:22:6b:da:ea:cb     on          phy0        station
 
    [iwd]# station wlx00226bdaeacb scan
    [iwd]# station wlx00226bdaeacb get-networks
@@ -1814,28 +1823,28 @@ systemctl restart networking.service
    --------------------------------------------------------------------------------
          Network name                      Security            Signal
    --------------------------------------------------------------------------------
-         MyWireless                        psk                 ****      
+         MyWireless                        psk                 ****
 
-   [iwd]# station wlx00226bdaeacb connect MyWireless 
+   [iwd]# station wlx00226bdaeacb connect MyWireless
    Type the network passphrase for MyWireless psk.
-   Passphrase: ***********                                                         
+   Passphrase: ***********
    [iwd]# station wlx00226bdaeacb show
-                               Station: wlx00226bdaeacb                           
+                               Station: wlx00226bdaeacb
    --------------------------------------------------------------------------------
-     Settable  Property              Value                                          
+     Settable  Property              Value
    --------------------------------------------------------------------------------
-               Scanning              no                                               
-               State                 connected                                        
-               Connected network     MyWireless                                       
-               IPv4 address          192.168.1.192                                    
-               ConnectedBss          a4:2b:b0:b9:14:84                                
-               Frequency             2412                                             
-               Security              WPA2-Personal                                    
-               RSSI                  -31 dBm                                          
-               AverageRSSI           -30 dBm                                          
-               TxBitrate             54000 Kbit/s                                     
-               RxBitrate             54000 Kbit/s                                     
-               ExpectedThroughput    19593 Kbit/s                                     
+               Scanning              no
+               State                 connected
+               Connected network     MyWireless
+               IPv4 address          192.168.1.192
+               ConnectedBss          a4:2b:b0:b9:14:84
+               Frequency             2412
+               Security              WPA2-Personal
+               RSSI                  -31 dBm
+               AverageRSSI           -30 dBm
+               TxBitrate             54000 Kbit/s
+               RxBitrate             54000 Kbit/s
+               ExpectedThroughput    19593 Kbit/s
 
    [iwd]# quit
    ```
@@ -1853,7 +1862,7 @@ ifdown bond0
    [21652.346344] usb 2-1: New USB device found, idVendor=8086, idProduct=0808, bcdDevice= 1.00
    [21652.354621] usb 2-1: New USB device strings: Mfr=1, Product=2, SerialNumber=0
    [21652.361863] usb 2-1: Product: USB PnP Sound Device
-   [21652.366740] usb 2-1: Manufacturer: C-Media Electronics Inc.      
+   [21652.366740] usb 2-1: Manufacturer: C-Media Electronics Inc.
    [21652.630390] hid: raw HID events driver (C) Jiri Kosina
    [21652.646899] usbcore: registered new interface driver usbhid
    [21652.652564] usbhid: USB HID core driver
