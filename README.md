@@ -155,7 +155,110 @@ Hardware        : Marvell Armada XP Development Board
 Revision        : 0000
 Serial          : 0000000000000000
 ```
+```
+Marvell>> printenv
+baudrate=115200
+loads_echo=0
+rootpath=/mnt/ARM_FS/
+console=console=ttyS0,115200
+mtdids=nand0=armada-nand
+CASset=min
+sata_delay_reset=0
+MALLOC_len=5
+ethprime=egiga0
+bootargs_root=root=/dev/ram rw
+bootargs_end=:::DB88FXX81:eth0:none
+image_name=uImage
+loadpath=initrd.img
+ramdisk_size=4194304
+ramdisk_size_f=12582912
+ramdisk_name=initrd.img
+uver=v2.3.2.6
+mfgmodel=IX4-300D
+autoload=yes
+ubin=0301
+env_off=0xe0000
+env1_off=0x100000
+kernel_start=0x120000
+initrd_start=0x520000
+kernel_size=0x400000
+initrd_size=0x400000
+mtdparts=mtdparts=armada-nand:0xe0000@0x0(uboot),0x20000@0xe0000(env),0x20000@0x100000(env2),0x400000@0x120000(zImage),0x400000@0x520000(initrd),0x3F200000@0xE00000(boot),0x40000000@0x0(flash)
+standalone=fsload 0x2000000 $image_name;setenv bootargs $console $mtdparts root=/dev/mtdblock0 rw ip=$ipaddr:$serverip$bootargs_end; bootm 0x2000000;
+eth2addr=00:50:43:00:00:02
+eth3addr=00:50:43:02:00:00
+mv_pon_addr=00:50:43:02:00:00
+ethmtu=1500
+eth1mtu=1500
+eth2mtu=1500
+eth3mtu=1500
+mvNetConfig=mv_net_config=2,(00:50:43:11:11:11,0:1),mtu=1500
+usb0Mode=host
+usb1Mode=host
+usb2Mode=device
+usbActive=0
+yuk_ethaddr=00:00:00:EE:51:81
+nandEcc=1bit
+netretry=yes
+rcvrip=169.254.100.100
+loadaddr=0x02000000
+eeeEnable=no
+lcd0_enable=0
+lcd0_params=640x480-16@60
+lcd_panel=0
+filesize=2D8971
+fileaddr=2000000
+netmask=255.255.255.0
+ipaddr=192.168.1.2
+serverip=192.168.1.100
+serial_number=5565U01001G41300161J0L1
+opid=Z12091539
+ethaddr=00:D0:B8:2A:05:21
+serialNo=EUE140GRA1
+eth1addr=00:D0:B8:2A:05:22
+modelname=32042301
+serialno=0,01ykeRfmL2nC/Bbt9GQqCO2HuoUyGg5SIX5PpVPbMexFXYaDKL6guFVvUh/DOXHIMq,EUE140GRA1,
+mfgtest_state=final_tested_ok
+runintime=14400
+ftp_serverip=192.168.32.4
+ftp_log_user=runinlog
+ftp_log_password=123
+ftp_log_dir=storagelogs/soclogs/partlogs/IX4-300D/runin
+ftp_pass_user=qrypass
+ftp_pass_password=123
+ftp_pass_dir=socquery
+ftp_qry_user=qrypass
+ftp_qry_password=123
+ftp_qry_dir=socquery
+stdin=serial
+stdout=serial
+stderr=serial
+enaMonExt=no
+enaCpuStream=no
+enaClockGating=no
+enaWrAllo=no
+pexMode=RC
+disL2Cache=yes
+MPmode=SMP
+cacheShare=no
+setL2CacheWT=no
+disL2Prefetch=yes
+enaICPref=yes
+enaDCPref=yes
+enaFPU=yes
+sata_dma_mode=yes
+netbsd_en=no
+vxworks_en=no
+amp_enable=no
+bootdelay=3
+bootcmd=nand read 0x40000 $kernel_start $kernel_size;nand read 0x2000000 $initrd_start $initrd_size;setenv bootargs $console $mtdparts $bootargs_root mem=512M  ramdisk_size=$ramdisk_size ramdisk_blocksize=1024 ip=$bootargs_end $mvNetConfig; bootm 0x40000 0x2000000;
+disaMvPnp=no
+enaAutoRecovery=yes
+pcieTune=no
+ethact=egiga0
 
+Environment size: 2525/131067 bytes
+```
 The bootloader is Marvell U-Boot. My NAS has the following signature:
 
 `U-Boot 2009.08 (Mar 04 2013 - 11:13:04) Marvell version:  2.3.2 PQ`.
