@@ -275,6 +275,7 @@ The End Of Service Life (EOSL) was March 31, 2020.
 - [Boot the NAS from USB stick](https://github.com/alf45tar/ix4-300d#boot-the-nas-from-usb-stick)
 - [Debian installation](https://github.com/alf45tar/ix4-300d#debian-installation)
 - [Boot from internal disk](https://github.com/alf45tar/ix4-300d#boot-from-internal-disk)
+- [Permanent boot from internal disk](https://github.com/alf45tar/ix4-300d?tab=readme-ov-file#permanent-boot-from-internal-disk)
 - [Improve the experience](https://github.com/alf45tar/ix4-300d#improve-the-experience)
 - [Connect temperature sensors and fan control](https://github.com/alf45tar/ix4-300d#connect-temperature-sensors-and-fan-control)
 - [Personalize the LCD display](https://github.com/alf45tar/ix4-300d#personalize-the-lcd-display)
@@ -614,7 +615,7 @@ The Debian installer should start in the serial console window with the followin
 
 Go through the process as shown on screen.
 
-Partioning the drives can be a little bit trickly but it depends by number of drives and the planned use of the NAS. My partitioning scheme is exaplained [here](https://github.com/alf45tar/ix4-300d#my-personal-partitioning-sheme).
+Partioning the drives can be a little bit trickly but it depends by number of drives and the planned use of the NAS. My partitioning scheme is explained [here](https://github.com/alf45tar/ix4-300d#my-personal-partitioning-sheme).
 
 You will receive an error related to `grub` installation at the end.
 ```
