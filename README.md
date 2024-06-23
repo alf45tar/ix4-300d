@@ -2262,6 +2262,12 @@ function ask_to_continue {
 # Ask user to confirm the operation
 ask_to_continue
 
+# Umount ${DISK}1 (if mounted)
+umount ${DISK}1
+
+# Disable swap partition ${DISK}2 (if in use)
+swapoff ${DISK}2
+
 # Remove ${DISK}3 to existing RAID5 array md1
 mdadm --manage /dev/md1 --fail   ${DISK}3
 mdadm --manage /dev/md1 --remove ${DISK}3
@@ -2274,7 +2280,7 @@ echo "Removed  ${DISK}3 to RAID5 array md2."
 
 # Copy the partition table from ${SOURCE} disk to ${DISK}
 echo "Partitioning $DISK..."
-sfdisk -dump ${SOURCE} > sfdisk ${DISK}
+sfdisk -dump ${SOURCE} | sfdisk ${DISK}
 echo "Partitioning completed!"
 
 # Format the first partition as ext2
