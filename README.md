@@ -611,7 +611,11 @@ The Debian installer should start in the serial console window with the followin
 <Tab> moves; <Space> selects; <Enter> activates buttons
 ```
 
-Go through the process as shown on screen. You will receive an error related to `grub` installation at the end.
+Go through the process as shown on screen.
+
+Partioning the drives can be a little bit trickly but it depends by number of drives and the planned use of the NAS. My partition schema is exaplained in a separate section.
+
+You will receive an error related to `grub` installation at the end.
 ```
 [            (1*installer)  2 shell  3 shell  4- log           ][ Sep 09 10:48 ]
 
@@ -2033,6 +2037,113 @@ apt-get install webmin --install-recommends
 ```
 Open your browser and connect to `http://192.168.1.14:10000` or `http://lenovo.local:10000`. URL can be different in your installation.
 ![](images/webmin.png)
+
+## My personal partitioning sheme
+
+My partitioning scheme suits my needs but might not be suitable for everyone. I have four 1 TB hard disks, labeled `sda`, `sdb`, `sdc`, and `sdd`. Each disk is partitioned into four primary partitions: 512MB, 128MB, 6GB, and the remaining space.
+
+- `sda1` is formatted with `ext2` and mounted as `/boot`
+- `sdb1`, `sdc1`, and `sdd1` are used as backups for `sda1`
+- `sda2`, `sdb2`, `sdc2`, and `sdd2` are swap partitions, providing a total of 512MB of swap space
+- `sda3`, `sdb3`, `sdc3`, and `sdd3` are RAID partitions used for the `md1` RAID5 array, formatted as `ext4` and mounted as `/`, providing a total of 18GB
+- `sda4`, `sdb4`, `sdc4`, and `sdd4` are RAID partitions used for the `md2` RAID5 array, formatted as `ext4` and mounted as `/srv`, providing a total of 3TB
+
+```
+root@lenovo:~# lsblk
+NAME    MAJ:MIN RM   SIZE RO TYPE  MOUNTPOINTS
+sda       8:0    0 931.5G  0 disk
+|-sda1    8:1    0   487M  0 part  /boot
+|-sda2    8:2    0   122M  0 part  [SWAP]
+|-sda3    8:3    0   5.6G  0 part
+| `-md1   9:1    0  16.7G  0 raid5 /
+`-sda4    8:4    0 925.3G  0 part
+  `-md2   9:2    0   2.7T  0 raid5 /srv
+sdb       8:16   0 931.5G  0 disk
+|-sdb1    8:17   0   487M  0 part
+|-sdb2    8:18   0   122M  0 part  [SWAP]
+|-sdb3    8:19   0   5.6G  0 part
+| `-md1   9:1    0  16.7G  0 raid5 /
+`-sdb4    8:20   0 925.3G  0 part
+  `-md2   9:2    0   2.7T  0 raid5 /srv
+sdc       8:32   0 931.5G  0 disk
+|-sdc1    8:33   0   487M  0 part
+|-sdc2    8:34   0   122M  0 part  [SWAP]
+|-sdc3    8:35   0   5.6G  0 part
+| `-md1   9:1    0  16.7G  0 raid5 /
+`-sdc4    8:36   0 925.3G  0 part
+  `-md2   9:2    0   2.7T  0 raid5 /srv
+sdd       8:48   0 931.5G  0 disk
+|-sdd1    8:49   0   487M  0 part
+|-sdd2    8:50   0   122M  0 part  [SWAP]
+|-sdd3    8:51   0   5.6G  0 part
+| `-md1   9:1    0  16.7G  0 raid5 /
+`-sdd4    8:52   0 925.3G  0 part
+  `-md2   9:2    0   2.7T  0 raid5 /srv
+```
+```
+root@lenovo:~# cat /etc/fstab
+# /etc/fstab: static file system information.
+#
+# Use 'blkid' to print the universally unique identifier for a
+# device; this may be used with UUID= as a more robust way to name devices
+# that works even if disks are added and removed. See fstab(5).
+#
+# systemd generates mount units based on this file, see systemd.mount(5).
+# Please run 'systemctl daemon-reload' after making changes here.
+#
+# <file system> <mount point>   <type>  <options>       <dump>  <pass>
+# / was on /dev/md1 during installation
+UUID=f51ea107-ed15-4281-8766-a0b98f4cf057 /               ext4    errors=remount-ro 0       1
+# /boot was on /dev/sda1 during installation
+UUID=a678599e-8ccc-4765-960e-73c5f710dd01 /boot           ext2    defaults        0       2
+# /srv was on /dev/md2 during installation
+UUID=8c2a8237-6e3e-47de-a2e7-597022ba2c16 /srv            ext4    defaults        0       2
+# swap was on /dev/sda2 during installation
+UUID=ee6b8ba7-d0f4-4102-b4a3-21f37658b382 none            swap    sw              0       0
+# swap was on /dev/sdb2 during installation
+UUID=b88e0c81-5ee3-4b53-869f-490ead4ebfc3 none            swap    sw              0       0
+# swap was on /dev/sdc2 during installation
+UUID=bd17bce8-1650-4ff5-b719-82303390285e none            swap    sw              0       0
+# swap was on /dev/sdd2 during installation
+UUID=21c4182d-fcdd-49ec-b291-0aad3ff166b5 none            swap    sw              0       0
+```
+```
+root@lenovo:~# cat /proc/mdstat
+Personalities : [raid6] [raid5] [raid4] [linear] [multipath] [raid0] [raid1] [raid10]
+md2 : active raid5 sdb4[2] sdc4[3] sda4[1] sdd4[0]
+      2910437376 blocks super 1.2 level 5, 512k chunk, algorithm 2 [4/4] [UUUU]
+      bitmap: 2/8 pages [8KB], 65536KB chunk
+
+md1 : active raid5 sdc3[3] sdb3[2] sda3[1] sdd3[0]
+      17562624 blocks super 1.2 level 5, 512k chunk, algorithm 2 [4/4] [UUUU]
+
+unused devices: <none>
+```
+
+To maintain the last four backups of the `/boot` partition, I use the following script:
+```
+#!/bin/sh
+dd if=/dev/sdc1 of=/dev/sdd1 status=progress
+dd if=/dev/sdb1 of=/dev/sdc1 status=progress
+dd if=/dev/sda1 of=/dev/sdb1 status=progress
+```
+This script ensures that the most recent state of `sda1` is propagated through `sdb1`, `sdc1`, and `sdd1`, maintaining the last four backups.
+
+When I need to boot from a backup location, I modify the boot command to point to the appropriate backup partition (`sdb1`, `sdc1`, or `sdd1`) by changing the `ide 2:1` part of the command to match the correct drive and partition.
+
+For boot from `sdb1`:
+```
+ide reset; ext2load ide 3:1 0x0040000 uImage; ext2load ide 3:1 0x2000000 uInitrd; setenv bootargs $console $mtdparts root=LABEL=rootfs rw rootdelay=5; bootm 0x40000 0x2000000
+```
+For boot from `sdc1`:
+```
+ide reset; ext2load ide 4:1 0x0040000 uImage; ext2load ide 4:1 0x2000000 uInitrd; setenv bootargs $console $mtdparts root=LABEL=rootfs rw rootdelay=5; bootm 0x40000 0x2000000
+```
+For boot from `sdd1`:
+```
+ide reset; ext2load ide 5:1 0x0040000 uImage; ext2load ide 5:1 0x2000000 uInitrd; setenv bootargs $console $mtdparts root=LABEL=rootfs rw rootdelay=5; bootm 0x40000 0x2000000
+```
+This flexibility allows me to quickly switch to a backup if there are any issues with the primary `/boot` partition on `sda1`.
 
 ## Useful links
 
