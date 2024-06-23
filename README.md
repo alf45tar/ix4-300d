@@ -266,31 +266,31 @@ The bootloader is Marvell U-Boot. My NAS has the following signature:
 The End Of Service Life (EOSL) was March 31, 2020.
 
 ## Index
-- [Prerequisites](https://github.com/alf45tar/ix4-300d?tab=readme-ov-file##prerequisites)
-- [Preparing the files](https://github.com/alf45tar/ix4-300d?tab=readme-ov-file##preparing-the-files)
-- [Preparing the TFTP server](https://github.com/alf45tar/ix4-300d?tab=readme-ov-file##preparing-the-tftp-server)
-- [Preparing the USB stick](https://github.com/alf45tar/ix4-300d?tab=readme-ov-file##preparing-the-usb-stick)
-- [Connecting the USB-to-TTL adapter](https://github.com/alf45tar/ix4-300d?tab=readme-ov-file##connecting-the-usb-to-ttl-adapter)
-- [Boot the NAS from TFTP server](https://github.com/alf45tar/ix4-300d?tab=readme-ov-file##boot-the-nas-from-tftp-server)
-- [Boot the NAS from USB stick](https://github.com/alf45tar/ix4-300d?tab=readme-ov-file##boot-the-nas-from-usb-stick)
-- [Debian installation](https://github.com/alf45tar/ix4-300d?tab=readme-ov-file##debian-installation)
-- [Boot from internal disk](https://github.com/alf45tar/ix4-300d?tab=readme-ov-file##boot-from-internal-disk)
+- [Prerequisites](https://github.com/alf45tar/ix4-300d?tab=readme-ov-file#prerequisites)
+- [Preparing the files](https://github.com/alf45tar/ix4-300d?tab=readme-ov-file#preparing-the-files)
+- [Preparing the TFTP server](https://github.com/alf45tar/ix4-300d?tab=readme-ov-file#preparing-the-tftp-server)
+- [Preparing the USB stick](https://github.com/alf45tar/ix4-300d?tab=readme-ov-file#preparing-the-usb-stick)
+- [Connecting the USB-to-TTL adapter](https://github.com/alf45tar/ix4-300d?tab=readme-ov-file#connecting-the-usb-to-ttl-adapter)
+- [Boot the NAS from TFTP server](https://github.com/alf45tar/ix4-300d?tab=readme-ov-file#boot-the-nas-from-tftp-server)
+- [Boot the NAS from USB stick](https://github.com/alf45tar/ix4-300d?tab=readme-ov-file#boot-the-nas-from-usb-stick)
+- [Debian installation](https://github.com/alf45tar/ix4-300d?tab=readme-ov-file#debian-installation)
+- [Boot from internal disk](https://github.com/alf45tar/ix4-300d?tab=readme-ov-file#boot-from-internal-disk)
 - [Permanent boot from internal disk](https://github.com/alf45tar/ix4-300d?tab=readme-ov-file#?tab=readme-ov-file#permanent-boot-from-internal-disk)
-- [Improve the experience](https://github.com/alf45tar/ix4-300d?tab=readme-ov-file##improve-the-experience)
-- [Connect temperature sensors and fan control](https://github.com/alf45tar/ix4-300d?tab=readme-ov-file##connect-temperature-sensors-and-fan-control)
-- [Personalize the LCD display](https://github.com/alf45tar/ix4-300d?tab=readme-ov-file##personalize-the-lcd-display)
-- [Using the buttons to trigger actions](https://github.com/alf45tar/ix4-300d?tab=readme-ov-file##using-the-buttons-to-trigger-actions)
-- [Controlling the leds](https://github.com/alf45tar/ix4-300d?tab=readme-ov-file##controlling-the-leds)
-- [Interacting with GPIOS](https://github.com/alf45tar/ix4-300d?tab=readme-ov-file##interacting-with-gpios)
-- [Fix the poweroff/reboot issue](https://github.com/alf45tar/ix4-300d?tab=readme-ov-file##fix-the-poweroffreboot-issue)
-- [Bridging network ports](https://github.com/alf45tar/ix4-300d?tab=readme-ov-file##bridging-network-ports)
-- [Bonding network ports](https://github.com/alf45tar/ix4-300d?tab=readme-ov-file##bonding-network-ports)
-- [Connecting to WiFi](https://github.com/alf45tar/ix4-300d?tab=readme-ov-file##connecting-to-wifi)
-- [Transform the NAS into a AirPlay speaker](https://github.com/alf45tar/ix4-300d?tab=readme-ov-file##transform-the-nas-into-a-airplay-speaker)
-- [Installing Cockpit](https://github.com/alf45tar/ix4-300d?tab=readme-ov-file##installing-cockpit)
-- [Installing Webmin](https://github.com/alf45tar/ix4-300d?tab=readme-ov-file##installing-webmin)
-- [My personal partitioning sheme](https://github.com/alf45tar/ix4-300d?tab=readme-ov-file##my-personal-partitioning-sheme)
-- [Useful links](https://github.com/alf45tar/ix4-300d?tab=readme-ov-file##useful-links)
+- [Improve the experience](https://github.com/alf45tar/ix4-300d?tab=readme-ov-file#improve-the-experience)
+- [Connect temperature sensors and fan control](https://github.com/alf45tar/ix4-300d?tab=readme-ov-file#connect-temperature-sensors-and-fan-control)
+- [Personalize the LCD display](https://github.com/alf45tar/ix4-300d?tab=readme-ov-file#personalize-the-lcd-display)
+- [Using the buttons to trigger actions](https://github.com/alf45tar/ix4-300d?tab=readme-ov-file#using-the-buttons-to-trigger-actions)
+- [Controlling the leds](https://github.com/alf45tar/ix4-300d?tab=readme-ov-file#controlling-the-leds)
+- [Interacting with GPIOS](https://github.com/alf45tar/ix4-300d?tab=readme-ov-file#interacting-with-gpios)
+- [Fix the poweroff/reboot issue](https://github.com/alf45tar/ix4-300d?tab=readme-ov-file#fix-the-poweroffreboot-issue)
+- [Bridging network ports](https://github.com/alf45tar/ix4-300d?tab=readme-ov-file#bridging-network-ports)
+- [Bonding network ports](https://github.com/alf45tar/ix4-300d?tab=readme-ov-file#bonding-network-ports)
+- [Connecting to WiFi](https://github.com/alf45tar/ix4-300d?tab=readme-ov-file#connecting-to-wifi)
+- [Transform the NAS into a AirPlay speaker](https://github.com/alf45tar/ix4-300d?tab=readme-ov-file#transform-the-nas-into-a-airplay-speaker)
+- [Installing Cockpit](https://github.com/alf45tar/ix4-300d?tab=readme-ov-file#installing-cockpit)
+- [Installing Webmin](https://github.com/alf45tar/ix4-300d?tab=readme-ov-file#installing-webmin)
+- [My personal partitioning sheme](https://github.com/alf45tar/ix4-300d?tab=readme-ov-file#my-personal-partitioning-sheme)
+- [Useful links](https://github.com/alf45tar/ix4-300d?tab=readme-ov-file#useful-links)
 
 ## Prerequisites
 
@@ -615,7 +615,7 @@ The Debian installer should start in the serial console window with the followin
 
 Go through the process as shown on screen.
 
-Partioning the drives can be a little bit trickly but it depends by number of drives and the planned use of the NAS. My partitioning scheme is explained [here](https://github.com/alf45tar/ix4-300d?tab=readme-ov-file##my-personal-partitioning-sheme).
+Partioning the drives can be a little bit trickly but it depends by number of drives and the planned use of the NAS. My partitioning scheme is explained [here](https://github.com/alf45tar/ix4-300d?tab=readme-ov-file#my-personal-partitioning-sheme).
 
 You will receive an error related to `grub` installation at the end.
 ```
@@ -1771,7 +1771,7 @@ With the default network configuration the NAS reboot on poweroff. Both interfac
 
 You need both `eth0` and `eth1` initialized (i.e having them up does the tweak) for poweroff to shutdown otherwise it reboots.
 
-My preferred solution is to use a [bridge](https://github.com/alf45tar/ix4-300d?tab=readme-ov-file##bridging-network-ports) or a [bond](https://github.com/alf45tar/ix4-300d?tab=readme-ov-file##bonding-network-ports) of network ports but the below configuration is a fix too.
+My preferred solution is to use a [bridge](https://github.com/alf45tar/ix4-300d?tab=readme-ov-file#bridging-network-ports) or a [bond](https://github.com/alf45tar/ix4-300d?tab=readme-ov-file#bonding-network-ports) of network ports but the below configuration is a fix too.
 
 Edit `/etc/network/interfaces` as follows
 ```
