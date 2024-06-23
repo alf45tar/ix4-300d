@@ -2082,6 +2082,79 @@ sdd       8:48   0 931.5G  0 disk
   `-md2   9:2    0   2.7T  0 raid5 /srv
 ```
 ```
+root@lenovo:~# fdisk -l
+Disk /dev/sda: 931.51 GiB, 1000204886016 bytes, 1953525168 sectors
+Disk model: WDC WD10EZEX-75W
+Units: sectors of 1 * 512 = 512 bytes
+Sector size (logical/physical): 512 bytes / 4096 bytes
+I/O size (minimum/optimal): 4096 bytes / 4096 bytes
+Disklabel type: dos
+Disk identifier: 0x71da263b
+
+Device     Boot    Start        End    Sectors   Size Id Type
+/dev/sda1           2048     999423     997376   487M 83 Linux
+/dev/sda2         999424    1249279     249856   122M 82 Linux swap / Solaris
+/dev/sda3        1249280   12967935   11718656   5.6G fd Linux raid autodetect
+/dev/sda4       12967936 1953523711 1940555776 925.3G fd Linux raid autodetect
+
+
+Disk /dev/sdc: 931.51 GiB, 1000204886016 bytes, 1953525168 sectors
+Disk model: WDC WD10EZEX-75W
+Units: sectors of 1 * 512 = 512 bytes
+Sector size (logical/physical): 512 bytes / 4096 bytes
+I/O size (minimum/optimal): 4096 bytes / 4096 bytes
+Disklabel type: dos
+Disk identifier: 0x5d0a1d40
+
+Device     Boot    Start        End    Sectors   Size Id Type
+/dev/sdc1           2048     999423     997376   487M 83 Linux
+/dev/sdc2         999424    1249279     249856   122M 82 Linux swap / Solaris
+/dev/sdc3        1249280   12967935   11718656   5.6G fd Linux raid autodetect
+/dev/sdc4       12967936 1953523711 1940555776 925.3G fd Linux raid autodetect
+
+
+Disk /dev/sdd: 931.51 GiB, 1000204886016 bytes, 1953525168 sectors
+Disk model: WDC WD10EZEX-75W
+Units: sectors of 1 * 512 = 512 bytes
+Sector size (logical/physical): 512 bytes / 4096 bytes
+I/O size (minimum/optimal): 4096 bytes / 4096 bytes
+Disklabel type: dos
+Disk identifier: 0xa5893513
+
+Device     Boot    Start        End    Sectors   Size Id Type
+/dev/sdd1           2048     999423     997376   487M 83 Linux
+/dev/sdd2         999424    1249279     249856   122M 82 Linux swap / Solaris
+/dev/sdd3        1249280   12967935   11718656   5.6G fd Linux raid autodetect
+/dev/sdd4       12967936 1953523711 1940555776 925.3G fd Linux raid autodetect
+
+
+Disk /dev/sdb: 931.51 GiB, 1000204886016 bytes, 1953525168 sectors
+Disk model: WDC WD10EZEX-75W
+Units: sectors of 1 * 512 = 512 bytes
+Sector size (logical/physical): 512 bytes / 4096 bytes
+I/O size (minimum/optimal): 4096 bytes / 4096 bytes
+Disklabel type: dos
+Disk identifier: 0xc9e30408
+
+Device     Boot    Start        End    Sectors   Size Id Type
+/dev/sdb1           2048     999423     997376   487M 83 Linux
+/dev/sdb2         999424    1249279     249856   122M 82 Linux swap / Solaris
+/dev/sdb3        1249280   12967935   11718656   5.6G fd Linux raid autodetect
+/dev/sdb4       12967936 1953523711 1940555776 925.3G fd Linux raid autodetect
+
+
+Disk /dev/md1: 16.75 GiB, 17984126976 bytes, 35125248 sectors
+Units: sectors of 1 * 512 = 512 bytes
+Sector size (logical/physical): 512 bytes / 4096 bytes
+I/O size (minimum/optimal): 524288 bytes / 1572864 bytes
+
+
+Disk /dev/md2: 2.71 TiB, 2980287873024 bytes, 5820874752 sectors
+Units: sectors of 1 * 512 = 512 bytes
+Sector size (logical/physical): 512 bytes / 4096 bytes
+I/O size (minimum/optimal): 524288 bytes / 1572864 bytes
+```
+```
 root@lenovo:~# cat /etc/fstab
 # /etc/fstab: static file system information.
 #
@@ -2145,6 +2218,99 @@ For boot from `sdd1`:
 ide reset; ext2load ide 5:1 0x0040000 uImage; ext2load ide 5:1 0x2000000 uInitrd; setenv bootargs $console $mtdparts root=LABEL=rootfs rw rootdelay=5; bootm 0x40000 0x2000000
 ```
 This flexibility allows me to quickly switch to a backup if there are any issues with the primary `/boot` partition on `sda1`.
+
+In case of disk failure, I use the following script to rebuild the disks configuration:
+```
+#!/bin/bash
+
+# Disk to rebuilt
+DISK="/dev/sdX"
+
+# Disk used as source of partition table
+SOURCE="/dev/sdY"
+
+# Function to display a countdown
+function countdown {
+    local seconds=$1
+    while [ $seconds -gt 0 ]; do
+        echo -ne "Continuing in $seconds - Ctrl-C to stop the countdown\033[0K\r"
+        sleep 1
+        ((seconds--))
+    done
+    echo ""
+}
+
+# Function to prompt the user
+function ask_to_continue {
+    echo -n "Disk ${DISK} will be WIPED OUT and REBUILT from scratch. Do you want to continue? (yes/[no]) "
+    read user_input
+
+    # Convert input to lowercase
+    user_input=$(echo "$user_input" | tr '[:upper:]' '[:lower:]')
+
+    # Check if the user wants to continue
+    if [[ "$user_input" == "yes" || "$user_input" == "y" ]]; then
+        countdown 10
+    elif [[ "$user_input" == "no" || "$user_input" == "n" ]]; then
+        exit 0
+    else
+        exit 0
+    fi
+}
+
+# Ask user to confirm the operation
+ask_to_continue
+
+# Remove ${DISK}3 to existing RAID5 array md1
+mdadm --manage /dev/md1 --fail   ${DISK}3
+mdadm --manage /dev/md1 --remove ${DISK}3
+echo "Removed ${DISK}3 to RAID5 array md1."
+
+# Remove ${DISK}4 to existing RAID5 array md2
+mdadm --manage /dev/md2 --fail   ${DISK}4
+mdadm --manage /dev/md2 --remove ${DISK}4
+echo "Removed  ${DISK}3 to RAID5 array md2."
+
+# Copy the partition table from ${SOURCE} disk to ${DISK}
+echo "Partitioning $DISK..."
+sfdisk -dump ${SOURCE} > sfdisk ${DISK}
+echo "Partitioning completed!"
+
+# Format the first partition as ext2
+mkfs.ext2 -F ${DISK}1
+echo "Formatted ${DISK}1 as ext2."
+
+# Set up the second partition as swap
+mkswap ${DISK}2
+echo "Set up ${DISK}2 as swap."
+
+# Set the third partition for RAID (no formatting needed as it will be part of a RAID array)
+echo "${DISK}3 is set for RAID."
+
+# Set the forth partition for RAID (no formatting needed as it will be part of a RAID array)
+echo "${DISK}4 is set for RAID."
+
+# Add ${DISK}3 to existing RAID5 array md1
+mdadm --manage /dev/md1 --add    ${DISK}3
+echo "Added ${DISK}3 to RAID5 array md1."
+
+# Print RAID1 array details
+mdadm --detail /dev/md1
+
+# Add ${DISK}4 to existing RAID array md2
+mdadm --manage /dev/md2 --add    ${DISK}4
+echo "Added ${DISK}4 to RAID array md2."
+
+# Print RAID2 array details
+mdadm --detail /dev/md2
+
+echo "All done!"
+```
+
+To monitor the recovery progress use
+```
+watch cat /proc/mdstat
+```
 
 ## Useful links
 
