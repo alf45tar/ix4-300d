@@ -288,7 +288,7 @@ The End Of Service Life (EOSL) was March 31, 2020.
 - [Transform the NAS into a AirPlay speaker](https://github.com/alf45tar/ix4-300d#transform-the-nas-into-a-airplay-speaker)
 - [Installing Cockpit](https://github.com/alf45tar/ix4-300d#installing-cockpit)
 - [Installing Webmin](https://github.com/alf45tar/ix4-300d#installing-webmin)
-- [My personal partitioning sheme](https://github.com/alf45tar/ix4-300d#my-personal-partitioning-scheme)
+- [My personal partitioning sheme](https://github.com/alf45tar/ix4-300d#my-personal-partitioning-sheme)
 - [Useful links](https://github.com/alf45tar/ix4-300d#useful-links)
 
 ## Prerequisites
@@ -614,7 +614,7 @@ The Debian installer should start in the serial console window with the followin
 
 Go through the process as shown on screen.
 
-Partioning the drives can be a little bit trickly but it depends by number of drives and the planned use of the NAS. My partitioning scheme is exaplained [here](https://github.com/alf45tar/ix4-300d#my-personal-partitioning-scheme).
+Partioning the drives can be a little bit trickly but it depends by number of drives and the planned use of the NAS. My partitioning scheme is exaplained [here](https://github.com/alf45tar/ix4-300d#my-personal-partitioning-sheme).
 
 You will receive an error related to `grub` installation at the end.
 ```
