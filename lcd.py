@@ -237,19 +237,14 @@ def draw_lcm(image, display_off = True):
 	if display_off:
 		write_lcm(A0_CMD,0xaf)
 
-def draw_file():
+def refresh_screen(pixels, width = 128, height = 64):
 	img = [0x00] * 1024
-	im = Image.open(io.BytesIO(base64.b64decode(logo)))
-	drw = ImageDraw.Draw(im)
-	pixels = im.load()
-
-	width  = im.size[0]
-	height = im.size[1]
 
 	if width > 128:
 		width = 128
 	if height > 64:
 		height = 64
+
 	for y in range(int(height/8)):
 		for x in range(width):
 			outbyte = 0x00
@@ -259,10 +254,15 @@ def draw_file():
 			img[x+(128*y)] = outbyte
 	draw_lcm(img)
 
+def draw_logo():
+	im = Image.open(io.BytesIO(base64.b64decode(logo)))
+	drw = ImageDraw.Draw(im)
+	refresh_screen(im.load(), im.size[0], im.size[1])
+
 def draw_text():
-        img = [0x00] * 1024
         im = Image.new(mode = "L", size = (128, 64))
         drw = ImageDraw.Draw(im)
+        # Next line takes 60 seconds to complete
         drw.text((0, 50), "CPU: " + str(int(psutil.cpu_percent(60))) + "%   RAM: " + str(int(psutil.virtual_memory()[2])) + "%", fill='white')
         hostname = socket.gethostname()
         drw.text((0, 0), "Hostname: " + hostname, fill='white')
@@ -300,29 +300,109 @@ def draw_text():
            fanSpeed = file.read()
         file.close()
         drw.text((0, 40), "Fan Speed: " + fanSpeed.strip() + " rpm", fill='white')
-        pixels = im.load()
+        refresh_screen(im.load(), im.size[0], im.size[1])
 
-        width  = im.size[0]
-        height = im.size[1]
+def get_md_array_status(md_device):
+    try:
+        # Read the /proc/mdstat file
+        with open('/proc/mdstat', 'r') as f:
+            mdstat_content = f.read()
 
-        if width > 128:
-                width = 128
-        if height > 64:
-                height = 64
-        for y in range(int(height/8)):
-                for x in range(width):
-                        outbyte = 0x00
-                        for bit in range(8):
-                                if pixels[x,(y*8)+bit] != 0:
-                                        outbyte += 2**bit
-                        img[x+(128*y)] = outbyte
-        draw_lcm(img, False)
+        # Find the section for the specified md device
+        device_section = None
+        for section in mdstat_content.split('\n\n'):
+            if md_device in section:
+                device_section = section
+                break
 
+        if not device_section:
+            print(f"Device {md_device} not found in /proc/mdstat")
+            return None
+
+        # Extract the status line from the device section
+        for line in device_section.split('\n'):
+            if 'U' in line:
+                status = ''.join([c for c in line if c in 'U_'])
+                return status
+
+        print(f"Status line not found for {md_device}")
+        return None
+    except Exception as e:
+        print(f"An error occurred: {e}")
+        return None
+
+def draw_disk_usage():
+        mountpoint1 = '/boot'
+        mountpoint2 = '/'
+        mountpoint3 = '/srv'
+
+        # Get disk usage information
+        disk_usage1 = psutil.disk_usage(mountpoint1)
+        disk_usage2 = psutil.disk_usage(mountpoint2)
+        disk_usage3 = psutil.disk_usage(mountpoint3)
+
+        # Create a 128x64 image
+        image = Image.new(mode = "L", size = (128, 64))
+        draw = ImageDraw.Draw(image)
+
+        # Define the bounding box for the pie chart
+        bbox1 = [ 2, 2,  41, 41]
+        bbox2 = [44, 2,  83, 41]
+        bbox3 = [86, 2, 125, 41]
+
+        # Draw the border around the pie chart
+        draw.ellipse(bbox1, outline='white')
+        draw.ellipse(bbox2, outline='white')
+        draw.ellipse(bbox3, outline='white')
+
+        # Calculate the start and end angles for the pie slices
+        start_angle = 0
+        end_angle1 = int(360 * (disk_usage1.percent / 100))
+        end_angle2 = int(360 * (disk_usage2.percent / 100))
+        end_angle3 = int(360 * (disk_usage3.percent / 100))
+
+        # Draw used space slice
+        draw.pieslice(bbox1, start=start_angle, end=end_angle1, fill='white')
+        draw.pieslice(bbox2, start=start_angle, end=end_angle2, fill='white')
+        draw.pieslice(bbox3, start=start_angle, end=end_angle3, fill='white')
+
+        # Add text labels
+        draw.text(( 0 + (42 - draw.textlength(mountpoint1)) / 2, 43), mountpoint1, fill='white')
+        draw.text((44 + (42 - draw.textlength(mountpoint2)) / 2, 43), mountpoint2, fill='white')
+        draw.text((86 + (42 - draw.textlength(mountpoint3)) / 2, 43), mountpoint3, fill='white')
+
+        percent =  str(int(disk_usage1.percent)) + '%'
+        if disk_usage1.percent < 50:
+                draw.text(( 0 + (42 - draw.textlength(percent)) / 2, 10), percent, fill='white')
+        else:
+                draw.text(( 0 + (42 - draw.textlength(percent)) / 2, 23), percent, fill='black')
+
+        percent =  str(int(disk_usage2.percent)) + '%'
+        if disk_usage2.percent < 50:
+                draw.text((44 + (42 - draw.textlength(percent)) / 2, 10), percent, fill='white')
+        else:
+                draw.text((44 + (42 - draw.textlength(percent)) / 2, 23), percent, fill='black')
+
+        percent =  str(int(disk_usage3.percent)) + '%'
+        if disk_usage3.percent < 50:
+               draw.text((86 + (42 - draw.textlength(percent)) / 2, 10), percent, fill='white')
+        else:
+               draw.text((86 + (42 - draw.textlength(percent)) / 2, 23), percent, fill='black')
+
+        status = get_md_array_status('md1')
+        draw.text((44 + (42 - draw.textlength(status)) / 2, 53), status, fill='white')
+        status = get_md_array_status('md2')
+        draw.text((86 + (42 - draw.textlength(status)) / 2, 53), status, fill='white')
+
+        refresh_screen(image.load(), image.size[0], image.size[1])
 
 
 init_lcm()
-draw_file()
+draw_logo()
+time.sleep(5)
 while 1:
+	draw_disk_usage()
 	draw_text()
-	time.sleep(1)
+	time.sleep(60)
+
 exit_lcm()
