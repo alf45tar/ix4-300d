@@ -2214,9 +2214,8 @@ dd if="${boot3}" of="${boot4}" status=progress
 dd if="${boot2}" of="${boot3}" status=progress
 dd if="${boot1}" of="${boot2}" status=progress
 ```
-
-[!NOTE]
-Ensure your `boot1` partition is always mounted as `/boot` during `boot` partition update.
+> [!NOTE]
+> Ensure your `boot1` partition is always mounted as `/boot` during `boot` partition update.
 
 When I need to boot from a backup location, I modify the boot command to point to the appropriate backup partition (`sdb1`, `sdc1`, or `sdd1`) by changing the `ide 2:1` part of the command to match the correct drive and partition.
 
