@@ -2195,14 +2195,27 @@ md1 : active raid5 sdc3[3] sdb3[2] sda3[1] sdd3[0]
 unused devices: <none>
 ```
 
-To maintain the last four backups of the `/boot` partition, I use the following script:
+I am using a script for creates a rotating backup scheme of `/boot` partition.
+First of all I created a persistent identifier (`e2label`) which is independent of the physical device name (`/dev/sdX`). This means if the physical device assignment changes (due to hardware changes, reconfiguration, or other reasons), the label remains consistent.
 ```
-#!/bin/sh
-dd if=/dev/sdc1 of=/dev/sdd1 status=progress
-dd if=/dev/sdb1 of=/dev/sdc1 status=progress
-dd if=/dev/sda1 of=/dev/sdb1 status=progress
+e2label /dev/sda1 boot1
+e2label /dev/sdb1 boot2
+e2label /dev/sdc1 boot3
+e2label /dev/sdd1 boot4
 ```
-This script ensures that the most recent state of `sda1` is propagated through `sdb1`, `sdc1`, and `sdd1`, maintaining the last four backups.
+The following script ensures that the most recent state of `/boot` partition is propagated through the rest of copies, maintaining the last four backups.
+```
+#/bin/sh
+boot1=$(blkid -L boot1)
+boot2=$(blkid -L boot2)
+boot3=$(blkid -L boot3)
+boot4=$(blkid -L boot4)
+dd if="${boot3}" of="${boot4}" status=progress
+dd if="${boot2}" of="${boot3}" status=progress
+dd if="${boot1}" of="${boot2}" status=progress
+```
+[!NOTE]
+Ensure your `boot1` partition is always mounted as `/boot` during `boot` partition update.
 
 When I need to boot from a backup location, I modify the boot command to point to the appropriate backup partition (`sdb1`, `sdc1`, or `sdd1`) by changing the `ide 2:1` part of the command to match the correct drive and partition.
 
@@ -2318,6 +2331,8 @@ To monitor the recovery progress use
 ```
 watch cat /proc/mdstat
 ```
+
+As last step replace the UUID of swap partition in `/etc/fstab` for the replaced disk.
 
 ## Useful links
 
