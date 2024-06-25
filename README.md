@@ -2214,6 +2214,7 @@ dd if="${boot3}" of="${boot4}" status=progress
 dd if="${boot2}" of="${boot3}" status=progress
 dd if="${boot1}" of="${boot2}" status=progress
 ```
+
 [!NOTE]
 Ensure your `boot1` partition is always mounted as `/boot` during `boot` partition update.
 
