@@ -874,13 +874,9 @@ Errors were encountered while processing:
 E: Sub-process /usr/bin/dpkg returned an error code (1)
 ```
 
-Replace the content of the flash-kernel database file `/etc/flash-kernel/db` using `nano`
+Replace the content of the flash-kernel database file `/etc/flash-kernel/db` with the following command:
 ```
-nano /etc/flash-kernel/db
-```
-
-with the following content
-```
+cat <<EOF > /etc/flash-kernel/db
 Machine: Lenovo Iomega ix4-300d
 Kernel-Flavors: armmp armmp-lpae
 DTB-Id: armada-xp-lenovo-ix4-300d.dtb
@@ -892,6 +888,7 @@ Boot-Initrd-Path: /boot/uInitrd
 Boot-DTB-Path: /boot/dtb
 Required-Packages: u-boot-tools
 Bootloader-Sets-Incorrect-Root: no
+EOF
 ```
 
 Update initramfs and kernel:
@@ -995,12 +992,12 @@ One way to alter fan speed with temperature is with the package `fancontrol`. Th
 
 Install the following packages
 ```
-apt install lm-sensors
-apt install fancontrol
+apt install lm-sensors fancontrol
 ```
 
-Edit the `/etc/modules` as follow to load the correct kernel modules:
+Replace the `/etc/modules` to load the correct kernel modules:
 ```
+cat <<EOF > /etc/modules
 #
 # This file contains the names of kernel modules that should be loaded
 # at boot time, one per line. Lines beginning with "#" are ignored.
@@ -1014,6 +1011,7 @@ adt7475
 
 # Hard disk temperature
 drivetemp
+EOF
 ```
 
 > [!NOTE]
@@ -1021,6 +1019,11 @@ drivetemp
 
 > [!NOTE]
 > The Marvell [mv64[345]6x](https://www.kernel.org/doc/Documentation/devicetree/bindings/marvell.txt) series of system controller chips contain many of the peripherals needed to implement a complete computer system. For example the Discovery II MV64361 controller offers a 72-bit DDR memory controller with a 183 MHz clock rate (366 MHz data rate), on-board 2 Megabits Static Random Access Memory (SRAM), dual 32-bit PCI/ PCI-X interfaces, PCI bridge and arbiter, two 10/100/1000 Mbps Ethernet controllers, two multi-protocol serial channels, and TWSI and interrupt controllers. The ADT7475 controller is a thermal monitor and multiple PWM fan controller for noise-sensitive or power-sensitive applications requiring active system cooling. The ADT7475 can drive a fan using either a low or high frequency drive signal, monitor the temperature of up to two remote sensor diodes plus its own internal temperature, and measure and control the speed of up to four fans so that they operate at the lowest possible speed for minimum acoustic noise.
+
+Reboot the NAS to load the modules.
+```
+reboot
+```
 
 To do yourself use `sensors-detect` but remember that `drivetemp` must be added manually.
 ```
@@ -1410,11 +1413,7 @@ CPU load is the average percentage of the last 60 seconds. RAM is the used perce
    ```
 3. Create a new file
    ```
-   nano /etc/systemd/system/lcd.service
-   ```
-
-   copy and paste
-   ```
+   cat <<EOF > /etc/systemd/system/lcd.service
    [Unit]
    Description=Manage LCD display
    After=default.target
@@ -1424,6 +1423,7 @@ CPU load is the average percentage of the last 60 seconds. RAM is the used perce
 
    [Install]
    WantedBy=default.target
+   EOF
    ```
 4. Finish the installation with
    ```
@@ -1515,10 +1515,7 @@ They are recognized as keyboard entry. The keyboard device is `/dev/input/event0
    ```
 5. Create a new file
    ```
-   nano /etc/systemd/system/kbdactions.service
-   ```
-   copy and paste
-   ```
+   cat <<EOF > /etc/systemd/system/kbdactions.service
    [Unit]
    Description=Manage keyboard display
    After=default.target
@@ -1528,6 +1525,7 @@ They are recognized as keyboard entry. The keyboard device is `/dev/input/event0
 
    [Install]
    WantedBy=default.target
+   EOF
    ```
 6. Finish the installation with
    ```
