@@ -2208,9 +2208,9 @@ boot1=$(blkid -L boot1)
 boot2=$(blkid -L boot2)
 boot3=$(blkid -L boot3)
 boot4=$(blkid -L boot4)
-dd if="${boot3}" of="${boot4}" status=progress
-dd if="${boot2}" of="${boot3}" status=progress
-dd if="${boot1}" of="${boot2}" status=progress
+dd if="${boot3}" of="${boot4}" status=progress bs=4M
+dd if="${boot2}" of="${boot3}" status=progress bs=4M
+dd if="${boot1}" of="${boot2}" status=progress bs=4M
 ```
 > [!NOTE]
 > Ensure your `boot1` partition is always mounted as `/boot` during `boot` partition update.
