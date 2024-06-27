@@ -211,7 +211,7 @@ def init_lcm():
 
 	write_lcm(A0_CMD,0x2e)
 	write_lcm(A0_CMD,0x2f)
-	write_lcm(A0_CMD,0xaf);
+	write_lcm(A0_CMD,0xaf)
 
 def exit_lcm():
 	RS.close()
@@ -259,7 +259,15 @@ def draw_logo():
 	drw = ImageDraw.Draw(im)
 	refresh_screen(im.load(), im.size[0], im.size[1])
 
+def read_sensor(file_path):
+    try:
+        with open(file_path, 'r') as file:
+            return file.read().strip()
+    except FileNotFoundError:
+        return "0"
+
 def draw_text():
+    try:
         im = Image.new(mode = "L", size = (128, 64))
         drw = ImageDraw.Draw(im)
         # Next line takes 60 seconds to complete
@@ -267,40 +275,19 @@ def draw_text():
         hostname = socket.gethostname()
         drw.text((0, 0), "Hostname: " + hostname, fill='white')
         drw.text((0, 10), "IP: " + get_local_ip(), fill='white')
-        with open('/sys/class/hwmon/hwmon0/temp1_input','r') as file:
-           cpuTemp = file.read()
-        file.close()
+        cpuTemp = read_sensor('/sys/class/hwmon/hwmon0/temp1_input')
         drw.text((0, 20), "CPU Temp: " + str(round(int(cpuTemp)/1000, 1)) + " °C", fill='white')
-        try:
-           with open('/sys/class/hwmon/hwmon2/temp1_input','r') as file:
-              hd1Temp = file.read()
-        except:
-           hd1Temp = 0
-        file.close()
-        try:
-           with open('/sys/class/hwmon/hwmon3/temp1_input','r') as file:
-              hd2Temp = file.read()
-        except:
-           hd2Temp = 0
-        file.close()
-        try:
-           with open('/sys/class/hwmon/hwmon4/temp1_input','r') as file:
-              hd3Temp = file.read()
-        except:
-           hd3Temp = 0
-        file.close()
-        try:
-           with open('/sys/class/hwmon/hwmon5/temp1_input','r') as file:
-              hd4Temp = file.read()
-        except:
-           hd4Temp = "0"
-        file.close()
+        hd1Temp = read_sensor('/sys/class/hwmon/hwmon2/temp1_input')
+        hd2Temp = read_sensor('/sys/class/hwmon/hwmon3/temp1_input')
+        hd3Temp = read_sensor('/sys/class/hwmon/hwmon4/temp1_input')
+        hd4Temp = read_sensor('/sys/class/hwmon/hwmon5/temp1_input')
         drw.text((0, 30), "HDs Temp: " + str(int(int(hd1Temp)/1000)) + " " + str(int(int(hd2Temp)/1000)) + " " + str(int(int(hd3Temp)/1000)) + " " + str(int(int(hd4Temp)/1000)), fill='white')
-        with open('/sys/class/hwmon/hwmon1/fan1_input','r') as file:
-           fanSpeed = file.read()
-        file.close()
+        fanSpeed = read_sensor('/sys/class/hwmon/hwmon1/fan1_input')
         drw.text((0, 40), "Fan Speed: " + fanSpeed.strip() + " rpm", fill='white')
         refresh_screen(im.load(), im.size[0], im.size[1])
+
+    except Exception as e:
+        print(f"Error in draw_text: {e}")
 
 def get_md_array_status(md_device):
     try:
@@ -309,29 +296,27 @@ def get_md_array_status(md_device):
             mdstat_content = f.read()
 
         # Find the section for the specified md device
-        device_section = None
-        for section in mdstat_content.split('\n\n'):
-            if md_device in section:
-                device_section = section
-                break
+        device_section = next((section for section in mdstat_content.split('\n\n') if md_device in section), None)
 
         if not device_section:
             print(f"Device {md_device} not found in /proc/mdstat")
             return None
 
         # Extract the status line from the device section
-        for line in device_section.split('\n'):
-            if 'U' in line:
-                status = ''.join([c for c in line if c in 'U_'])
-                return status
+        status_line = next((line for line in device_section.split('\n') if 'U' in line), None)
 
-        print(f"Status line not found for {md_device}")
-        return None
+        if status_line:
+            return ''.join([c for c in status_line if c in 'U_'])
+        else:
+            print(f"Status line not found for {md_device}")
+            return None
+
     except Exception as e:
         print(f"An error occurred: {e}")
         return None
 
 def draw_disk_usage():
+    try:
         mountpoint1 = '/boot'
         mountpoint2 = '/'
         mountpoint3 = '/srv'
@@ -396,6 +381,8 @@ def draw_disk_usage():
 
         refresh_screen(image.load(), image.size[0], image.size[1])
 
+    except Exception as e:
+        print(f"Error in draw_disk_usage: {e}")
 
 init_lcm()
 draw_logo()
