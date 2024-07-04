@@ -1432,6 +1432,29 @@ CPU load is the average percentage of the last 60 seconds. RAM is the used perce
    systemctl start lcd.service
    ```
 
+To control the backlight of the display, you can write a value between 0 and 255 to the file
+```
+/sys/class/i2c-adapter/i2c-0/0-002e/hwmon/hwmon1/pwm3
+```
+This value determines the brightness level of the backlight. Here are some examples of how to use this command to set different brightness levels:
+
+- Set Brightness to Maximum
+  ```
+  echo 255 > /sys/class/i2c-adapter/i2c-0/0-002e/hwmon/hwmon1/pwm3
+  ```
+- Set Brightness to Minimum
+  ```
+  echo 0 > /sys/class/i2c-adapter/i2c-0/0-002e/hwmon/hwmon1/pwm3
+  ```
+- Set Brightness to Mid-Level
+  ```
+  echo 128 > /sys/class/i2c-adapter/i2c-0/0-002e/hwmon/hwmon1/pwm3
+  ```
+- Check Current Brightness
+  ```
+  cat /sys/class/i2c-adapter/i2c-0/0-002e/hwmon/hwmon1/pwm3
+  ```
+
 ## Using the buttons to trigger actions
 
 The NAS has 4 buttons connected to gpio and supported as `gpio-keys`.

@@ -10,6 +10,10 @@ import socket
 import time
 import base64
 import io
+import time
+import evdev
+from evdev import InputDevice, categorize, ecodes
+from select import select
 import psutil
 
 RS = GPIO(29, "out")
@@ -259,19 +263,73 @@ def draw_logo():
 	drw = ImageDraw.Draw(im)
 	refresh_screen(im.load(), im.size[0], im.size[1])
 
+def get_load_avg():
+    try:
+        with open('/proc/loadavg', 'r') as f:
+            load_avg = f.readline().split()[:3]
+        return [float(x) for x in load_avg]
+    except:
+        return 0
+
+def get_cpu_count():
+    try:
+        with open('/proc/cpuinfo', 'r') as f:
+            cpu_info = f.read()
+        return cpu_info.count('processor\t:')
+    except:
+        return 2
+
+def cpu_usage():
+    load_avg  = get_load_avg()
+    cpu_count = get_cpu_count()
+
+    cpu_usage_1min  = (load_avg[0] / cpu_count) * 100
+    cpu_usage_5min  = (load_avg[1] / cpu_count) * 100
+    cpu_usage_15min = (load_avg[2] / cpu_count) * 100
+
+    return cpu_usage_1min
+
+def get_memory_info():
+    try:
+        meminfo = {}
+        with open('/proc/meminfo', 'r') as f:
+            for line in f:
+                parts = line.split()
+                key = parts[0].rstrip(':')
+                value = int(parts[1])  # Value is in kilobytes
+                meminfo[key] = value
+        return meminfo
+    except:
+        return {}
+
+def memory_usage():
+    try:
+        meminfo = get_memory_info()
+
+        mem_total = meminfo['MemTotal']
+        mem_free  = meminfo['MemFree']
+        buffers   = meminfo['Buffers']
+        cached    = meminfo['Cached']
+
+        mem_used          = mem_total - (mem_free + buffers + cached)
+        mem_usage_percent = (mem_used / mem_total) * 100
+
+        return mem_usage_percent
+    except:
+        return 0
+
 def read_sensor(file_path):
     try:
         with open(file_path, 'r') as file:
             return file.read().strip()
-    except FileNotFoundError:
+    except:
         return "0"
 
-def draw_text():
+def display_home():
     try:
         im = Image.new(mode = "L", size = (128, 64))
         drw = ImageDraw.Draw(im)
-        # Next line takes 60 seconds to complete
-        drw.text((0, 50), "CPU: " + str(int(psutil.cpu_percent(60))) + "%   RAM: " + str(int(psutil.virtual_memory()[2])) + "%", fill='white')
+        drw.text((0, 50), "CPU: " + str(int(cpu_usage())) + "%   RAM: " + str(int(memory_usage())) + "%", fill='white')
         hostname = socket.gethostname()
         drw.text((0, 0), "Hostname: " + hostname, fill='white')
         drw.text((0, 10), "IP: " + get_local_ip(), fill='white')
@@ -315,7 +373,7 @@ def get_md_array_status(md_device):
         print(f"An error occurred: {e}")
         return None
 
-def draw_disk_usage():
+def display_disk_usage():
     try:
         mountpoint1 = '/boot'
         mountpoint2 = '/'
@@ -384,12 +442,66 @@ def draw_disk_usage():
     except Exception as e:
         print(f"Error in draw_disk_usage: {e}")
 
+def cycle_backlight(backlight_index=[2]):
+    backlight_values = [0, 50, 100, 150, 200, 250]
+    backlight_index[0] = (backlight_index[0] + 1) % len(backlight_values)
+    set_backlight(backlight_values[backlight_index[0]])
+
+def set_backlight(value):
+    pwm_file = '/sys/class/i2c-adapter/i2c-0/0-002e/hwmon/hwmon1/pwm3'
+    try:
+        with open(pwm_file, 'w') as file:
+            file.write(str(value))
+    except IOError as e:
+        print(f"Failed to write {pwm_file}: {e}")
+
+
+device  = InputDevice('/dev/input/event0')
+screens = [display_home, display_disk_usage]
+
 init_lcm()
+cycle_backlight()
 draw_logo()
 time.sleep(5)
-while 1:
-	draw_disk_usage()
-	draw_text()
-	time.sleep(60)
+index = 0
+while True:
+    # Display the current screen
+    screens[index]()
+
+    # Start the timer for the 60-second delay
+    start_time = time.time()
+    next_time  = start_time + 60
+
+    # Wait for input or timer expiration
+    while time.time() < next_time:
+        # Check if there is an available event
+        r, w, x = select([device], [], [], next_time - time.time())
+
+        # If there is an available event, read and categorize the event
+        if r:
+            for event in device.read():
+                if event.type == ecodes.EV_KEY:
+                    key_event = categorize(event)
+                    if key_event.keystate == key_event.key_down:
+                        if key_event.scancode == ecodes.KEY_POWER:
+                            # Handle KEY_POWER press
+                            pass
+                        elif key_event.scancode == ecodes.KEY_SCROLLDOWN:
+                            # Handle KEY_SCROLLDOWN press
+                            cycle_backlight()
+                        elif key_event.scancode == ecodes.BTN_SELECT:
+                            # Handle BTN_SELECT press
+                            # If a key was pressed, interrupt the delay and move to the next screen
+                            next_time = time.time()
+                        elif key_event.scancode == ecodes.KEY_RESTART:
+                            # Handle KEY_RESTART press
+                            pass
+                        else:
+                            # Handle other keys
+                            print(f"Other key pressed: {key_event.scancode}")
+                            break
+
+    # Move to the next screen
+    index = (index + 1) % len(screens)
 
 exit_lcm()
