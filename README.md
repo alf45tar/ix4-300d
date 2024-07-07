@@ -2231,9 +2231,16 @@ boot1=$(blkid -L boot1)
 boot2=$(blkid -L boot2)
 boot3=$(blkid -L boot3)
 boot4=$(blkid -L boot4)
+label1=$(e2label "$boot1")
+label2=$(e2label "$boot2")
+label3=$(e2label "$boot3")
+label4=$(e2label "$boot4")
 dd if="${boot3}" of="${boot4}" status=progress bs=4M
 dd if="${boot2}" of="${boot3}" status=progress bs=4M
 dd if="${boot1}" of="${boot2}" status=progress bs=4M
+e2label "${boot2}" "${label2}"
+e2label "${boot3}" "${label3}"
+e2label "${boot4}" "${label4}"
 ```
 > [!NOTE]
 > Ensure your `boot1` partition is always mounted as `/boot` during `boot` partition update.
