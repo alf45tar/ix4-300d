@@ -325,6 +325,16 @@ def read_sensor(file_path):
     except:
         return "0"
 
+def read_fanmode():
+    file_path = '/tmp/fanmode.txt'
+    try:
+        with open(file_path, 'r') as file:
+            content = file.read()
+        return content
+    except Exception as e:
+        print(f'An error occurred: {e}')
+        return ''
+
 def display_home():
     try:
         im = Image.new(mode = "L", size = (128, 64))
@@ -341,8 +351,9 @@ def display_home():
         hd4Temp = read_sensor('/sys/class/hwmon/hwmon5/temp1_input')
         drw.text((0, 30), "HDs Temp: " + str(int(int(hd1Temp)/1000)) + " " + str(int(int(hd2Temp)/1000)) + " " + str(int(int(hd3Temp)/1000)) + " " + str(int(int(hd4Temp)/1000)), fill='white')
         fanSpeed = read_sensor('/sys/class/hwmon/hwmon1/fan1_input')
-        drw.text((0, 40), "Fan Speed: " + fanSpeed.strip() + " rpm", fill='white')
+        drw.text((0, 40), "Fan Speed " + read_fanmode() + ": " + fanSpeed.strip() + " rpm", fill='white')
         refresh_screen(im.load(), im.size[0], im.size[1])
+        im.save("/tmp/systemstatus.jpg")
 
     except Exception as e:
         print(f"Error in draw_text: {e}")
@@ -438,6 +449,7 @@ def display_disk_usage():
         draw.text((86 + (42 - draw.textlength(status)) / 2, 53), status, fill='white')
 
         refresh_screen(image.load(), image.size[0], image.size[1])
+        image.save("/tmp/diskusage.jpg")
 
     except Exception as e:
         print(f"Error in draw_disk_usage: {e}")
@@ -459,6 +471,16 @@ def set_backlight(value):
 device  = InputDevice('/dev/input/event0')
 screens = [display_home, display_disk_usage]
 
+# Constants for long press detection and backlight cycling
+LONG_PRESS_THRESHOLD = 2   # seconds
+CYCLE_BACKLIGHT_INTERVAL = 0.5  # seconds
+
+# State variables for button press tracking
+button_select_pressed = False
+button_select_press_time = None
+last_backlight_cycle_time = None
+long_press_detected = False
+
 init_lcm()
 cycle_backlight()
 draw_logo()
@@ -475,31 +497,57 @@ while True:
     # Wait for input or timer expiration
     while time.time() < next_time:
         # Check if there is an available event
-        r, w, x = select([device], [], [], next_time - time.time())
-
+        r, w, x = select([device], [], [], 0.1)  # Poll every 0.1 seconds for better responsiveness
         # If there is an available event, read and categorize the event
         if r:
             for event in device.read():
                 if event.type == ecodes.EV_KEY:
                     key_event = categorize(event)
-                    if key_event.keystate == key_event.key_down:
-                        if key_event.scancode == ecodes.KEY_POWER:
-                            # Handle KEY_POWER press
-                            pass
-                        elif key_event.scancode == ecodes.KEY_SCROLLDOWN:
-                            # Handle KEY_SCROLLDOWN press
-                            cycle_backlight()
-                        elif key_event.scancode == ecodes.BTN_SELECT:
+                    if key_event.scancode == ecodes.BTN_SELECT:
+                        if key_event.keystate == key_event.key_down:
                             # Handle BTN_SELECT press
-                            # If a key was pressed, interrupt the delay and move to the next screen
-                            next_time = time.time()
-                        elif key_event.scancode == ecodes.KEY_RESTART:
-                            # Handle KEY_RESTART press
-                            pass
-                        else:
-                            # Handle other keys
-                            print(f"Other key pressed: {key_event.scancode}")
-                            break
+                            if not button_select_pressed:
+                                button_select_pressed = True
+                                button_select_press_time = time.time()
+                                last_backlight_cycle_time = button_select_press_time  # Initialize backlight cycle time
+                                long_press_detected = False
+                        elif key_event.keystate == key_event.key_up:
+                            # Handle BTN_SELECT release
+                            if button_select_pressed:
+                                press_duration = time.time() - button_select_press_time
+                                if press_duration >= LONG_PRESS_THRESHOLD:
+                                    long_press_detected = True
+                                else:
+                                    if not long_press_detected:  # Only trigger short press if no long press was detected
+                                        # Interrupt the delay and move to the next screen
+                                        next_time = time.time()
+                                button_select_pressed = False
+                                button_select_press_time = None
+                                last_backlight_cycle_time = None
+                                long_press_detected = False
+                    else:
+                        # Handle other keys
+                        if key_event.keystate == key_event.key_down:
+                            if key_event.scancode == ecodes.KEY_POWER:
+                                pass  # Handle KEY_POWER press
+                            elif key_event.scancode == ecodes.KEY_SCROLLDOWN:
+                                # Handle KEY_SCROLLDOWN press
+                                time.sleep(1)
+                                index = -1
+                                next_time = time.time()
+                                pass
+                            elif key_event.scancode == ecodes.KEY_RESTART:
+                                pass  # Handle KEY_RESTART press
+
+        # If the BTN_SELECT is pressed for more than LONG_PRESS_THRESHOLD,
+        # execute cycle_backlight every CYCLE_BACKLIGHT_INTERVAL seconds
+        if button_select_pressed:
+            current_time = time.time()
+            press_duration = current_time - button_select_press_time
+            if  press_duration >= LONG_PRESS_THRESHOLD:
+                if current_time - last_backlight_cycle_time >= CYCLE_BACKLIGHT_INTERVAL:
+                    cycle_backlight()
+                    last_backlight_cycle_time = current_time
 
     # Move to the next screen
     index = (index + 1) % len(screens)

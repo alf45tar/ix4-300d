@@ -1393,14 +1393,53 @@ Once the channel has been set, the ADT7475 is put into automatic mode as follows
 
 `echo 2 > /sys/class/i2c-adapter/i2c-0/0-002e/hwmon/hwmon1/pwm1_enable`
 
+I personally use my fan control script `fan.py` because it has three fan modes. You can switch between these modes by pressing the SCROLL DOWN button: Normal, Fresh, and Quiet.
+
+1. Download the `fan.py` script into `/opt/ix4-300d` folder
+   ```
+   mkdir /opt/ix4-300d
+   wget -P /opt/ix4-300d https://raw.githubusercontent.com/alf45tar/ix4-300d/main/fan.py
+   ```
+3. Create a new file
+   ```
+   cat <<EOF > /etc/systemd/system/fan.service
+   [Unit]
+   Description=Fan Control
+   After=default.target
+   StartLimitIntervalSec=10min
+   StartLimitBurst=5
+   [Service]
+   ExecStart=python3 /opt/ix4-300d/fan.py
+   Restart=on-failure
+   RestartSec=30
+   [Install]
+   WantedBy=default.target
+   EOF
+   ```
+4. Finish the installation with
+   ```
+   systemctl daemon-reload
+   systemctl enable fan.service
+   systemctl start fan.service
+   ```
+
+All of the 3 methods must be used alone.
 
 ## Personalize the LCD display
 
-We can customize the information to show on the NAS display using the `lcd.py` script. The script updates the display every 60 seconds.
+We can customize the information displayed on the NAS using the lcd.py script. This script updates the display every 60 seconds, cycling between two screens.
 
-CPU load is the average percentage of the last 60 seconds. RAM is the used percentage of physical RAM without swap file.
+The first screen shows important details about the NAS: local name, IP address, CPU and HD temperatures, fan speed, CPU load, and memory usage. CPU load represents the average percentage over the last 60 seconds, while RAM indicates the used percentage of physical RAM, excluding the swap file.
 
-![](images/LCD.png)
+![](images/LCD1.png)
+
+The second screen allows you to monitor the usage of the `/boot`, `/`, and `/srv` partitions. The "four U" indicates the status of the RAID array.
+
+![](images/LCD2.jpg)
+
+Press the SELECT button to move to the next screen. Press and hold it to adjust the LCD backlight.
+
+Press the SCROLL DOWN button to switch the fan speed mode: N for Normal, F for Fresh, and Q for Quiet.
 
 1. Install  the following packages
    ```
@@ -1417,10 +1456,12 @@ CPU load is the average percentage of the last 60 seconds. RAM is the used perce
    [Unit]
    Description=Manage LCD display
    After=default.target
-
+   StartLimitIntervalSec=10min
+   StartLimitBurst=5
    [Service]
    ExecStart=python3 /opt/ix4-300d/lcd.py
-
+   Restart=on-failure
+   RestartSec=5s
    [Install]
    WantedBy=default.target
    EOF
@@ -1432,7 +1473,7 @@ CPU load is the average percentage of the last 60 seconds. RAM is the used perce
    systemctl start lcd.service
    ```
 
-To control the backlight of the display, you can write a value between 0 and 255 to the file
+To manually control the backlight of the display, you can write a value between 0 and 255 to the file
 ```
 /sys/class/i2c-adapter/i2c-0/0-002e/hwmon/hwmon1/pwm3
 ```
@@ -1467,6 +1508,8 @@ Select|Available to trigger an action
 Scroll down|Available to trigger an action
 
 They are recognized as keyboard entry. The keyboard device is `/dev/input/event0`.
+
+You can experiment yourself with buttons (continue below) or simply use the `lcd.py` script with default assignements.
 
 1. Install `evtest` package
 
@@ -1542,10 +1585,8 @@ They are recognized as keyboard entry. The keyboard device is `/dev/input/event0
    [Unit]
    Description=Manage keyboard display
    After=default.target
-
    [Service]
    ExecStart=/opt/ix4-300d/kbdactions.sh
-
    [Install]
    WantedBy=default.target
    EOF
