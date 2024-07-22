@@ -876,7 +876,7 @@ E: Sub-process /usr/bin/dpkg returned an error code (1)
 
 Replace the content of the flash-kernel database file `/etc/flash-kernel/db` with the following command:
 ```
-cat <<EOF > /etc/flash-kernel/db
+cat << EOF > /etc/flash-kernel/db
 Machine: Lenovo Iomega ix4-300d
 Kernel-Flavors: armmp armmp-lpae
 DTB-Id: armada-xp-lenovo-ix4-300d.dtb
@@ -997,7 +997,7 @@ apt install lm-sensors fancontrol
 
 Replace the `/etc/modules` to load the correct kernel modules:
 ```
-cat <<EOF > /etc/modules
+cat << EOF > /etc/modules
 #
 # This file contains the names of kernel modules that should be loaded
 # at boot time, one per line. Lines beginning with "#" are ignored.
@@ -1402,7 +1402,7 @@ I personally use my fan control script `fan.py` because it has three fan modes. 
    ```
 3. Create a new file
    ```
-   cat <<EOF > /etc/systemd/system/fan.service
+   cat << EOF > /etc/systemd/system/fan.service
    [Unit]
    Description=Fan Control
    After=default.target
@@ -1452,7 +1452,7 @@ Press the SCROLL DOWN button to switch the fan speed mode: N for Normal, F for F
    ```
 3. Create a new file
    ```
-   cat <<EOF > /etc/systemd/system/lcd.service
+   cat << EOF > /etc/systemd/system/lcd.service
    [Unit]
    Description=Manage LCD display
    After=default.target
@@ -1581,7 +1581,7 @@ You can experiment yourself with buttons (continue below) or simply use the `lcd
    ```
 5. Create a new file
    ```
-   cat <<EOF > /etc/systemd/system/kbdactions.service
+   cat << EOF > /etc/systemd/system/kbdactions.service
    [Unit]
    Description=Manage keyboard display
    After=default.target
@@ -2267,21 +2267,39 @@ e2label /dev/sdd1 boot4
 ```
 The following script ensures that the most recent state of `/boot` partition is propagated through the rest of copies, maintaining the last four backups.
 ```
-#/bin/sh
+#!/bin/sh
+
+# Get the device paths for the partitions with specific labels
 boot1=$(blkid -L boot1)
 boot2=$(blkid -L boot2)
 boot3=$(blkid -L boot3)
 boot4=$(blkid -L boot4)
+
+# Retrieve the current labels and UUIDs of these partitions
 label1=$(e2label "$boot1")
 label2=$(e2label "$boot2")
 label3=$(e2label "$boot3")
 label4=$(e2label "$boot4")
+
+uuid1=$(blkid -s UUID -o value "$boot1")
+uuid2=$(blkid -s UUID -o value "$boot2")
+uuid3=$(blkid -s UUID -o value "$boot3")
+uuid4=$(blkid -s UUID -o value "$boot4")
+
+# Copy data from one partition to another
 dd if="${boot3}" of="${boot4}" status=progress bs=4M
 dd if="${boot2}" of="${boot3}" status=progress bs=4M
 dd if="${boot1}" of="${boot2}" status=progress bs=4M
+
+# Restore the labels of the copied partitions
 e2label "${boot2}" "${label2}"
 e2label "${boot3}" "${label3}"
 e2label "${boot4}" "${label4}"
+
+# Restore the UUIDs of the copied partitions
+tune2fs -U "${uuid2}" "${boot2}"
+tune2fs -U "${uuid3}" "${boot3}"
+tune2fs -U "${uuid4}" "${boot4}"
 ```
 > [!NOTE]
 > Ensure your `boot1` partition is always mounted as `/boot` during `boot` partition update.
