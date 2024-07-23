@@ -1427,7 +1427,7 @@ All of the 3 methods must be used alone.
 
 ## Personalize the LCD display
 
-We can customize the information displayed on the NAS using the lcd.py script. This script updates the display every 60 seconds, cycling between two screens.
+We can customize the information displayed on the NAS using the `lcd.py` script. This script updates the display every 60 seconds, cycling between two screens.
 
 The first screen shows important details about the NAS: local name, IP address, CPU and HD temperatures, fan speed, CPU load, and memory usage. CPU load represents the average percentage over the last 60 seconds, while RAM indicates the used percentage of physical RAM, excluding the swap file.
 
@@ -1609,8 +1609,12 @@ CONFIG_GPIO_74X164=m
 I did it for you and here the instruction for installing the new kernel. After reboot leds are availbale under `/sys/class/leds`.
 
 ```
-wget https://raw.githubusercontent.com/alf45tar/ix4-300d/main/linux-image-6.1.0-12-armmp-lpae_6.1.52-2_armhf.deb
-dpkg -i linux-image-6.1.0-12-armmp-lpae_6.1.52-2_armhf.deb
+wget https://raw.githubusercontent.com/alf45tar/ix4-300d/main/linux-image-6.1.0-22-armmp-lpae_6.1.94-1_armhf.deb
+dpkg -i linux-image-6.1.0-22-armmp-lpae_6.1.94-1_armhf.deb
+cd /boot
+cat vmlinuz dtb > vmlinuz_ix4_300d
+mkimage -A arm -O linux -T kernel  -C none -a 0x04000000 -e 0x04000000 -n "Linux version 6.1.0-22-armmp-lpae" -d vmlinuz_ix4_300d uImage
+mkimage -A arm -O linux -T ramdisk -C none -a 0x2000000  -e 0x2000000  -n "Linux version 6.1.0-22-armmp-lpae" -d initrd.img       uInitrd
 reboot
 ```
 
