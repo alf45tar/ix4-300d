@@ -99,12 +99,13 @@ def switch_to_fresh_mode():
     print(f"*** Fresh mode *** {temp_min:.0f}°C - {temp_max:.0f}°C ***")
     save_mode("F")
 
-# Map the current temp_max to the respective mode-switching function
-mode_switch = {
-    60.0: switch_to_normal_mode,
-    55.0: switch_to_fresh_mode,
-    50.0: switch_to_quiet_mode
-}
+modes = [switch_to_normal_mode, switch_to_fresh_mode, switch_to_quiet_mode]
+current_mode_index = 0
+
+def switch_to_next_mode():
+    global current_mode_index
+    current_mode_index = (current_mode_index + 1) % len(modes)
+    modes[current_mode_index]()
 
 def control_fan_speed(sensor_paths, set_fan_path, read_fan_path, debug=False):
     global temp_min
@@ -136,7 +137,7 @@ def control_fan_speed(sensor_paths, set_fan_path, read_fan_path, debug=False):
                             if key_event.scancode == ecodes.KEY_SCROLLDOWN:
                                 # Handle KEY_SCROLLDOWN press
                                 # Execute the appropriate function based on the current temp_max
-                                mode_switch.get(temp_max, switch_to_fresh_mode)()
+                                switch_to_next_mode()
 
         avg_temp = get_avg_temperature(sensor_paths)
         max_temp = get_max_temperature(sensor_paths)
