@@ -297,7 +297,7 @@ The End Of Service Life (EOSL) was March 31, 2020.
 - USB-to-TTL adapter (mandatory) to connect to the bootloader
 - A TFTP server (faster) or and USB stick (slower) to download the Debian installer
 - A PC with macOS or Windows. The following procedure is for macOS because we do not need any additional software to install for complete the task. The procedure for Windows is not documented here.
-- A Linux box or a virtual machine with any Linux flavour (optional) to prepare the Debian booting image. I used an online Ubuntu VM on https://www.onworks.net.
+- [Optional] A Linux box or a virtual machine with any Linux flavour or a container to prepare the Debian booting image.
 - Wired connection from NAS Ethernet port 1 (the upper one) with DHCP and internet access to continue the Debian installation after boot.
 
 ## Preparing the files
