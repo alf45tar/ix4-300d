@@ -1443,7 +1443,7 @@ Press the SCROLL DOWN button to switch the fan speed mode: N for Normal, F for F
 
 1. Install  the following packages
    ```
-   apt install python3-periphery python3-pil python3-psutil
+   apt install python3-periphery python3-pil python3-psutil python3-evdev
    ```
 2. Download the `lcd.py` script into `/opt/ix4-300d` folder
    ```

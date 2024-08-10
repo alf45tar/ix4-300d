@@ -443,16 +443,16 @@ def display_disk_usage():
         else:
                draw.text((86 + (42 - draw.textlength(percent)) / 2, 23), percent, fill='black')
 
-        status = get_md_array_status('md1')
+        status = get_md_array_status('md0')
         draw.text((44 + (42 - draw.textlength(status)) / 2, 53), status, fill='white')
-        status = get_md_array_status('md2')
+        status = get_md_array_status('md1')
         draw.text((86 + (42 - draw.textlength(status)) / 2, 53), status, fill='white')
 
         refresh_screen(image.load(), image.size[0], image.size[1])
         image.save("/tmp/diskusage.jpg")
 
     except Exception as e:
-        print(f"Error in draw_disk_usage: {e}")
+        print(f"Error in display_disk_usage: {e}")
 
 def cycle_backlight(backlight_index=[2]):
     backlight_values = [0, 50, 100, 150, 200, 250]
