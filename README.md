@@ -2109,8 +2109,8 @@ My partitioning scheme suits my needs but might not be suitable for everyone. I 
 - `sda1` is formatted with `ext2` and mounted as `/boot`
 - `sdb1`, `sdc1`, and `sdd1` are used as backups for `sda1`
 - `sda2`, `sdb2`, `sdc2`, and `sdd2` are swap partitions, providing a total of 512MB of swap space
-- `sda3`, `sdb3`, `sdc3`, and `sdd3` are RAID partitions used for the `md1` RAID5 array, formatted as `ext4` and mounted as `/`, providing a total of 18GB
-- `sda4`, `sdb4`, `sdc4`, and `sdd4` are RAID partitions used for the `md2` RAID5 array, formatted as `ext4` and mounted as `/srv`, providing a total of 3TB
+- `sda3`, `sdb3`, `sdc3`, and `sdd3` are RAID partitions used for the `md0` RAID5 array, formatted as `ext4` and mounted as `/`, providing a total of 18GB
+- `sda4`, `sdb4`, `sdc4`, and `sdd4` are RAID partitions used for the `md1` RAID5 array, formatted as `ext4` and mounted as `/srv`, providing a total of 3TB
 
 ```
 root@lenovo:~# lsblk
@@ -2119,30 +2119,30 @@ sda       8:0    0 931.5G  0 disk
 |-sda1    8:1    0   487M  0 part  /boot
 |-sda2    8:2    0   122M  0 part  [SWAP]
 |-sda3    8:3    0   5.6G  0 part
-| `-md1   9:1    0  16.7G  0 raid5 /
+| `-md0   9:1    0  16.7G  0 raid5 /
 `-sda4    8:4    0 925.3G  0 part
-  `-md2   9:2    0   2.7T  0 raid5 /srv
+  `-md1   9:2    0   2.7T  0 raid5 /srv
 sdb       8:16   0 931.5G  0 disk
 |-sdb1    8:17   0   487M  0 part
 |-sdb2    8:18   0   122M  0 part  [SWAP]
 |-sdb3    8:19   0   5.6G  0 part
-| `-md1   9:1    0  16.7G  0 raid5 /
+| `-md0   9:1    0  16.7G  0 raid5 /
 `-sdb4    8:20   0 925.3G  0 part
-  `-md2   9:2    0   2.7T  0 raid5 /srv
+  `-md1   9:2    0   2.7T  0 raid5 /srv
 sdc       8:32   0 931.5G  0 disk
 |-sdc1    8:33   0   487M  0 part
 |-sdc2    8:34   0   122M  0 part  [SWAP]
 |-sdc3    8:35   0   5.6G  0 part
-| `-md1   9:1    0  16.7G  0 raid5 /
+| `-md0   9:1    0  16.7G  0 raid5 /
 `-sdc4    8:36   0 925.3G  0 part
-  `-md2   9:2    0   2.7T  0 raid5 /srv
+  `-md1   9:2    0   2.7T  0 raid5 /srv
 sdd       8:48   0 931.5G  0 disk
 |-sdd1    8:49   0   487M  0 part
 |-sdd2    8:50   0   122M  0 part  [SWAP]
 |-sdd3    8:51   0   5.6G  0 part
-| `-md1   9:1    0  16.7G  0 raid5 /
+| `-md0   9:1    0  16.7G  0 raid5 /
 `-sdd4    8:52   0 925.3G  0 part
-  `-md2   9:2    0   2.7T  0 raid5 /srv
+  `-md1   9:2    0   2.7T  0 raid5 /srv
 ```
 ```
 root@lenovo:~# fdisk -l
@@ -2206,13 +2206,13 @@ Device     Boot    Start        End    Sectors   Size Id Type
 /dev/sdb4       12967936 1953523711 1940555776 925.3G fd Linux raid autodetect
 
 
-Disk /dev/md1: 16.75 GiB, 17984126976 bytes, 35125248 sectors
+Disk /dev/md0: 16.75 GiB, 17984126976 bytes, 35125248 sectors
 Units: sectors of 1 * 512 = 512 bytes
 Sector size (logical/physical): 512 bytes / 4096 bytes
 I/O size (minimum/optimal): 524288 bytes / 1572864 bytes
 
 
-Disk /dev/md2: 2.71 TiB, 2980287873024 bytes, 5820874752 sectors
+Disk /dev/md1: 2.71 TiB, 2980287873024 bytes, 5820874752 sectors
 Units: sectors of 1 * 512 = 512 bytes
 Sector size (logical/physical): 512 bytes / 4096 bytes
 I/O size (minimum/optimal): 524288 bytes / 1572864 bytes
@@ -2229,11 +2229,11 @@ root@lenovo:~# cat /etc/fstab
 # Please run 'systemctl daemon-reload' after making changes here.
 #
 # <file system> <mount point>   <type>  <options>       <dump>  <pass>
-# / was on /dev/md1 during installation
+# / was on /dev/md0 during installation
 UUID=f51ea107-ed15-4281-8766-a0b98f4cf057 /               ext4    errors=remount-ro 0       1
 # /boot was on /dev/sda1 during installation
 UUID=a678599e-8ccc-4765-960e-73c5f710dd01 /boot           ext2    defaults        0       2
-# /srv was on /dev/md2 during installation
+# /srv was on /dev/md1 during installation
 UUID=8c2a8237-6e3e-47de-a2e7-597022ba2c16 /srv            ext4    defaults        0       2
 # swap was on /dev/sda2 during installation
 UUID=ee6b8ba7-d0f4-4102-b4a3-21f37658b382 none            swap    sw              0       0
@@ -2247,11 +2247,11 @@ UUID=21c4182d-fcdd-49ec-b291-0aad3ff166b5 none            swap    sw            
 ```
 root@lenovo:~# cat /proc/mdstat
 Personalities : [raid6] [raid5] [raid4] [linear] [multipath] [raid0] [raid1] [raid10]
-md2 : active raid5 sdb4[2] sdc4[3] sda4[1] sdd4[0]
+md1 : active raid5 sdb4[2] sdc4[3] sda4[1] sdd4[0]
       2910437376 blocks super 1.2 level 5, 512k chunk, algorithm 2 [4/4] [UUUU]
       bitmap: 2/8 pages [8KB], 65536KB chunk
 
-md1 : active raid5 sdc3[3] sdb3[2] sda3[1] sdd3[0]
+md0 : active raid5 sdc3[3] sdb3[2] sda3[1] sdd3[0]
       17562624 blocks super 1.2 level 5, 512k chunk, algorithm 2 [4/4] [UUUU]
 
 unused devices: <none>
@@ -2368,15 +2368,15 @@ umount ${DISK}1
 # Disable swap partition ${DISK}2 (if in use)
 swapoff ${DISK}2
 
-# Remove ${DISK}3 to existing RAID5 array md1
-mdadm --manage /dev/md1 --fail   ${DISK}3
-mdadm --manage /dev/md1 --remove ${DISK}3
-echo "Removed ${DISK}3 to RAID5 array md1."
+# Remove ${DISK}3 to existing RAID5 array md0
+mdadm --manage /dev/md0 --fail   ${DISK}3
+mdadm --manage /dev/md0 --remove ${DISK}3
+echo "Removed ${DISK}3 to RAID5 array md0."
 
-# Remove ${DISK}4 to existing RAID5 array md2
-mdadm --manage /dev/md2 --fail   ${DISK}4
-mdadm --manage /dev/md2 --remove ${DISK}4
-echo "Removed  ${DISK}3 to RAID5 array md2."
+# Remove ${DISK}4 to existing RAID5 array md1
+mdadm --manage /dev/md1 --fail   ${DISK}4
+mdadm --manage /dev/md1 --remove ${DISK}4
+echo "Removed  ${DISK}3 to RAID5 array md1."
 
 # Copy the partition table from ${SOURCE} disk to ${DISK}
 echo "Partitioning $DISK..."
@@ -2397,19 +2397,19 @@ echo "${DISK}3 is set for RAID."
 # Set the forth partition for RAID (no formatting needed as it will be part of a RAID array)
 echo "${DISK}4 is set for RAID."
 
-# Add ${DISK}3 to existing RAID5 array md1
-mdadm --manage /dev/md1 --add    ${DISK}3
-echo "Added ${DISK}3 to RAID5 array md1."
+# Add ${DISK}3 to existing RAID5 array md0
+mdadm --manage /dev/md0 --add    ${DISK}3
+echo "Added ${DISK}3 to RAID5 array md0."
 
 # Print RAID1 array details
-mdadm --detail /dev/md1
+mdadm --detail /dev/md0
 
-# Add ${DISK}4 to existing RAID array md2
-mdadm --manage /dev/md2 --add    ${DISK}4
-echo "Added ${DISK}4 to RAID array md2."
+# Add ${DISK}4 to existing RAID array md1
+mdadm --manage /dev/md1 --add    ${DISK}4
+echo "Added ${DISK}4 to RAID array md1."
 
 # Print RAID2 array details
-mdadm --detail /dev/md2
+mdadm --detail /dev/md1
 
 echo "All done!"
 ```
