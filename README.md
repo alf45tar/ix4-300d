@@ -1862,6 +1862,58 @@ gateway 169.254.1.254
 
 The setup forces `eth0` and `eth1` to go up at boot even when no cable is plugged in.
 
+## Fix the segmentation fault issue
+
+> [!WARNING]
+> This section is user contributed and was suggested and tested by [gig1910](https://github.com/gig1910). See https://github.com/alf45tar/ix4-300d/issues/13.
+
+### Step 1: Allow the kernel to fix alignment errors
+
+A CPU alignment issue occurs when a program attempts to read or write data at a memory address that is not properly aligned. For example, ARM processors typically expect multi-byte values (like 4-byte integers) to start at addresses divisible by 4. When a program tries to access misaligned data, the ARM CPU generates an alignment fault exception. On the ix4-300d, some software (especially binaries compiled without strict alignment requirements) can trigger these faults, causing crashes or unexpected behavior.
+
+The `/proc/cpu/alignment` value is a bitmask. `3` is the most common setting for troubleshooting or legacy support because it combines fixup and warning behavior.
+
+Here is what the bits represent:
+
+0. Ignore: the kernel does nothing. The CPU might return corrupted data or wrap around memory, which can lead to silent corruption or strange application behavior.
+
+1. Alignment Fixup: the kernel catches the hardware error and manually reassembles the data from the two memory chunks. This lets the program keep running without crashing, although it is slightly slower.
+
+2. Signal/Warning: the kernel writes a message to the system log (`dmesg`) every time a fixup occurs. This helps identify programs that rely on poor alignment handling.
+
+3. Fixup + Warning: this is the combination of 1 and 2. It fixes the error so the NAS keeps running, but it also warns you in the logs so you know it is happening.
+
+On this platform, alignment faults can show up as crashes if they are not handled, so setting the value to `3` is a practical workaround:
+```
+echo 3 | sudo tee /proc/cpu/alignment
+```
+
+This is a runtime workaround. If you want to apply it automatically at boot, add the same command to `/etc/rc.local` before `exit 0`:
+
+### Step 2: Non-LPAE kernel installation
+
+LPAE kernels are not recommended for the ix4-300d due to its 512MB of RAM. Switching to a non-LPAE kernel is essential to avoid two critical issues:
+
+- Segmentation faults under load
+- Excessive RAM consumption at startup
+
+1. Update the lists and install the kernel without LPAE:
+```
+sudo apt update
+sudo apt install linux-image-armmp
+sudo update-initramfs -c -k $(ls /boot/vmlinuz-*-armmp | tail -n 1 | sed 's|/boot/vmlinuz-||')
+```
+
+2. Remove the LPAE kernel, which is no longer needed and is dangerous:
+```
+sudo apt purge linux-image-armmp-lpae
+```
+
+3. Clean the system of unused dependencies:
+```
+sudo apt autoremove --purge
+```
+
 ## Bridging network ports
 
 During Debian installation you selected your primary network interface and the proper configuration file has been created.
